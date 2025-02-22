@@ -24,15 +24,9 @@ export function LoginSignUp() {
       <div className="min-h-screen bg-blue-100 flex items-center justify-center p-4">
         <div className="rounded-lg flex flex-col md:flex-row w-full max-w-4xl overflow-hidden">
           {/* Logo Section */}
-          <div className="w-full md:w-1/2 flex items-center justify-center p-6 md:p-8 order-first md:order-last">
+          <div className="w-full md:w-1/2 flex items-center justify-center p-6 md:p-8 order-first ">
             <div className="text-center">
               <img src={companyLogo} alt="logo" />
-              {/* <h2 className="mt-4 md:mt-6 text-2xl md:text-3xl font-extrabold text-[#1974D0]">
-                Your Company
-              </h2> */}
-              {/* <p className="mt-2 text-base md:text-lg text-blue-400">
-                Sign in to your account or create a new one
-              </p> */}
             </div>
           </div>
 

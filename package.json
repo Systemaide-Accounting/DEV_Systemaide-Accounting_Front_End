@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "serve": "serve -s build_folder/dist"
   },
   "dependencies": {
     "flowbite-react": "^0.10.2",

@@ -4,6 +4,8 @@ import { Route, HashRouter as Router, Routes } from "react-router-dom";
 import { Layout } from "./Components/Layout";
 import { LoginSignUp } from "./Pages/LoginSignUp";
 import { Home } from "./Pages/Home";
+// AUTHENTICATION SERVICES
+import { signIn } from "./services/authService";
 // IMPORT PAGES ROUTES
 import { transactions } from "./Components/all-routes/transactions";
 import {
@@ -14,9 +16,25 @@ import {
 } from "./Components/all-routes/reports";
 import { libraries } from "./Components/all-routes/libraries";
 import { utilities, backups } from "./Components/all-routes/utilities";
+import { useEffect, useState } from "react";
 
 function App() {
- 
+//  const [apiBaseUrl, setApiBaseUrl] = useState("");
+
+//   const handleSignIn = async () => {
+//     try {
+//       const result = await signIn();
+//       setApiBaseUrl(result);
+//     } catch (error) {
+//       console.error("Error signing in:", error);
+//     }
+//   };
+
+//   useEffect(() => {
+//     handleSignIn();
+//   }, []);
+//   console.log(apiBaseUrl);
+  
   return (
     <>
       <Router>

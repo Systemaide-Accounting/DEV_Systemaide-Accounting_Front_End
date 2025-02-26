@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import companyLogo from "../assets/company-logo.gif";
+import { Link } from "react-router-dom";
+import swal2 from "sweetalert2";
 
 export function Navbar({ openSidebar, setOpenSidebar }) {
   const [profileDropdown, setProfileDropdown] = useState(false);
@@ -21,6 +23,19 @@ export function Navbar({ openSidebar, setOpenSidebar }) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [dropdownRef, sidebarRef]);
+
+  const signOut = async () => {
+    const response = await swal2.fire({
+        title: 'Are you sure you want to log out?',
+        showCancelButton: true,
+        confirmButtonText: 'Log out'
+    });
+    if(response.isConfirmed) {
+      localStorage.clear();
+      window.location.href = import.meta.env.VITE_SYSTEMAIDE_LOGIN;
+    }
+  };
+
 
   return (
     <>
@@ -109,13 +124,20 @@ export function Navbar({ openSidebar, setOpenSidebar }) {
                         </a>
                       </li>
                       <li>
-                        <a
+                        <Link
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                          role="menuitem"
+                          onClick={signOut}
+                        >
+                          Sign out
+                        </Link>
+                        {/* <a
                           href="#"
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                           role="menuitem"
                         >
                           Sign out
-                        </a>
+                        </a> */}
                       </li>
                     </ul>
                   </div>

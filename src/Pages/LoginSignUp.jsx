@@ -1,8 +1,21 @@
+import { useNavigate } from "react-router-dom";
 import companyLogo from "../assets/company-logo.gif";
 import { LoginForm } from "../Components/login-signup-components/LoginForm";
+import AuthContext from "../context/AuthContext";
+import { useContext, useEffect } from "react";
 
 export function LoginSignUp() {
-  
+
+  const user = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate(-1);
+    }
+  }, []);
+
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center p-4 md:p-8">
       <div className="bg-white rounded-2xl flex flex-col md:flex-row w-full max-w-4xl overflow-hidden shadow-2xl">

@@ -1,6 +1,12 @@
 import companyLogo from "../assets/company-logo.gif"
+import { useContext } from "react";
+import AuthContext from "../context/AuthContext";
 
 export function Home() {
+
+  // const { isAuthorized } = useContext(AuthContext);
+  // console.log(isAuthorized);
+
   return (
     <>
       <div className="min-h-[92vh] flex flex-col justify-center items-center bg-gradient-to-br from-blue-100 to-purple-100 dark:from-gray-800 dark:to-gray-900 p-4">

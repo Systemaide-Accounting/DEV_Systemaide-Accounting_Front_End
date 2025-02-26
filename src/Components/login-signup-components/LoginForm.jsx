@@ -1,8 +1,11 @@
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useState } from "react";
+import { signIn } from "../../services/authService";
+import { useNavigate } from "react-router-dom";
 
 export function LoginForm() {
 
+    const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const togglePasswordVisibility = () => setShowPassword(!showPassword);
@@ -21,10 +24,16 @@ export function LoginForm() {
 
     const handleSubmit = async (e) => {
       e.preventDefault();
+      
       setIsLoading(true);
       // Simulate API call
-      console.log(formData);
-      setIsLoading(false);
+      const response = await signIn(JSON.stringify(formData));
+      // const response = await signIn(formData);
+      if (response?.success) {
+        console.log(response);
+        setIsLoading(false);  
+        navigate("/home");
+      }
     };
 
   return (

@@ -28,7 +28,6 @@ const getFromLocalStorage = (key) => {
     return decryptData(parsedStoredValue.value);
 };
 
-
 const createSystemaideApiService = (token) => {
     return axios.create({
       baseURL: SYSTEMAIDE_API_BASE_URL,

@@ -30,7 +30,6 @@ export function LoginForm() {
       const response = await signIn(JSON.stringify(formData));
       // const response = await signIn(formData);
       if (response?.success) {
-        console.log(response);
         setIsLoading(false);  
         navigate("/home");
       }

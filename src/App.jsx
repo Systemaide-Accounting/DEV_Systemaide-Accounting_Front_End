@@ -31,8 +31,6 @@ function App() {
     };
     checkAuthentication();
   }, []);
-
-  console.log(user);
   
   return (
     <>

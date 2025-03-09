@@ -1,0 +1,58 @@
+[
+  {
+    "id": 1,
+    "role": "Administrator",
+    "permissions": "Full Access",
+    "users": 3,
+    "created": "2023-01-10"
+  },
+  {
+    "id": 2,
+    "role": "Manager",
+    "permissions": "Edit, View",
+    "users": 5,
+    "created": "2023-01-15"
+  },
+  {
+    "id": 3,
+    "role": "Editor",
+    "permissions": "Edit, View",
+    "users": 8,
+    "created": "2023-02-05"
+  },
+  {
+    "id": 4,
+    "role": "Viewer",
+    "permissions": "View Only",
+    "users": 12,
+    "created": "2023-02-10"
+  },
+  {
+    "id": 5,
+    "role": "Support",
+    "permissions": "Limited Edit, View",
+    "users": 6,
+    "created": "2023-03-01"
+  },
+  {
+    "id": 6,
+    "role": "Guest",
+    "permissions": "View Only",
+    "users": 4,
+    "created": "2023-03-15"
+  },
+  {
+    "id": 7,
+    "role": "Developer",
+    "permissions": "Edit, View, API Access",
+    "users": 7,
+    "created": "2023-04-01"
+  },
+  {
+    "id": 8,
+    "role": "Analyst",
+    "permissions": "View, Export",
+    "users": 5,
+    "created": "2023-04-10"
+  }
+]

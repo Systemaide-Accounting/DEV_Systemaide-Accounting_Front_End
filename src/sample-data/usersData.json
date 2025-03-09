@@ -1,0 +1,86 @@
+[
+  {
+    "id": 1,
+    "name": "John Doe",
+    "email": "john@example.com",
+    "status": "Active",
+    "lastLogin": "2023-05-15"
+  },
+  {
+    "id": 2,
+    "name": "Jane Smith",
+    "email": "jane@example.com",
+    "status": "Active",
+    "lastLogin": "2023-05-14"
+  },
+  {
+    "id": 3,
+    "name": "Robert Johnson",
+    "email": "robert@example.com",
+    "status": "Inactive",
+    "lastLogin": "2023-04-20"
+  },
+  {
+    "id": 4,
+    "name": "Emily Davis",
+    "email": "emily@example.com",
+    "status": "Active",
+    "lastLogin": "2023-05-10"
+  },
+  {
+    "id": 5,
+    "name": "Michael Brown",
+    "email": "michael@example.com",
+    "status": "Active",
+    "lastLogin": "2023-05-12"
+  },
+  {
+    "id": 6,
+    "name": "Sarah Wilson",
+    "email": "sarah@example.com",
+    "status": "Inactive",
+    "lastLogin": "2023-03-25"
+  },
+  {
+    "id": 7,
+    "name": "David Taylor",
+    "email": "david@example.com",
+    "status": "Active",
+    "lastLogin": "2023-05-13"
+  },
+  {
+    "id": 8,
+    "name": "Lisa Anderson",
+    "email": "lisa@example.com",
+    "status": "Active",
+    "lastLogin": "2023-05-11"
+  },
+  {
+    "id": 9,
+    "name": "James Martin",
+    "email": "james@example.com",
+    "status": "Active",
+    "lastLogin": "2023-05-09"
+  },
+  {
+    "id": 10,
+    "name": "Jennifer White",
+    "email": "jennifer@example.com",
+    "status": "Inactive",
+    "lastLogin": "2023-04-15"
+  },
+  {
+    "id": 11,
+    "name": "Thomas Harris",
+    "email": "thomas@example.com",
+    "status": "Active",
+    "lastLogin": "2023-05-08"
+  },
+  {
+    "id": 12,
+    "name": "Patricia Clark",
+    "email": "patricia@example.com",
+    "status": "Active",
+    "lastLogin": "2023-05-07"
+  }
+]

@@ -1,6 +1,6 @@
 // import "./App.css";
 import "./index.css"
-import { Route, HashRouter as Router, Routes } from "react-router-dom";
+import { Navigate, Route, HashRouter as Router, Routes } from "react-router-dom";
 import { PrivateRoute } from "./Components/PrivateRoute";
 import AuthContext from "./context/AuthContext";
 import useGetAuth from "./hooks/useGetAuth";
@@ -19,16 +19,18 @@ import {
 } from "./Components/all-routes/reports";
 import { libraries } from "./Components/all-routes/libraries";
 import { utilities, backups } from "./Components/all-routes/utilities";
+import { SystemConfiguration } from "./Pages/SystemConfiguration";
 import { useEffect } from "react";
 
 function App() {
 
   const user = useGetAuth();
 
+  const checkAuthentication = async () => {
+    await checkUserExpiration();
+  };
+
   useEffect(() => {
-    const checkAuthentication = async () => {
-      await checkUserExpiration();
-    };
     checkAuthentication();
   }, []);
   
@@ -146,6 +148,7 @@ function App() {
                   </>
                 );
               })}
+              <Route path="/system-config" element={<SystemConfiguration />} />
             </Route>
           </Routes>
         </AuthContext.Provider>

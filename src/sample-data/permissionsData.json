@@ -1,0 +1,14 @@
+[
+  { "id": 1, "name": "View Users", "type": "Read" },
+  { "id": 2, "name": "Create Users", "type": "Write" },
+  { "id": 3, "name": "Edit Users", "type": "Write" },
+  { "id": 4, "name": "Delete Users", "type": "Delete" },
+  { "id": 5, "name": "View Roles", "type": "Read" },
+  { "id": 6, "name": "Create Roles", "type": "Write" },
+  { "id": 7, "name": "Edit Roles", "type": "Write" },
+  { "id": 8, "name": "Delete Roles", "type": "Delete" },
+  { "id": 9, "name": "View Reports", "type": "Read" },
+  { "id": 10, "name": "Export Data", "type": "Read" },
+  { "id": 11, "name": "System Settings", "type": "Admin" },
+  { "id": 12, "name": "API Access", "type": "API" }
+]

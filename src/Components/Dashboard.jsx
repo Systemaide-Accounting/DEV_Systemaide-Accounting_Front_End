@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Navbar } from "./Navbar";
 import { Transaction } from "./Transaction";
 import { Library } from "./Library";
@@ -23,10 +23,7 @@ export function Dashboard() {
 
   return (
     <>
-      <Navbar
-        openSidebar={openSidebar}
-        setOpenSidebar={setOpenSidebar}
-      />
+      <Navbar openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} />
 
       <aside
         id="logo-sidebar"
@@ -61,6 +58,24 @@ export function Dashboard() {
               utilitiesDropdown={utilitiesDropdown}
               setUtilitiesDropdown={setUtilitiesDropdown}
             />
+            <hr />
+            <li>
+              <Link to="/system-config">
+                <div
+                  className={`flex items-center w-full p-2 ${
+                    isActiveLink(`/system-config`)
+                      ? "text-gray-900 bg-gray-100"
+                      : "text-white hover:text-gray-900 hover:bg-gray-100"
+                  } transition duration-75 rounded-lg group dark:text-white dark:hover:bg-gray-700`}
+                >
+                  {/* {transactionIcons[index].svg} */}
+                  <span className="flex-1 ms-3 whitespace-nowrap">
+                    {/* {transaction.name} */}
+                    System Configuration
+                  </span>
+                </div>
+              </Link>
+            </li>
           </ul>
         </div>
       </aside>

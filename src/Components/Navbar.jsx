@@ -1,9 +1,14 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import companyLogo from "../assets/company-logo.gif";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import AuthContext from "../context/AuthContext";
+import { HandleSimpleNameFormat } from "./reusable-functions/NameFormatter";
 import swal2 from "sweetalert2";
 
 export function Navbar({ openSidebar, setOpenSidebar }) {
+
+  const navigate = useNavigate();
+  const user = useContext(AuthContext);
   const [profileDropdown, setProfileDropdown] = useState(false);
   const dropdownRef = useRef(null);
   const sidebarRef = useRef(null);
@@ -36,6 +41,9 @@ export function Navbar({ openSidebar, setOpenSidebar }) {
     }
   };
 
+  const navigateToHome = async () => {
+    navigate("/home");
+  };
 
   return (
     <>
@@ -67,12 +75,16 @@ export function Navbar({ openSidebar, setOpenSidebar }) {
                   ></path>
                 </svg>
               </button>
-              <a href="#" className="flex ms-2 md:me-24">
+              <div
+                className="flex ms-2 md:me-24"
+                onClick={navigateToHome}
+                style={{ cursor: "pointer" }}
+              >
                 <img src={companyLogo} className="h-8 me-3" alt="Logo" />
                 <span className="hidden sm:inline self-center uppercase text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">
                   Systemaide Solutions Inc.
                 </span>
-              </a>
+              </div>
             </div>
 
             <div className="flex items-center">
@@ -103,21 +115,25 @@ export function Navbar({ openSidebar, setOpenSidebar }) {
                         className="text-sm text-gray-900 dark:text-white"
                         role="none"
                       >
-                        John Doe
+                        <HandleSimpleNameFormat
+                          firstName={user?.firstName}
+                          lastName={user?.lastName}
+                        />
                       </span>
                       <p
-                        className="text-sm font-medium text-gray-900 truncate dark:text-gray-300"
+                        className="text-sm font-medium break-words text-gray-900 dark:text-gray-300"
                         role="none"
                       >
-                        neil.sims@flowbite.com
+                        {user?.email ?? "Email is not available"}
                       </p>
                     </div>
 
                     <ul className="py-1" role="none">
                       <li>
+                        {/* disabled temporarily */}
                         <a
                           href="#"
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                          className="pointer-events-none block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                           role="menuitem"
                         >
                           Settings

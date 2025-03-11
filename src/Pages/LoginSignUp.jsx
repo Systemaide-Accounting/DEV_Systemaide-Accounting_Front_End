@@ -6,7 +6,7 @@ import { useContext, useEffect } from "react";
 
 export function LoginSignUp() {
 
-  const user = useContext(AuthContext);
+  const {user} = useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {

@@ -25,6 +25,7 @@ import { useEffect } from "react";
 function App() {
 
   const user = useGetAuth();
+  const accessToken = localStorage.getItem("accessToken");
 
   const checkAuthentication = async () => {
     await checkUserExpiration();
@@ -33,11 +34,11 @@ function App() {
   useEffect(() => {
     checkAuthentication();
   }, []);
-  
+
   return (
     <>
       <Router>
-        <AuthContext.Provider value={user}>
+        <AuthContext.Provider value={{user, accessToken}}>
           <Routes>
             <Route path="/" element={<LoginSignUp />} />
             <Route element={<PrivateRoute />}>

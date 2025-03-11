@@ -1,6 +1,6 @@
-import { SimplePagination } from "./SimplePagination";
-import { SortButton } from "./SortButton";
-import rolesDataJSON from "../../sample-data/rolesData.json";
+import { SimplePagination } from "../data-table-components/SimplePagination";
+import { SortButton } from "../data-table-components/SortButton";
+import permissionsDataJSON from "../../sample-data/permissionsData.json";
 import { useEffect, useState } from "react";
 import { Button, Select, Table, TextInput } from "flowbite-react";
 import { Search, Plus, Edit, Trash } from "lucide-react";
@@ -12,71 +12,73 @@ const rowSizeOptionsJSON = JSON.stringify([
   { value: 50, label: "50" },
 ]);
 
-export function RolesDataTable() {
-  const [rolesData, setRolesData] = useState([]);
-  const [roleSearch, setRoleSearch] = useState("");
-  const [rolePage, setRolePage] = useState(1);
-  const [roleSort, setRoleSort] = useState({
-    column: "role",
+export function PermissionsDataTable() {
+  const [permissionsData, setPermissionsData] = useState([]);
+  const [permissionSearch, setPermissionSearch] = useState("");
+  const [permissionPage, setPermissionPage] = useState(1);
+  const [permissionSort, setPermissionSort] = useState({
+    column: "name",
     direction: "asc",
   });
-  const [rolesPerPage, setRolesPerPage] = useState(5);
+  const [permissionsPerPage, setPermissionsPerPage] = useState(5);
   const [rowSizeOptions, setRowSizeOptions] = useState([]);
 
   // Parse JSON data on component mount
   useEffect(() => {
     try {
-      setRolesData(rolesDataJSON);
+      setPermissionsData(permissionsDataJSON);
       setRowSizeOptions(JSON.parse(rowSizeOptionsJSON));
     } catch (error) {
       console.error("Error parsing JSON data:", error);
     }
   }, []);
 
-  // Filter and sort roles
-  const filteredRoles = rolesData
+  // Filter and sort permissions
+  const filteredPermissions = permissionsData
     .filter(
-      (role) =>
-        role.role.toLowerCase().includes(roleSearch.toLowerCase()) ||
-        role.permissions.toLowerCase().includes(roleSearch.toLowerCase())
+      (permission) =>
+        permission.name
+          .toLowerCase()
+          .includes(permissionSearch.toLowerCase()) ||
+        permission.type.toLowerCase().includes(permissionSearch.toLowerCase())
     )
     .sort((a, b) => {
-      const aValue = a[roleSort.column];
-      const bValue = b[roleSort.column];
+      const aValue = a[permissionSort.column];
+      const bValue = b[permissionSort.column];
 
-      if (roleSort.direction === "asc") {
+      if (permissionSort.direction === "asc") {
         return aValue > bValue ? 1 : -1;
       } else {
         return aValue < bValue ? 1 : -1;
       }
     });
 
-  // Pagination for roles
-  const totalRolePages = Math.max(
+  // Pagination for permissions
+  const totalPermissionPages = Math.max(
     1,
-    Math.ceil(filteredRoles.length / rolesPerPage)
+    Math.ceil(filteredPermissions.length / permissionsPerPage)
   );
-  const paginatedRoles = filteredRoles.slice(
-    (rolePage - 1) * rolesPerPage,
-    rolePage * rolesPerPage
+  const paginatedPermissions = filteredPermissions.slice(
+    (permissionPage - 1) * permissionsPerPage,
+    permissionPage * permissionsPerPage
   );
 
-  // Sort handler for roles
-  const handleRoleSort = (column) => {
-    setRoleSort({
+  // Sort handler for permissions
+  const handlePermissionSort = (column) => {
+    setPermissionSort({
       column,
       direction:
-        roleSort.column === column && roleSort.direction === "asc"
+        permissionSort.column === column && permissionSort.direction === "asc"
           ? "desc"
           : "asc",
     });
   };
 
   // Handle row size change
-  const handleRoleRowSizeChange = (e) => {
+  const handlePermissionRowSizeChange = (e) => {
     const newSize = Number.parseInt(e.target.value);
-    setRolesPerPage(newSize);
-    setRolePage(1); // Reset to first page when changing row size
+    setPermissionsPerPage(newSize);
+    setPermissionPage(1); // Reset to first page when changing row size
   };
 
   // Mock handlers for CRUD operations
@@ -98,23 +100,23 @@ export function RolesDataTable() {
   return (
     <div className="rounded bg-white dark:bg-gray-800 p-4 shadow">
       <div className="flex flex-col justify-between items-start mb-4 gap-4">
-        <h2 className="text-xl font-semibold">Roles</h2>
+        <h2 className="text-xl font-semibold">Permissions</h2>
         <div className="flex flex-col sm:flex-row items-center gap-2 w-full">
           <div className="relative w-full sm:flex-1">
             <TextInput
               icon={Search}
-              placeholder="Search roles..."
-              value={roleSearch}
+              placeholder="Search permissions..."
+              value={permissionSearch}
               onChange={(e) => {
-                setRoleSearch(e.target.value);
-                setRolePage(1);
+                setPermissionSearch(e.target.value);
+                setPermissionPage(1);
               }}
             />
           </div>
           <Button
             color="blue"
             className="w-full sm:w-auto"
-            onClick={() => handleCreate("role")}
+            onClick={() => handleCreate("permission")}
           >
             <Plus className="mr-2 h-4 w-4" />
             Create
@@ -128,47 +130,51 @@ export function RolesDataTable() {
             <Table.HeadCell className="w-[50px]">ID</Table.HeadCell>
             <Table.HeadCell>
               <SortButton
-                column="role"
-                currentSort={roleSort}
-                onSort={handleRoleSort}
+                column="name"
+                currentSort={permissionSort}
+                onSort={handlePermissionSort}
               >
-                Role
+                Permission
               </SortButton>
             </Table.HeadCell>
             <Table.HeadCell>
               <SortButton
-                column="users"
-                currentSort={roleSort}
-                onSort={handleRoleSort}
+                column="type"
+                currentSort={permissionSort}
+                onSort={handlePermissionSort}
               >
-                Users
+                Type
               </SortButton>
             </Table.HeadCell>
             <Table.HeadCell className="w-[100px]">Actions</Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
-            {paginatedRoles.length > 0 ? (
-              paginatedRoles.map((role) => (
+            {paginatedPermissions.length > 0 ? (
+              paginatedPermissions.map((permission) => (
                 <Table.Row
-                  key={role.id}
+                  key={permission.id}
                   className="bg-white dark:border-gray-700 dark:bg-gray-800"
                 >
-                  <Table.Cell>{role.id}</Table.Cell>
-                  <Table.Cell className="font-medium">{role.role}</Table.Cell>
-                  <Table.Cell>{role.users}</Table.Cell>
+                  <Table.Cell>{permission.id}</Table.Cell>
+                  <Table.Cell className="font-medium">
+                    {permission.name}
+                  </Table.Cell>
+                  <Table.Cell>{permission.type}</Table.Cell>
                   <Table.Cell>
                     <div className="flex items-center gap-2">
                       <Button
                         size="xs"
                         color="light"
-                        onClick={() => handleEdit(role.id, "role")}
+                        onClick={() => handleEdit(permission.id, "permission")}
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
                       <Button
                         size="xs"
                         color="failure"
-                        onClick={() => handleDelete(role.id, "role")}
+                        onClick={() =>
+                          handleDelete(permission.id, "permission")
+                        }
                       >
                         <Trash className="h-4 w-4" />
                       </Button>
@@ -179,7 +185,7 @@ export function RolesDataTable() {
             ) : (
               <Table.Row>
                 <Table.Cell colSpan={4} className="text-center py-4">
-                  No roles found
+                  No permissions found
                 </Table.Cell>
               </Table.Row>
             )}
@@ -195,8 +201,8 @@ export function RolesDataTable() {
             </span>
             <Select
               className="w-16"
-              value={rolesPerPage}
-              onChange={handleRoleRowSizeChange}
+              value={permissionsPerPage}
+              onChange={handlePermissionRowSizeChange}
             >
               {rowSizeOptions.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -206,16 +212,22 @@ export function RolesDataTable() {
             </Select>
           </div>
           <span className="text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
-            {paginatedRoles.length > 0 ? (rolePage - 1) * rolesPerPage + 1 : 0}-
-            {Math.min(rolePage * rolesPerPage, filteredRoles.length)} of{" "}
-            {filteredRoles.length}
+            {paginatedPermissions.length > 0
+              ? (permissionPage - 1) * permissionsPerPage + 1
+              : 0}
+            -
+            {Math.min(
+              permissionPage * permissionsPerPage,
+              filteredPermissions.length
+            )}{" "}
+            of {filteredPermissions.length}
           </span>
         </div>
         <div className="flex items-center mt-2 sm:mt-0">
           <SimplePagination
-            currentPage={rolePage}
-            totalPages={totalRolePages}
-            onPageChange={setRolePage}
+            currentPage={permissionPage}
+            totalPages={totalPermissionPages}
+            onPageChange={setPermissionPage}
           />
         </div>
       </div>

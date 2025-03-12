@@ -37,6 +37,7 @@ export function Navbar({ openSidebar, setOpenSidebar }) {
     });
     if(response.isConfirmed) {
       localStorage.clear();
+      // navigate("/");
       window.location.href = import.meta.env.VITE_SYSTEMAIDE_LOGIN;
     }
   };

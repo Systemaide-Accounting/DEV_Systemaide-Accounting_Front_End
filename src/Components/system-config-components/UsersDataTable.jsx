@@ -1,11 +1,10 @@
 import { SimplePagination } from "../data-table-components/SimplePagination";
 import { SortButton } from "../data-table-components/SortButton";
 // import usersDataJSON from "../../sample-data/usersData.json";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Label, Modal, Select, Table, TextInput } from "flowbite-react";
 import { Search, Plus, Edit, Trash } from "lucide-react";
 import { getAllUsers } from "../../services/systemaideService";
-import AuthContext from "../../context/AuthContext";
 
 const rowSizeOptionsJSON = JSON.stringify([
   { value: 5, label: "5" },
@@ -15,7 +14,7 @@ const rowSizeOptionsJSON = JSON.stringify([
 ]);
 
 export function UsersDataTable() {
-  const { accessToken } = useContext(AuthContext);
+  // const { accessToken } = useContext(AuthContext);
   const [usersData, setUsersData] = useState([]);
   const [userSearch, setUserSearch] = useState("");
   const [userPage, setUserPage] = useState(1);
@@ -35,7 +34,7 @@ export function UsersDataTable() {
 
   const fetchData = async () => {
     try {
-      const response = await getAllUsers(accessToken);
+      const response = await getAllUsers();
       if (!response?.success) console.log(response?.message);
       // const usersDataJSON = response?.data;
       setUsersData(response?.data);
@@ -125,7 +124,7 @@ export function UsersDataTable() {
     (userPage - 1) * usersPerPage,
     userPage * usersPerPage
   );
-
+  
   return (
     <>
       {/* Data Table */}

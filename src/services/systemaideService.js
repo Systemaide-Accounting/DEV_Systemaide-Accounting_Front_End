@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const SYSTEMAIDE_API_BASE_URL = import.meta.env.VITE_SYSTEMAIDE_BE_API;
+const accessToken = localStorage.getItem("accessToken");
 
 const createSystemaideApiService = (token) => {
   return axios.create({
@@ -17,7 +18,7 @@ const authenticateSystemaideApiService = async (token) => {
   return apiService;
 };
 
-export const getAllUsers = async (accessToken) => {
+export const getAllUsers = async () => {
   try {    
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
     const response = await authenticatedApiService.get("/users");

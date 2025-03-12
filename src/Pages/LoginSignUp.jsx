@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import companyLogo from "../assets/company-logo.gif";
 import { LoginForm } from "../Components/login-signup-components/LoginForm";
 import AuthContext from "../context/AuthContext";
@@ -6,12 +5,11 @@ import { useContext, useEffect } from "react";
 
 export function LoginSignUp() {
 
-  const user = useContext(AuthContext);
-  const navigate = useNavigate();
+  const {user} = useContext(AuthContext);
 
   useEffect(() => {
     if (user) {
-      navigate(-1);
+      window.location.href = import.meta.env.VITE_SYSTEMAIDE_MAIN_URL + "#/home";
     }
   }, []);
   

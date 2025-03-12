@@ -1,6 +1,4 @@
 import companyLogo from "../assets/company-logo.gif"
-import { useContext } from "react";
-import AuthContext from "../context/AuthContext";
 
 export function Home() {
 

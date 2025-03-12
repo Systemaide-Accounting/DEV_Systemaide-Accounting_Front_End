@@ -1,6 +1,6 @@
 // import "./App.css";
 import "./index.css"
-import { Navigate, Route, HashRouter as Router, Routes } from "react-router-dom";
+import { Route, HashRouter as Router, Routes } from "react-router-dom";
 import { PrivateRoute } from "./Components/PrivateRoute";
 import AuthContext from "./context/AuthContext";
 import useGetAuth from "./hooks/useGetAuth";
@@ -24,7 +24,7 @@ import { useEffect } from "react";
 
 function App() {
 
-  const user = useGetAuth();
+  const user = useGetAuth();  
 
   const checkAuthentication = async () => {
     await checkUserExpiration();
@@ -33,11 +33,11 @@ function App() {
   useEffect(() => {
     checkAuthentication();
   }, []);
-  
+
   return (
     <>
       <Router>
-        <AuthContext.Provider value={user}>
+        <AuthContext.Provider value={{user}}>
           <Routes>
             <Route path="/" element={<LoginSignUp />} />
             <Route element={<PrivateRoute />}>

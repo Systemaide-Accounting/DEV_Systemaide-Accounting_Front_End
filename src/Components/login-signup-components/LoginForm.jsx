@@ -1,11 +1,9 @@
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useState } from "react";
 import { signIn } from "../../services/authService";
-import { useNavigate } from "react-router-dom";
 
 export function LoginForm() {
 
-    const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const togglePasswordVisibility = () => setShowPassword(!showPassword);
@@ -31,7 +29,12 @@ export function LoginForm() {
       // const response = await signIn(formData);
       if (response?.success) {
         setIsLoading(false);  
-        navigate("/home");
+        // navigate("/home");
+        const url = import.meta.env.VITE_SYSTEMAIDE_MAIN_URL + "home";
+        console.log(url);
+        
+        // window.location.replace(url);
+        window.location.href = import.meta.env.VITE_SYSTEMAIDE_MAIN_URL;
       }
     };
 

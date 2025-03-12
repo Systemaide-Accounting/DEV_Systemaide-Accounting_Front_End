@@ -8,7 +8,7 @@ import swal2 from "sweetalert2";
 export function Navbar({ openSidebar, setOpenSidebar }) {
 
   const navigate = useNavigate();
-  const user = useContext(AuthContext);
+  const {user} = useContext(AuthContext);
   const [profileDropdown, setProfileDropdown] = useState(false);
   const dropdownRef = useRef(null);
   const sidebarRef = useRef(null);
@@ -37,6 +37,7 @@ export function Navbar({ openSidebar, setOpenSidebar }) {
     });
     if(response.isConfirmed) {
       localStorage.clear();
+      // navigate("/");
       window.location.href = import.meta.env.VITE_SYSTEMAIDE_LOGIN;
     }
   };

@@ -1,6 +1,6 @@
-import { SimplePagination } from "./SimplePagination";
-import { SortButton } from "./SortButton";
-import usersDataJSON from "../../sample-data/usersData.json";
+import { SimplePagination } from "../data-table-components/SimplePagination";
+import { SortButton } from "../data-table-components/SortButton";
+import rolesDataJSON from "../../sample-data/rolesData.json";
 import { useEffect, useState } from "react";
 import { Button, Select, Table, TextInput } from "flowbite-react";
 import { Search, Plus, Edit, Trash } from "lucide-react";
@@ -12,73 +12,74 @@ const rowSizeOptionsJSON = JSON.stringify([
   { value: 50, label: "50" },
 ]);
 
-export function UsersDataTable() {
-  const [usersData, setUsersData] = useState([]);
-  const [userSearch, setUserSearch] = useState("");
-  const [userPage, setUserPage] = useState(1);
-  const [userSort, setUserSort] = useState({
-    column: "name",
+export function RolesDataTable() {
+  const [rolesData, setRolesData] = useState([]);
+  const [roleSearch, setRoleSearch] = useState("");
+  const [rolePage, setRolePage] = useState(1);
+  const [roleSort, setRoleSort] = useState({
+    column: "role",
     direction: "asc",
   });
-  const [usersPerPage, setUsersPerPage] = useState(5);
+  const [rolesPerPage, setRolesPerPage] = useState(5);
   const [rowSizeOptions, setRowSizeOptions] = useState([]);
 
   // Parse JSON data on component mount
   useEffect(() => {
     try {
-      setUsersData(usersDataJSON);
+      setRolesData(rolesDataJSON);
       setRowSizeOptions(JSON.parse(rowSizeOptionsJSON));
     } catch (error) {
       console.error("Error parsing JSON data:", error);
     }
   }, []);
 
-  const filteredUsers = usersData
+  // Filter and sort roles
+  const filteredRoles = rolesData
     .filter(
-      (user) =>
-        user.name.toLowerCase().includes(userSearch.toLowerCase()) ||
-        user.email.toLowerCase().includes(userSearch.toLowerCase()) ||
-        user.status.toLowerCase().includes(userSearch.toLowerCase())
+      (role) =>
+        role.role.toLowerCase().includes(roleSearch.toLowerCase()) ||
+        role.permissions.toLowerCase().includes(roleSearch.toLowerCase())
     )
     .sort((a, b) => {
-      const aValue = a[userSort.column];
-      const bValue = b[userSort.column];
+      const aValue = a[roleSort.column];
+      const bValue = b[roleSort.column];
 
-      if (userSort.direction === "asc") {
+      if (roleSort.direction === "asc") {
         return aValue > bValue ? 1 : -1;
       } else {
         return aValue < bValue ? 1 : -1;
       }
     });
 
-  // Pagination for users
-  const totalUserPages = Math.max(
+  // Pagination for roles
+  const totalRolePages = Math.max(
     1,
-    Math.ceil(filteredUsers.length / usersPerPage)
+    Math.ceil(filteredRoles.length / rolesPerPage)
   );
-  const paginatedUsers = filteredUsers.slice(
-    (userPage - 1) * usersPerPage,
-    userPage * usersPerPage
+  const paginatedRoles = filteredRoles.slice(
+    (rolePage - 1) * rolesPerPage,
+    rolePage * rolesPerPage
   );
 
-  // Sort handler for users
-  const handleUserSort = (column) => {
-    setUserSort({
+  // Sort handler for roles
+  const handleRoleSort = (column) => {
+    setRoleSort({
       column,
       direction:
-        userSort.column === column && userSort.direction === "asc"
+        roleSort.column === column && roleSort.direction === "asc"
           ? "desc"
           : "asc",
     });
   };
 
   // Handle row size change
-  const handleUserRowSizeChange = (e) => {
+  const handleRoleRowSizeChange = (e) => {
     const newSize = Number.parseInt(e.target.value);
-    setUsersPerPage(newSize);
-    setUserPage(1); // Reset to first page when changing row size
+    setRolesPerPage(newSize);
+    setRolePage(1); // Reset to first page when changing row size
   };
 
+  // Mock handlers for CRUD operations
   const handleEdit = (id, type) => {
     console.log(`Edit ${type} with ID: ${id}`);
     // In a real app, this would open a modal or navigate to an edit page
@@ -95,26 +96,25 @@ export function UsersDataTable() {
   };
 
   return (
-    // Data Table
-    <div className="mb-4 rounded bg-white dark:bg-gray-800 p-4 shadow">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
-        <h2 className="text-xl font-semibold">Users</h2>
-        <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
-          <div className="relative w-full sm:w-64">
+    <div className="rounded bg-white dark:bg-gray-800 p-4 shadow">
+      <div className="flex flex-col justify-between items-start mb-4 gap-4">
+        <h2 className="text-xl font-semibold">Roles</h2>
+        <div className="flex flex-col sm:flex-row items-center gap-2 w-full">
+          <div className="relative w-full sm:flex-1">
             <TextInput
               icon={Search}
-              placeholder="Search users..."
-              value={userSearch}
+              placeholder="Search roles..."
+              value={roleSearch}
               onChange={(e) => {
-                setUserSearch(e.target.value);
-                setUserPage(1);
+                setRoleSearch(e.target.value);
+                setRolePage(1);
               }}
             />
           </div>
           <Button
             color="blue"
             className="w-full sm:w-auto"
-            onClick={() => handleCreate("user")}
+            onClick={() => handleCreate("role")}
           >
             <Plus className="mr-2 h-4 w-4" />
             Create
@@ -125,73 +125,50 @@ export function UsersDataTable() {
       <div className="overflow-x-auto" style={{ minHeight: "200px" }}>
         <Table hoverable striped>
           <Table.Head>
-            <Table.HeadCell className="w-[60px]">ID</Table.HeadCell>
+            <Table.HeadCell className="w-[50px]">ID</Table.HeadCell>
             <Table.HeadCell>
               <SortButton
-                column="name"
-                currentSort={userSort}
-                onSort={handleUserSort}
+                column="role"
+                currentSort={roleSort}
+                onSort={handleRoleSort}
               >
-                Name
+                Role
               </SortButton>
             </Table.HeadCell>
             <Table.HeadCell>
               <SortButton
-                column="email"
-                currentSort={userSort}
-                onSort={handleUserSort}
+                column="users"
+                currentSort={roleSort}
+                onSort={handleRoleSort}
               >
-                Email
-              </SortButton>
-            </Table.HeadCell>
-            <Table.HeadCell>
-              <SortButton
-                column="status"
-                currentSort={userSort}
-                onSort={handleUserSort}
-              >
-                Status
-              </SortButton>
-            </Table.HeadCell>
-            <Table.HeadCell>
-              <SortButton
-                column="lastLogin"
-                currentSort={userSort}
-                onSort={handleUserSort}
-              >
-                Last Login
+                Users
               </SortButton>
             </Table.HeadCell>
             <Table.HeadCell className="w-[100px]">Actions</Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
-            {paginatedUsers.length > 0 ? (
-              paginatedUsers.map((user) => (
+            {paginatedRoles.length > 0 ? (
+              paginatedRoles.map((role) => (
                 <Table.Row
-                  key={user.id}
+                  key={role.id}
                   className="bg-white dark:border-gray-700 dark:bg-gray-800"
                 >
-                  <Table.Cell>{user.id}</Table.Cell>
-                  <Table.Cell>{user.name}</Table.Cell>
-                  <Table.Cell>{user.email}</Table.Cell>
-                  <Table.Cell className="text-green-400">
-                    {/* <span>{user.status}</span> */}
-                    {user.status}
-                  </Table.Cell>
-                  <Table.Cell>{user.lastLogin}</Table.Cell>
+                  <Table.Cell>{role.id}</Table.Cell>
+                  <Table.Cell className="font-medium">{role.role}</Table.Cell>
+                  <Table.Cell>{role.users}</Table.Cell>
                   <Table.Cell>
                     <div className="flex items-center gap-2">
                       <Button
                         size="xs"
                         color="light"
-                        onClick={() => handleEdit(user.id, "user")}
+                        onClick={() => handleEdit(role.id, "role")}
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
                       <Button
                         size="xs"
                         color="failure"
-                        onClick={() => handleDelete(user.id, "user")}
+                        onClick={() => handleDelete(role.id, "role")}
                       >
                         <Trash className="h-4 w-4" />
                       </Button>
@@ -201,8 +178,8 @@ export function UsersDataTable() {
               ))
             ) : (
               <Table.Row>
-                <Table.Cell colSpan={6} className="text-center py-4">
-                  No users found
+                <Table.Cell colSpan={4} className="text-center py-4">
+                  No roles found
                 </Table.Cell>
               </Table.Row>
             )}
@@ -218,8 +195,8 @@ export function UsersDataTable() {
             </span>
             <Select
               className="w-16"
-              value={usersPerPage}
-              onChange={handleUserRowSizeChange}
+              value={rolesPerPage}
+              onChange={handleRoleRowSizeChange}
             >
               {rowSizeOptions.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -229,16 +206,16 @@ export function UsersDataTable() {
             </Select>
           </div>
           <span className="text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
-            {paginatedUsers.length > 0 ? (userPage - 1) * usersPerPage + 1 : 0}-
-            {Math.min(userPage * usersPerPage, filteredUsers.length)} of{" "}
-            {filteredUsers.length}
+            {paginatedRoles.length > 0 ? (rolePage - 1) * rolesPerPage + 1 : 0}-
+            {Math.min(rolePage * rolesPerPage, filteredRoles.length)} of{" "}
+            {filteredRoles.length}
           </span>
         </div>
         <div className="flex items-center mt-2 sm:mt-0">
           <SimplePagination
-            currentPage={userPage}
-            totalPages={totalUserPages}
-            onPageChange={setUserPage}
+            currentPage={rolePage}
+            totalPages={totalRolePages}
+            onPageChange={setRolePage}
           />
         </div>
       </div>

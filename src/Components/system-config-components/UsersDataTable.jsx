@@ -32,21 +32,25 @@ export function UsersDataTable() {
     password: "",
   });
 
-  const fetchData = async () => {
+  const fetchAllUsers = async () => {
     try {
       const response = await getAllUsers();
       if (!response?.success) console.log(response?.message);
       // const usersDataJSON = response?.data;
       setUsersData(response?.data);
     } catch (error) {
-      console.error("Error parsing JSON data:", error);
+      console.error("Error fetching Users:", error);
     }
   };
 
   // Parse JSON data on component mount
   useEffect(() => {
-    fetchData();    
-    setRowSizeOptions(JSON.parse(rowSizeOptionsJSON));
+    try {
+      fetchAllUsers();
+      setRowSizeOptions(JSON.parse(rowSizeOptionsJSON));
+    } catch (error) {
+      console.error("Error parsing JSON data:", error);
+    }
   }, []);
 
   // Sort handler for users

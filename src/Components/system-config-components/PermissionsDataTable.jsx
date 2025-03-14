@@ -4,6 +4,7 @@ import permissionsDataJSON from "../../sample-data/permissionsData.json";
 import { useEffect, useState } from "react";
 import { Button, Select, Table, TextInput } from "flowbite-react";
 import { Search, Plus, Edit, Trash } from "lucide-react";
+import { getAllPermissions } from "../../services/systemaideService";
 
 const rowSizeOptionsJSON = JSON.stringify([
   { value: 5, label: "5" },
@@ -23,45 +24,26 @@ export function PermissionsDataTable() {
   const [permissionsPerPage, setPermissionsPerPage] = useState(5);
   const [rowSizeOptions, setRowSizeOptions] = useState([]);
 
+  const fetchAllPermissions = async () => {
+    try {
+      const response = await getAllPermissions();
+      if (!response?.success) console.log(response?.message);
+      setPermissionsData(response?.data);
+    } catch (error) {
+      console.error("Error fetching permissions:", error);
+    }
+  };
+
   // Parse JSON data on component mount
   useEffect(() => {
     try {
-      setPermissionsData(permissionsDataJSON);
+      fetchAllPermissions();
+      // setPermissionsData(permissionsDataJSON);
       setRowSizeOptions(JSON.parse(rowSizeOptionsJSON));
     } catch (error) {
       console.error("Error parsing JSON data:", error);
     }
   }, []);
-
-  // Filter and sort permissions
-  const filteredPermissions = permissionsData
-    .filter(
-      (permission) =>
-        permission.name
-          .toLowerCase()
-          .includes(permissionSearch.toLowerCase()) ||
-        permission.type.toLowerCase().includes(permissionSearch.toLowerCase())
-    )
-    .sort((a, b) => {
-      const aValue = a[permissionSort.column];
-      const bValue = b[permissionSort.column];
-
-      if (permissionSort.direction === "asc") {
-        return aValue > bValue ? 1 : -1;
-      } else {
-        return aValue < bValue ? 1 : -1;
-      }
-    });
-
-  // Pagination for permissions
-  const totalPermissionPages = Math.max(
-    1,
-    Math.ceil(filteredPermissions.length / permissionsPerPage)
-  );
-  const paginatedPermissions = filteredPermissions.slice(
-    (permissionPage - 1) * permissionsPerPage,
-    permissionPage * permissionsPerPage
-  );
 
   // Sort handler for permissions
   const handlePermissionSort = (column) => {
@@ -96,6 +78,34 @@ export function PermissionsDataTable() {
     console.log(`Create new ${type}`);
     // In a real app, this would open a modal or navigate to a create page
   };
+
+  // Filter and sort permissions
+  const filteredPermissions = permissionsData
+    .filter(
+      (permission) =>
+        (permission?.name?.toLowerCase() || "").includes(permissionSearch.toLowerCase()) ||
+        (permission?.description?.toLowerCase() || "").includes(permissionSearch.toLowerCase())
+    )
+    .sort((a, b) => {
+      const aValue = a[permissionSort.column];
+      const bValue = b[permissionSort.column];
+
+      if (permissionSort.direction === "asc") {
+        return aValue > bValue ? 1 : -1;
+      } else {
+        return aValue < bValue ? 1 : -1;
+      }
+    });
+
+  // Pagination for permissions
+  const totalPermissionPages = Math.max(
+    1,
+    Math.ceil(filteredPermissions.length / permissionsPerPage)
+  );
+  const paginatedPermissions = filteredPermissions.slice(
+    (permissionPage - 1) * permissionsPerPage,
+    permissionPage * permissionsPerPage
+  );
 
   return (
     <div className="rounded bg-white dark:bg-gray-800 p-4 shadow">
@@ -138,28 +148,22 @@ export function PermissionsDataTable() {
               </SortButton>
             </Table.HeadCell>
             <Table.HeadCell>
-              <SortButton
-                column="type"
-                currentSort={permissionSort}
-                onSort={handlePermissionSort}
-              >
-                Type
-              </SortButton>
+              Description
             </Table.HeadCell>
             <Table.HeadCell className="w-[100px]">Actions</Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
             {paginatedPermissions.length > 0 ? (
-              paginatedPermissions.map((permission) => (
+              paginatedPermissions.map((permission, index) => (
                 <Table.Row
-                  key={permission.id}
+                  key={index + 1}
                   className="bg-white dark:border-gray-700 dark:bg-gray-800"
                 >
-                  <Table.Cell>{permission.id}</Table.Cell>
+                  <Table.Cell>{(permissionPage -1) * permissionsPerPage + index + 1}</Table.Cell>
                   <Table.Cell className="font-medium">
-                    {permission.name}
+                    {permission?.name}
                   </Table.Cell>
-                  <Table.Cell>{permission.type}</Table.Cell>
+                  <Table.Cell>{permission?.description}</Table.Cell>
                   <Table.Cell>
                     <div className="flex items-center gap-2">
                       <Button

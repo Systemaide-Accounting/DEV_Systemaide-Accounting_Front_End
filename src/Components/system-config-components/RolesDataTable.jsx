@@ -4,6 +4,7 @@ import rolesDataJSON from "../../sample-data/rolesData.json";
 import { useEffect, useState } from "react";
 import { Button, Select, Table, TextInput } from "flowbite-react";
 import { Search, Plus, Edit, Trash } from "lucide-react";
+import { getAllRoles } from "../../services/systemaideService";
 
 const rowSizeOptionsJSON = JSON.stringify([
   { value: 5, label: "5" },
@@ -17,49 +18,32 @@ export function RolesDataTable() {
   const [roleSearch, setRoleSearch] = useState("");
   const [rolePage, setRolePage] = useState(1);
   const [roleSort, setRoleSort] = useState({
-    column: "role",
+    column: "name",
     direction: "asc",
   });
   const [rolesPerPage, setRolesPerPage] = useState(5);
   const [rowSizeOptions, setRowSizeOptions] = useState([]);
 
+  const fetchAllRoles = async () => {
+    try {
+      const response = await getAllRoles();
+      if (!response?.success) console.log(response?.message);
+      setRolesData(response?.data);
+    } catch (error) {
+      console.error("Error fetching roles:", error);
+    }
+  };
+
   // Parse JSON data on component mount
   useEffect(() => {
     try {
-      setRolesData(rolesDataJSON);
+      fetchAllRoles();
+      // setRolesData(rolesDataJSON);
       setRowSizeOptions(JSON.parse(rowSizeOptionsJSON));
     } catch (error) {
       console.error("Error parsing JSON data:", error);
     }
   }, []);
-
-  // Filter and sort roles
-  const filteredRoles = rolesData
-    .filter(
-      (role) =>
-        role.role.toLowerCase().includes(roleSearch.toLowerCase()) ||
-        role.permissions.toLowerCase().includes(roleSearch.toLowerCase())
-    )
-    .sort((a, b) => {
-      const aValue = a[roleSort.column];
-      const bValue = b[roleSort.column];
-
-      if (roleSort.direction === "asc") {
-        return aValue > bValue ? 1 : -1;
-      } else {
-        return aValue < bValue ? 1 : -1;
-      }
-    });
-
-  // Pagination for roles
-  const totalRolePages = Math.max(
-    1,
-    Math.ceil(filteredRoles.length / rolesPerPage)
-  );
-  const paginatedRoles = filteredRoles.slice(
-    (rolePage - 1) * rolesPerPage,
-    rolePage * rolesPerPage
-  );
 
   // Sort handler for roles
   const handleRoleSort = (column) => {
@@ -95,6 +79,38 @@ export function RolesDataTable() {
     // In a real app, this would open a modal or navigate to a create page
   };
 
+  // Filter and sort roles
+  const filteredRoles = rolesData
+    .filter((role) => {
+      const roleNameMatches = (role?.name?.toLowerCase() || "").includes(
+        roleSearch.toLowerCase()
+      );
+      const permissionsMatch = role?.permissions?.some((permission) =>
+        permission?.name?.toLowerCase().includes(roleSearch.toLowerCase())
+      );
+      return roleNameMatches || permissionsMatch;
+    })
+    .sort((a, b) => {
+      const aValue = a[roleSort.column]?.toString().toLowerCase() || "";
+      const bValue = b[roleSort.column]?.toString().toLowerCase() || "";
+
+      if (roleSort.direction === "asc") {
+        return aValue > bValue ? 1 : -1;
+      } else {
+        return aValue < bValue ? 1 : -1;
+      }
+    });
+
+  // Pagination for roles
+  const totalRolePages = Math.max(
+    1,
+    Math.ceil(filteredRoles.length / rolesPerPage)
+  );
+  const paginatedRoles = filteredRoles.slice(
+    (rolePage - 1) * rolesPerPage,
+    rolePage * rolesPerPage
+  );
+
   return (
     <div className="rounded bg-white dark:bg-gray-800 p-4 shadow">
       <div className="flex flex-col justify-between items-start mb-4 gap-4">
@@ -128,34 +144,32 @@ export function RolesDataTable() {
             <Table.HeadCell className="w-[50px]">ID</Table.HeadCell>
             <Table.HeadCell>
               <SortButton
-                column="role"
+                column="name"
                 currentSort={roleSort}
                 onSort={handleRoleSort}
               >
                 Role
               </SortButton>
             </Table.HeadCell>
-            <Table.HeadCell>
-              <SortButton
-                column="users"
-                currentSort={roleSort}
-                onSort={handleRoleSort}
-              >
-                Users
-              </SortButton>
-            </Table.HeadCell>
+            <Table.HeadCell>Permissions</Table.HeadCell>
             <Table.HeadCell className="w-[100px]">Actions</Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
             {paginatedRoles.length > 0 ? (
-              paginatedRoles.map((role) => (
+              paginatedRoles.map((role, index) => (
                 <Table.Row
-                  key={role.id}
+                  key={index + 1}
                   className="bg-white dark:border-gray-700 dark:bg-gray-800"
                 >
-                  <Table.Cell>{role.id}</Table.Cell>
-                  <Table.Cell className="font-medium">{role.role}</Table.Cell>
-                  <Table.Cell>{role.users}</Table.Cell>
+                  <Table.Cell>
+                    {(rolePage - 1) * rolesPerPage + index + 1}
+                  </Table.Cell>
+                  <Table.Cell className="font-medium">{role?.name}</Table.Cell>
+                  <Table.Cell>
+                    {role?.permissions
+                      ?.map((permission) => permission?.name)
+                      .join(", ")}
+                  </Table.Cell>
                   <Table.Cell>
                     <div className="flex items-center gap-2">
                       <Button

@@ -29,9 +29,9 @@ export const getAllUsers = async () => {
   }
 };
 
-export const createUser = async (accessToken, user, data) => {
+export const createUser = async (data) => {
   try {
-    const authenticatedApiService = await authenticateSystemaideApiService();
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
     const response = await authenticatedApiService.post("/users", data);
 
     return response?.data;
@@ -40,4 +40,25 @@ export const createUser = async (accessToken, user, data) => {
     // return error?.response?.data;
   }
 };
-// CONTINUE FROM HERE ...
+
+export const getAllRoles = async () => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.get("/roles");
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const getAllPermissions = async () => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.get("/permissions");
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};

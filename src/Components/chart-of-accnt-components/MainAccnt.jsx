@@ -23,16 +23,14 @@ export function MainAccnt() {
         item.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const handleEdit = (e, item) => {
-        e.stopPropagation();
-        console.log("Edit item:", item);
+    const handleEdit = (id) => {
+        console.log("Edit item:", id);
         // Implement edit functionality here
     };
 
-    const handleDelete = (e, item) => {
-    e.stopPropagation();
-    console.log("Delete item:", item);
-    // Implement delete functionality here
+    const handleDelete = (id) => {
+      console.log("Delete item:", id);
+      // Implement delete functionality here
     };
 
     const handleAccountClick = (account) => {
@@ -92,13 +90,13 @@ export function MainAccnt() {
                     <td className="px-4 py-2">{item.name}</td>
                     <td className="px-4 py-2">
                       <button
-                        onClick={(e) => handleEdit(e, item)}
+                        onClick={() => handleEdit(item?.id)}
                         className="text-blue-600 hover:text-blue-800 mr-2"
                       >
                         <Edit size={18} />
                       </button>
                       <button
-                        onClick={(e) => handleDelete(e, item)}
+                        onClick={() => handleDelete(item?.id)}
                         className="text-red-600 hover:text-red-800"
                       >
                         <Trash2 size={18} />

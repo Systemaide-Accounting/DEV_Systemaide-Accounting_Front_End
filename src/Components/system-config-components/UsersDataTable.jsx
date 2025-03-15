@@ -1,10 +1,13 @@
 import { SimplePagination } from "../data-table-components/SimplePagination";
 import { SortButton } from "../data-table-components/SortButton";
 // import usersDataJSON from "../../sample-data/usersData.json";
-import { useEffect, useState } from "react";
-import { Button, Label, Modal, Select, Table, TextInput } from "flowbite-react";
+import { useContext, useEffect, useState } from "react";
+import { Button, Select, Table, TextInput } from "flowbite-react";
 import { Search, Plus, Edit, Trash } from "lucide-react";
-import { getAllUsers } from "../../services/systemaideService";
+import { getAllUsers, deleteUser, getUserById } from "../../services/systemaideService";
+import swal2 from "sweetalert2";
+import { UserModalForm } from "./UserModalForm";
+import AuthContext from "../../context/AuthContext";
 
 const rowSizeOptionsJSON = JSON.stringify([
   { value: 5, label: "5" },
@@ -14,7 +17,8 @@ const rowSizeOptionsJSON = JSON.stringify([
 ]);
 
 export function UsersDataTable() {
-  // const { accessToken } = useContext(AuthContext);
+  
+  const { user } = useContext(AuthContext);
   const [usersData, setUsersData] = useState([]);
   const [userSearch, setUserSearch] = useState("");
   const [userPage, setUserPage] = useState(1);
@@ -24,29 +28,35 @@ export function UsersDataTable() {
   });
   const [usersPerPage, setUsersPerPage] = useState(5);
   const [rowSizeOptions, setRowSizeOptions] = useState([]);
+  const [userData, setUserData] = useState(null);
   const [openModal, setOpenModal] = useState(false);
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-  });
 
-  const fetchData = async () => {
+  const fetchAllUsers = async () => {
     try {
       const response = await getAllUsers();
       if (!response?.success) console.log(response?.message);
       // const usersDataJSON = response?.data;
       setUsersData(response?.data);
     } catch (error) {
-      console.error("Error parsing JSON data:", error);
+      console.error("Error fetching Users:", error);
     }
   };
 
   // Parse JSON data on component mount
   useEffect(() => {
-    fetchData();    
-    setRowSizeOptions(JSON.parse(rowSizeOptionsJSON));
+    try {
+      fetchAllUsers();
+      // fetchAllRoles();
+      setRowSizeOptions(JSON.parse(rowSizeOptionsJSON));
+    } catch (error) {
+      console.error("Error parsing JSON data:", error);
+    }
+  }, []);
+
+  // Fetch users every 3 seconds
+  useEffect(() => {
+    const intervalId = setInterval(fetchAllUsers, 3000);
+    return () => clearInterval(intervalId); // Cleanup interval on component unmount
   }, []);
 
   // Sort handler for users
@@ -67,29 +77,51 @@ export function UsersDataTable() {
     setUserPage(1); // Reset to first page when changing row size
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleEdit = (id, type) => {
-    console.log(`Edit ${type} with ID: ${id}`);
-    // In a real app, this would open a modal or navigate to an edit page
-  };
-
-  const handleDelete = (id, type) => {
-    console.log(`Delete ${type} with ID: ${id}`);
+  const handleDelete = async (id) => {
+    console.log(`Delete user with ID: ${id}`);
+    await swal2.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "No, cancel!",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          // const response = await deleteUser(id);
+          const response = await deleteUser(id);
+          if(response?.success) {
+            await fetchAllUsers();
+            await swal2.fire("Deleted!", "User has been deleted.", "success");
+          } else {
+            await swal2.fire("Error!", "User could not be deleted.", "error");
+          }
+        } catch (error) {
+          // console.error("Error deleting User:", error);
+          await swal2.fire("Error!", "User could not be deleted.", "error");
+        }
+      }
+    });
     // In a real app, this would show a confirmation dialog
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(formData);
+  const handleAddUserModalForm = () => {
+    setUserData(null);
+    setOpenModal(true);
+  };
 
-    setOpenModal(false);
+  const handleEditUserModalForm = async (id) => {
+    try {
+      const response = await getUserById(id);
+      if (!response?.success) console.log(response?.message);
+      setUserData(response?.data);
+      setOpenModal(true);
+    } catch (error) {
+      console.error("Error fetching User:", error);
+    }
   };
 
   usersData.map((user) => {
@@ -146,7 +178,7 @@ export function UsersDataTable() {
             <Button
               color="blue"
               className="w-full sm:w-auto"
-              onClick={() => setOpenModal(true)}
+              onClick={() => handleAddUserModalForm()}
             >
               <Plus className="mr-2 h-4 w-4" />
               Add
@@ -198,18 +230,20 @@ export function UsersDataTable() {
             </Table.Head>
             <Table.Body className="divide-y">
               {paginatedUsers.length > 0 ? (
-                paginatedUsers.map((user, index) => (
+                paginatedUsers.map((userItem, index) => (
                   <Table.Row
                     key={index + 1}
                     className="bg-white dark:border-gray-700 dark:bg-gray-800"
                   >
-                    <Table.Cell>{(userPage - 1) * usersPerPage + index + 1}</Table.Cell>
+                    <Table.Cell>
+                      {(userPage - 1) * usersPerPage + index + 1}
+                    </Table.Cell>
                     {/* <Table.Cell>{user.firstName}{" "}{user.lastName}</Table.Cell> */}
-                    <Table.Cell>{user.name}</Table.Cell>
-                    <Table.Cell>{user.email}</Table.Cell>
+                    <Table.Cell>{userItem?.name}</Table.Cell>
+                    <Table.Cell>{userItem?.email}</Table.Cell>
                     <Table.Cell className="text-green-400">
                       {/* <span>{user.status}</span> */}
-                      {user.status}
+                      {userItem?.status}
                     </Table.Cell>
                     {/* <Table.Cell>{user.lastLogin}</Table.Cell> */}
                     <Table.Cell>
@@ -217,17 +251,20 @@ export function UsersDataTable() {
                         <Button
                           size="xs"
                           color="light"
-                          onClick={() => handleEdit(user.id, "user")}
+                          onClick={() => handleEditUserModalForm(userItem?._id)}
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button
-                          size="xs"
-                          color="failure"
-                          onClick={() => handleDelete(user.id, "user")}
-                        >
-                          <Trash className="h-4 w-4" />
-                        </Button>
+
+                        {user?._id !== userItem?._id && (
+                          <Button
+                            size="xs"
+                            color="failure"
+                            onClick={() => handleDelete(userItem?._id)}
+                          >
+                            <Trash className="h-4 w-4" />
+                          </Button>
+                        )}
                       </div>
                     </Table.Cell>
                   </Table.Row>
@@ -280,75 +317,11 @@ export function UsersDataTable() {
       </div>
 
       {/* Modal for CRUD */}
-      <Modal dismissible show={openModal} onClose={() => setOpenModal(false)}>
-        <Modal.Header>Add New User</Modal.Header>
-        <Modal.Body>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="firstName" value="First Name" />
-              </div>
-              <TextInput
-                id="firstName"
-                name="firstName"
-                type="text"
-                placeholder="Enter first name"
-                required={true}
-                // value={accountName}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="lastName" value="Last Name" />
-              </div>
-              <TextInput
-                id="lastName"
-                name="lastName"
-                type="text"
-                placeholder="Enter last name"
-                required={true}
-                // value={accountCode}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="email" value="Email" />
-              </div>
-              <TextInput
-                id="email"
-                name="email"
-                type="text"
-                placeholder="Enter email"
-                required={true}
-                // value={accountCode}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="password" value="Password" />
-              </div>
-              <TextInput
-                id="password"
-                name="password"
-                type="password"
-                placeholder="Enter password"
-                required={true}
-                // value={accountCode}
-                onChange={handleChange}
-              />
-            </div>
-            <button
-              type="submit"
-              className="flex items-center justify-center text-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-300"
-            >
-              Add
-            </button>
-          </form>
-        </Modal.Body>
-      </Modal>
+      <UserModalForm
+        openModal={openModal}
+        setOpenModal={setOpenModal}
+        userData={userData}
+      />
     </>
   );
 }

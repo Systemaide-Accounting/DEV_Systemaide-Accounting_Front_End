@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import { HandleSimpleNameFormat } from "./reusable-functions/NameFormatter";
 import swal2 from "sweetalert2";
+import { userAllowedViewSystemConfig } from "../constants/UserConstants";
 
 export function Navbar({ openSidebar, setOpenSidebar }) {
 

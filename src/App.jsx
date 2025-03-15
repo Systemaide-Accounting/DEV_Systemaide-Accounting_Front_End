@@ -8,7 +8,7 @@ import { checkUserExpiration } from "./hooks/checkUserExpiration";
 import { LoginSignUp } from "./Pages/LoginSignUp";
 import { Home } from "./Pages/Home";
 // AUTHENTICATION SERVICES
-
+import { userAllowedViewSystemConfig } from "./constants/UserConstants";
 // IMPORT PAGES ROUTES
 import { transactions } from "./Components/all-routes/transactions";
 import {
@@ -21,6 +21,7 @@ import { libraries } from "./Components/all-routes/libraries";
 import { utilities, backups } from "./Components/all-routes/utilities";
 import { SystemConfiguration } from "./Pages/SystemConfiguration";
 import { useEffect } from "react";
+
 
 function App() {
 
@@ -148,7 +149,7 @@ function App() {
                   </>
                 );
               })}
-              <Route path="/system-config" element={<SystemConfiguration />} />
+              {userAllowedViewSystemConfig(user?.permissions) && (<Route path="/system-config" element={<SystemConfiguration />} />)}
             </Route>
           </Routes>
         </AuthContext.Provider>

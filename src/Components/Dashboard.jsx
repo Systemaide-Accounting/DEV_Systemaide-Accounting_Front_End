@@ -1,12 +1,16 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Navbar } from "./Navbar";
 import { Transaction } from "./Transaction";
 import { Library } from "./Library";
 import { Reports } from "./Reports";
 import { Utilities } from "./Utilities";
+import { userAllowedViewSystemConfig } from "../constants/UserConstants";
+import AuthContext from "../context/AuthContext";
 
 export function Dashboard() {
+  
+  const { user } = useContext(AuthContext);
   const [openSidebar, setOpenSidebar] = useState(false);
   const location = useLocation();
 
@@ -20,7 +24,7 @@ export function Dashboard() {
   const [libraryDropdown, setLibraryDropdown] = useState(false);
   // UTILITIES drop-down menu
   const [utilitiesDropdown, setUtilitiesDropdown] = useState(false);
-
+  
   return (
     <>
       <Navbar openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} />
@@ -59,23 +63,25 @@ export function Dashboard() {
               setUtilitiesDropdown={setUtilitiesDropdown}
             />
             <hr />
-            <li>
-              <Link to="/system-config">
-                <div
-                  className={`flex items-center w-full p-2 ${
-                    isActiveLink(`/system-config`)
-                      ? "text-gray-900 bg-gray-100"
-                      : "text-white hover:text-gray-900 hover:bg-gray-100"
-                  } transition duration-75 rounded-lg group dark:text-white dark:hover:bg-gray-700`}
-                >
-                  {/* {transactionIcons[index].svg} */}
-                  <span className="flex-1 ms-3 whitespace-nowrap">
-                    {/* {transaction.name} */}
-                    System Configuration
-                  </span>
-                </div>
-              </Link>
-            </li>
+            {userAllowedViewSystemConfig(user?.permissions) && (
+              <li>
+                <Link to="/system-config">
+                  <div
+                    className={`flex items-center w-full p-2 ${
+                      isActiveLink(`/system-config`)
+                        ? "text-gray-900 bg-gray-100"
+                        : "text-white hover:text-gray-900 hover:bg-gray-100"
+                    } transition duration-75 rounded-lg group dark:text-white dark:hover:bg-gray-700`}
+                  >
+                    {/* {transactionIcons[index].svg} */}
+                    <span className="flex-1 ms-3 whitespace-nowrap">
+                      {/* {transaction.name} */}
+                      System Configuration
+                    </span>
+                  </div>
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
       </aside>

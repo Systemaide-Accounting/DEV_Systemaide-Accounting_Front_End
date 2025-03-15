@@ -85,6 +85,50 @@ export const getAllRoles = async () => {
   }
 };
 
+export const createRole = async (data) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.post("/roles", data);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const getRoleById = async (id) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.get(`/roles/${id}`);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const updateRole = async (id, data) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.patch(`/roles/${id}`, data);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const deleteRole = async (id) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.delete(`/roles/delete/${id}`);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
 export const getAllPermissions = async () => {
   try {
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);

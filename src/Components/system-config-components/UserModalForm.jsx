@@ -47,11 +47,7 @@ export function UserModalForm({ openModal, setOpenModal, userData }) {
   };
 
   useEffect(() => {
-    try {
-      fetchAllRoles();
-    } catch (error) {
-      console.error("Error fetching Roles:", error);
-    }
+    fetchAllRoles();
   }, []);
 
   useEffect(() => {
@@ -76,7 +72,7 @@ export function UserModalForm({ openModal, setOpenModal, userData }) {
   
   return (
     <Modal dismissible show={openModal} onClose={() => setOpenModal(false)}>
-      <Modal.Header>Add New User</Modal.Header>
+      <Modal.Header>{userData ? `Edit User - ${userData?.firstName} ${userData?.lastName}` : "Add New User"}</Modal.Header>
       <Modal.Body>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>

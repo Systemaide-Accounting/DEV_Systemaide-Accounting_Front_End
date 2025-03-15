@@ -51,7 +51,7 @@ export function PermissionModalForm({ openModal, setOpenModal, permissionData })
 
     return (
       <Modal dismissible show={openModal} onClose={() => setOpenModal(false)}>
-        <Modal.Header>Add New Permission</Modal.Header>
+        <Modal.Header>{permissionData ? `Edit Permission - ${permissionData?.name}` : "Add New Permission"}</Modal.Header>
         <Modal.Body>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div>

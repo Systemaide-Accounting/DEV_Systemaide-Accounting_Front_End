@@ -78,7 +78,6 @@ export function UsersDataTable() {
   };
 
   const handleDelete = async (id) => {
-    console.log(`Delete user with ID: ${id}`);
     await swal2.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -116,9 +115,12 @@ export function UsersDataTable() {
   const handleEditUserModalForm = async (id) => {
     try {
       const response = await getUserById(id);
-      if (!response?.success) console.log(response?.message);
-      setUserData(response?.data);
-      setOpenModal(true);
+      if (response?.success) {
+        setUserData(response?.data);
+        setOpenModal(true);
+      } else {
+        console.log(response?.message);
+      } 
     } catch (error) {
       console.error("Error fetching User:", error);
     }

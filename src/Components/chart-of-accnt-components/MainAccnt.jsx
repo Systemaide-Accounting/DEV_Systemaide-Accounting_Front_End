@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { Plus, Edit, Trash2 } from "lucide-react";
 import { Modal, Label, TextInput } from "flowbite-react";
 import ChartOfAccntContext from "../../context/ChartOfAccntContext";
-
+import mainAccountsDataJSON from "../../sample-data/mainAccountsData.json";
 export function MainAccnt() {
 
     const { selectedAccount, setSelectedAccount } = useContext(ChartOfAccntContext);
@@ -10,6 +10,7 @@ export function MainAccnt() {
     const [accountName, setAccountName] = useState("");
     const [accountCode, setAccountCode] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
+    const [mainAccountsData, setMainAccountsData] = useState([]);
     const data = [
       { id: 1, code: "1000", name: "Cash" },
       { id: 2, code: "1100", name: "Accounts Receivable" },
@@ -17,11 +18,7 @@ export function MainAccnt() {
       { id: 4, code: "1300", name: "Prepaid Expenses" },
     ];
     
-    const filteredData = data.filter(
-    (item) =>
-        item.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const fetchAllMainAccounts = () => {};
 
     const handleEdit = (id) => {
         console.log("Edit item:", id);
@@ -45,6 +42,12 @@ export function MainAccnt() {
       setAccountCode("");
       setOpenModal(false);
     };
+
+    const filteredData = data.filter(
+      (item) =>
+        item.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     return (
       <>

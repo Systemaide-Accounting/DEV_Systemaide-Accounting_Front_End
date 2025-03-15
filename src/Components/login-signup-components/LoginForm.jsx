@@ -29,7 +29,6 @@ export function LoginForm() {
       // const response = await signIn(formData);
       if (response?.success) {
         setIsLoading(false);  
-        // navigate("/home");
         const url = import.meta.env.VITE_SYSTEMAIDE_MAIN_URL + "home";
         console.log(url);
         

@@ -9,7 +9,7 @@ import {
   Checkbox,
 } from "flowbite-react";
 import { Search } from "lucide-react";
-import permissionsDataJSON from "../../sample-data/permissionsData.json";
+// import permissionsDataJSON from "../../sample-data/permissionsData.json";
 import { createRole, getAllPermissions, updateRole } from "../../services/systemaideService";
 
 // Custom indeterminate checkbox component

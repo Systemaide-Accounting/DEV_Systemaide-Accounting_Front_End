@@ -80,24 +80,22 @@ export function Library({
           className={`${libraryDropdown ? "" : "hidden"} py-2 space-y-2`}
         >
           {libraries.map((library, index) => (
-            <>
-              <li key={index} className="ml-5">
-                <Link to={`${library.path}`}>
-                  <div
-                    className={`flex items-center w-full p-2 ${
-                      isActiveLink(`${library.path}`)
-                        ? "text-gray-900 bg-gray-100"
-                        : "text-white hover:text-gray-900 hover:bg-gray-100"
-                    } transition duration-75 rounded-lg group dark:text-white dark:hover:bg-gray-700`}
-                  >
-                    {libraryIcons[index].svg}
-                    <span className="flex-1 ms-3 whitespace-nowrap">
-                      {library.name}
-                    </span>
-                  </div>
-                </Link>
-              </li>
-            </>
+            <li key={index} className="ml-5">
+              <Link to={`${library.path}`}>
+                <div
+                  className={`flex items-center w-full p-2 ${
+                    isActiveLink(`${library.path}`)
+                      ? "text-gray-900 bg-gray-100"
+                      : "text-white hover:text-gray-900 hover:bg-gray-100"
+                  } transition duration-75 rounded-lg group dark:text-white dark:hover:bg-gray-700`}
+                >
+                  {libraryIcons[index].svg}
+                  <span className="flex-1 ms-3 whitespace-nowrap">
+                    {library.name}
+                  </span>
+                </div>
+              </Link>
+            </li>
           ))}
         </ul>
       </li>

@@ -116,6 +116,7 @@ export function RoleModalForm({ openModal, setOpenModal, roleData }) {
             await updateRole(roleData?._id, JSON.stringify(formData));
         } else {
             await createRole(JSON.stringify(formData));
+            setFormData({ name: "", permissions: [] });
         }
         setOpenModal(false);
     } catch (error) {
@@ -138,7 +139,7 @@ export function RoleModalForm({ openModal, setOpenModal, roleData }) {
 
   useEffect(() => {
     fetchAllPermissions();
-  }, []);
+  }, [openModal]);
   
   useEffect(() => {
     if (roleData) {

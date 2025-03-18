@@ -23,7 +23,7 @@ export function UserModalForm({ openModal, setOpenModal, userData }) {
     }
   };
 
-  const handleChange = (e) => {
+  const handleChange = async (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -33,12 +33,18 @@ export function UserModalForm({ openModal, setOpenModal, userData }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
     try {
         if (userData) {
             await updateUser(userData?._id, JSON.stringify(formData));
         } else {
             await createUser(JSON.stringify(formData));
+            setFormData({
+                firstName: "",
+                lastName: "",
+                email: "",
+                password: "",
+                role: "regular",
+            });
         }
       setOpenModal(false);
     } catch (error) {
@@ -48,7 +54,7 @@ export function UserModalForm({ openModal, setOpenModal, userData }) {
 
   useEffect(() => {
     fetchAllRoles();
-  }, []);
+  }, [openModal]);
 
   useEffect(() => {
     if (userData) {

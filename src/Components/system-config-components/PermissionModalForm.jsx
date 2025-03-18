@@ -19,7 +19,6 @@ export function PermissionModalForm({ openModal, setOpenModal, permissionData })
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(formData);
         try {
             if (permissionData) {
               await updatePermission(
@@ -28,6 +27,7 @@ export function PermissionModalForm({ openModal, setOpenModal, permissionData })
               );
             } else {
               await createPermission(JSON.stringify(formData));
+              setFormData({ name: "", description: "" });
             }
             setOpenModal(false);
         } catch (error) {

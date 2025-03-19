@@ -58,7 +58,7 @@ export function SubAccnt() {
             </button>
           </div>
           <h2 className="text-xl mb-4">
-            {selectedAccount && selectedAccount.name} - Account
+            {selectedAccount && selectedAccount?.accountName} - Account
           </h2>
           <input
             type="text"

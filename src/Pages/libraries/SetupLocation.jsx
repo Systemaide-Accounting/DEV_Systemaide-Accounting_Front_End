@@ -1,3 +1,4 @@
+import { BranchesDataTable } from "../../Components/setup-location-components/BranchesDataTable";
 import { LocationsDataTable } from "../../Components/setup-location-components/LocationsDataTable";
 
 export function SetupLocation() {
@@ -10,6 +11,7 @@ export function SetupLocation() {
         <LocationsDataTable />
 
         {/* Branches Table */}
+        <BranchesDataTable />
       </div>
     </>
   );

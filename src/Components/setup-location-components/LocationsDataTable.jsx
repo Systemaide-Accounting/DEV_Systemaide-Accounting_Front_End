@@ -25,13 +25,16 @@ export function LocationsDataTable() {
   const [locationsPerPage, setLocationsPerPage] = useState(5);
   const [rowSizeOptions, setRowSizeOptions] = useState([]);
   const [locationData, setLocationData] = useState(null);
-  const [opednModal, setOpenModal] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
 
   const fetchAllLocations = async () => {
     try {
       const response = await getAllLocations();
-      if (!response?.success) console.log(response?.message);
-      setLocationsData(response?.data);
+      if (response?.success) {
+        setLocationsData(response?.data);
+      } else {
+        console.log(response?.message);
+      } 
     } catch (error) {
       console.error("Error fetching locations", error);
     }
@@ -285,7 +288,7 @@ export function LocationsDataTable() {
       {/* Modal for CRUD */}
       <LocationModalForm
         locationData={locationData}
-        openModal={opednModal}
+        openModal={openModal}
         setOpenModal={setOpenModal}
       />
     </>

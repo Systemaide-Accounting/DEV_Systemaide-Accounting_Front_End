@@ -260,3 +260,47 @@ export const getAllBranches = async () => {
     // return error?.response?.data;
   }
 };
+
+export const createBranch = async (data) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.post("/branch", data);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const getBranchById = async (id) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.get(`/branch/${id}`);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const updateBranch = async (id, data) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.patch(`/branch/${id}`, data);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const deleteBranch = async (id) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.patch(`/branch/delete/${id}`);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};

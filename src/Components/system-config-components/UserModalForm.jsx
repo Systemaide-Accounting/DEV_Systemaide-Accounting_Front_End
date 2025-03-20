@@ -2,12 +2,12 @@ import { Label, Modal, Select, TextInput } from "flowbite-react";
 import { createUser, getAllRoles, updateUser } from "../../services/systemaideService";
 import { useEffect, useState } from "react";
 
-export function UserModalForm({ openModal, setOpenModal, userData }) {
+export function UserModalForm({ openModal, setOpenModal, userData, fetchAllUsers }) {
 
   const [rolesSelectOptions, setRolesSelectOptions] = useState([]);
   const [formData, setFormData] = useState({
     firstName: "",
-    lastName:  "",
+    lastName: "",
     email: "",
     password: "",
     role: "regular",
@@ -34,19 +34,20 @@ export function UserModalForm({ openModal, setOpenModal, userData }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        if (userData) {
-            await updateUser(userData?._id, JSON.stringify(formData));
-        } else {
-            await createUser(JSON.stringify(formData));
-            setFormData({
-                firstName: "",
-                lastName: "",
-                email: "",
-                password: "",
-                role: "regular",
-            });
-        }
+      if (userData) {
+        await updateUser(userData?._id, JSON.stringify(formData));
+      } else {
+        await createUser(JSON.stringify(formData));
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          password: "",
+          role: "regular",
+        });
+      }
       setOpenModal(false);
+      fetchAllUsers();
     } catch (error) {
       console.error("Error creating User:", error);
     }
@@ -66,19 +67,23 @@ export function UserModalForm({ openModal, setOpenModal, userData }) {
         role: userData?.role || "regular",
       });
     } else {
-        setFormData({
-            firstName: "",
-            lastName: "",
-            email: "",
-            password: "",
-            role: "regular",
-        });
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        role: "regular",
+      });
     }
   }, [userData]);
-  
+
   return (
     <Modal dismissible show={openModal} onClose={() => setOpenModal(false)}>
-      <Modal.Header>{userData ? `Edit User - ${userData?.firstName} ${userData?.lastName}` : "Add New User"}</Modal.Header>
+      <Modal.Header>
+        {userData
+          ? `Edit User - ${userData?.firstName} ${userData?.lastName}`
+          : "Add New User"}
+      </Modal.Header>
       <Modal.Body>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
@@ -118,7 +123,7 @@ export function UserModalForm({ openModal, setOpenModal, userData }) {
               name="email"
               type="text"
               placeholder="Enter email"
-                value={formData?.email}
+              value={formData?.email}
               required={true}
               onChange={handleChange}
             />

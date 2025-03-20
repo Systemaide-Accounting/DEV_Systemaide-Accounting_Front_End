@@ -214,16 +214,16 @@ export function PermissionsDataTable() {
                         <Button
                           size="xs"
                           color="light"
-                          onClick={() => handleEditPermissionModalForm(permission?._id)}
+                          onClick={() =>
+                            handleEditPermissionModalForm(permission?._id)
+                          }
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
                         <Button
                           size="xs"
                           color="failure"
-                          onClick={() =>
-                            handleDelete(permission?._id)
-                          }
+                          onClick={() => handleDelete(permission?._id)}
                         >
                           <Trash className="h-4 w-4" />
                         </Button>
@@ -286,6 +286,7 @@ export function PermissionsDataTable() {
         openModal={openModal}
         setOpenModal={setOpenModal}
         permissionData={permissionData}
+        fetchAllPermissions={fetchAllPermissions}
       />
     </>
   );

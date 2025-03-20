@@ -323,6 +323,7 @@ export function UsersDataTable() {
         openModal={openModal}
         setOpenModal={setOpenModal}
         userData={userData}
+        fetchAllUsers={fetchAllUsers}
       />
     </>
   );

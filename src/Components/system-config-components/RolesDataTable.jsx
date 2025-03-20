@@ -285,6 +285,7 @@ export function RolesDataTable() {
         roleData={roleData}
         openModal={openModal}
         setOpenModal={setOpenModal}
+        fetchAllRoles={fetchAllRoles}
       />
     </>
   );

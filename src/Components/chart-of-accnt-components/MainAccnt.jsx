@@ -89,7 +89,7 @@ export function MainAccnt() {
     setSelectedAccount(account);
   };
 
-  const filteredData = mainAccountsData.filter(
+  const filteredMainAccntsData = mainAccountsData.filter(
     (account) =>
       (account?.accountCode?.toLowerCase() || "").includes(
         searchTerm.toLowerCase()
@@ -98,8 +98,6 @@ export function MainAccnt() {
         searchTerm.toLowerCase()
       )
   );
-
-  console.log("filteredData", filteredData);
 
   return (
     <>
@@ -129,8 +127,8 @@ export function MainAccnt() {
               <Table.HeadCell className="w-[100px]">Actions</Table.HeadCell>
             </Table.Head>
             <Table.Body className="divide-y">
-              {filteredData &&
-                filteredData.map((item, index) => (
+              {filteredMainAccntsData && filteredMainAccntsData.length > 0 ? (
+                filteredMainAccntsData.map((item, index) => (
                   <Table.Row
                     key={index + 1}
                     className="bg-white dark:border-gray-700 dark:bg-gray-800"
@@ -159,7 +157,14 @@ export function MainAccnt() {
                       </div>
                     </Table.Cell>
                   </Table.Row>
-                ))}
+                ))
+              ) : (
+                <Table.Row>
+                  <Table.Cell colSpan={3} className="text-center py-4">
+                    No accounts found
+                  </Table.Cell>
+                </Table.Row>
+              )}
             </Table.Body>
           </Table>
         </div>

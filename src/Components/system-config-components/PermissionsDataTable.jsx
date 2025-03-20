@@ -49,11 +49,11 @@ export function PermissionsDataTable() {
     }
   }, []);
 
-  // Fetch users every 3 seconds
-  useEffect(() => {
-    const intervalId = setInterval(fetchAllPermissions, 3000);
-    return () => clearInterval(intervalId); // Cleanup interval on component unmount
-  }, []);
+  // Fetch permissions every 3 seconds
+  // useEffect(() => {
+  //   const intervalId = setInterval(fetchAllPermissions, 3000);
+  //   return () => clearInterval(intervalId); // Cleanup interval on component unmount
+  // }, []);
 
   // Sort handler for permissions
   const handlePermissionSort = (column) => {
@@ -214,16 +214,16 @@ export function PermissionsDataTable() {
                         <Button
                           size="xs"
                           color="light"
-                          onClick={() => handleEditPermissionModalForm(permission?._id)}
+                          onClick={() =>
+                            handleEditPermissionModalForm(permission?._id)
+                          }
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
                         <Button
                           size="xs"
                           color="failure"
-                          onClick={() =>
-                            handleDelete(permission?._id)
-                          }
+                          onClick={() => handleDelete(permission?._id)}
                         >
                           <Trash className="h-4 w-4" />
                         </Button>
@@ -286,6 +286,7 @@ export function PermissionsDataTable() {
         openModal={openModal}
         setOpenModal={setOpenModal}
         permissionData={permissionData}
+        fetchAllPermissions={fetchAllPermissions}
       />
     </>
   );

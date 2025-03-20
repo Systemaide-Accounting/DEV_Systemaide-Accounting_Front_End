@@ -1,9 +1,11 @@
 import { Label, Modal, TextInput } from "flowbite-react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { createAccount, updateAccount } from "../../services/systemaideService";
+import ChartOfAccntContext from "../../context/ChartOfAccntContext";
 
 export function MainAccntModalForm({ openModal, setOpenModal, accountData }) {
 
+    const { setSelectedAccount } = useContext(ChartOfAccntContext);
     const [formData, setFormData] = useState({
       accountCode: "",
       accountName: "",
@@ -20,8 +22,9 @@ export function MainAccntModalForm({ openModal, setOpenModal, accountData }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            let response = null;
             if (accountData) {
-                await updateAccount(accountData?._id, JSON.stringify(formData));
+                response = await updateAccount(accountData?._id, JSON.stringify(formData));
             } else {
                 await createAccount(JSON.stringify(formData));
                 setFormData({
@@ -30,6 +33,7 @@ export function MainAccntModalForm({ openModal, setOpenModal, accountData }) {
                 });
             }
             setOpenModal(false);
+            setSelectedAccount(response?.data);
         } catch (error) {
             console.error("Error creating account:", error);
         }

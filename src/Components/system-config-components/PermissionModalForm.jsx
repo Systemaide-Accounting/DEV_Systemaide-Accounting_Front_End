@@ -2,7 +2,7 @@ import { Label, Modal, TextInput } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { createPermission, updatePermission } from "../../services/systemaideService";
 
-export function PermissionModalForm({ openModal, setOpenModal, permissionData }) {
+export function PermissionModalForm({ openModal, setOpenModal, permissionData, fetchAllPermissions }) {
 
     const [formData, setFormData] = useState({
         name: "",
@@ -30,6 +30,7 @@ export function PermissionModalForm({ openModal, setOpenModal, permissionData })
               setFormData({ name: "", description: "" });
             }
             setOpenModal(false);
+            fetchAllPermissions();
         } catch (error) {
             console.error("Error creating Permission:", error);
         }

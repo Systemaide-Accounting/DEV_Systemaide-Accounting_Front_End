@@ -49,11 +49,11 @@ export function RolesDataTable() {
     }
   }, []);
 
-  // Fetch users every 3 seconds
-  useEffect(() => {
-    const intervalId = setInterval(fetchAllRoles, 3000);
-    return () => clearInterval(intervalId); // Cleanup interval on component unmount
-  }, []);
+  // Fetch roles every 3 seconds
+  // useEffect(() => {
+  //   const intervalId = setInterval(fetchAllRoles, 3000);
+  //   return () => clearInterval(intervalId); // Cleanup interval on component unmount
+  // }, []);
 
   // Sort handler for roles
   const handleRoleSort = (column) => {
@@ -285,6 +285,7 @@ export function RolesDataTable() {
         roleData={roleData}
         openModal={openModal}
         setOpenModal={setOpenModal}
+        fetchAllRoles={fetchAllRoles}
       />
     </>
   );

@@ -25,7 +25,7 @@ function IndeterminateCheckbox({ checked, onChange, indeterminate }) {
   return <Checkbox ref={checkboxRef} checked={checked} onChange={onChange} />;
 }
 
-export function RoleModalForm({ openModal, setOpenModal, roleData }) {
+export function RoleModalForm({ openModal, setOpenModal, roleData, fetchAllRoles }) {
   const [availablePermissions, setAvailablePermissions] = useState([]);
   const [formData, setFormData] = useState({
     // id: roleData?.id || undefined,
@@ -39,9 +39,8 @@ export function RoleModalForm({ openModal, setOpenModal, roleData }) {
     if (!searchQuery) return availablePermissions;
 
     return availablePermissions.filter(
-      (p) =>
-        (p?.name?.toLowerCase() || "").includes(searchQuery.toLowerCase()) 
-        // || p?._id.toLowerCase().includes(searchQuery.toLowerCase())
+      (p) => (p?.name?.toLowerCase() || "").includes(searchQuery.toLowerCase())
+      // || p?._id.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [searchQuery, availablePermissions]);
 
@@ -112,13 +111,14 @@ export function RoleModalForm({ openModal, setOpenModal, roleData }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        if (roleData) {
-            await updateRole(roleData?._id, JSON.stringify(formData));
-        } else {
-            await createRole(JSON.stringify(formData));
-            setFormData({ name: "", permissions: [] });
-        }
-        setOpenModal(false);
+      if (roleData) {
+        await updateRole(roleData?._id, JSON.stringify(formData));
+      } else {
+        await createRole(JSON.stringify(formData));
+        setFormData({ name: "", permissions: [] });
+      }
+      setOpenModal(false);
+      fetchAllRoles();
     } catch (error) {
       console.error("Error creating Role:", error);
     }
@@ -140,25 +140,30 @@ export function RoleModalForm({ openModal, setOpenModal, roleData }) {
   useEffect(() => {
     fetchAllPermissions();
   }, [openModal]);
-  
+
   useEffect(() => {
     if (roleData) {
       setFormData({
         name: roleData?.name || "",
         // permissions: roleData?.permissions || [],
-        permissions: roleData?.permissions.map(permission => permission._id) || [],
+        permissions:
+          roleData?.permissions.map((permission) => permission._id) || [],
       });
     } else {
-        setFormData({
-            name: "",
-            permissions: [],
-        });
+      setFormData({
+        name: "",
+        permissions: [],
+      });
     }
   }, [roleData]);
-  
+
   return (
     <Modal dismissible show={openModal} onClose={() => setOpenModal(false)}>
-      <Modal.Header>{roleData ? `Edit Role - ${roleData?.name.toUpperCase()}` : "Add New Role"}</Modal.Header>
+      <Modal.Header>
+        {roleData
+          ? `Edit Role - ${roleData?.name.toUpperCase()}`
+          : "Add New Role"}
+      </Modal.Header>
       <Modal.Body>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
@@ -222,8 +227,12 @@ export function RoleModalForm({ openModal, setOpenModal, roleData }) {
                       >
                         <Checkbox
                           id={permission?._id}
-                          checked={formData.permissions.includes(permission?._id)}
-                          onChange={() => handlePermissionToggle(permission?._id)}
+                          checked={formData.permissions.includes(
+                            permission?._id
+                          )}
+                          onChange={() =>
+                            handlePermissionToggle(permission?._id)
+                          }
                         />
                         <Label
                           htmlFor={permission?._id}

@@ -54,10 +54,10 @@ export function UsersDataTable() {
   }, []);
 
   // Fetch users every 3 seconds
-  useEffect(() => {
-    const intervalId = setInterval(fetchAllUsers, 3000);
-    return () => clearInterval(intervalId); // Cleanup interval on component unmount
-  }, []);
+  // useEffect(() => {
+  //   const intervalId = setInterval(fetchAllUsers, 3000);
+  //   return () => clearInterval(intervalId); // Cleanup interval on component unmount
+  // }, []);
 
   // Sort handler for users
   const handleUserSort = (column) => {

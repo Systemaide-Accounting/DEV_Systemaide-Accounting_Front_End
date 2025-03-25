@@ -5,6 +5,9 @@ import { useEffect, useState } from "react";
 import { deleteAgent, getAgentById, getAllAgents } from "../../services/systemaideService";
 import swal2 from "sweetalert2";
 import { SimplePagination } from "../data-table-components/SimplePagination";
+import { AgentModalForm } from "./AgentModalForm";
+import { HandleFullNameFormat } from "../reusable-functions/NameFormatter";
+import { HandleSimpleAddressFormat } from "../reusable-functions/AddressFormatter";
 
 const rowSizeOptionsJSON = JSON.stringify([
   { value: 5, label: "5" },
@@ -12,6 +15,19 @@ const rowSizeOptionsJSON = JSON.stringify([
   { value: 20, label: "20" },
   { value: 50, label: "50" },
 ]);
+
+const safeJsonParse = (jsonString) => {
+  try {
+    // check if jsonString is parseable
+    if (!jsonString) return;
+    if (typeof jsonString !== "string") return;
+
+    return JSON.parse(jsonString);
+  } catch (error) {
+    // console.error("Error parsing JSON:", error);
+    return jsonString;
+  }
+};
 
 export function AgentsDataTable() {
   const [agentsData, setAgentsData] = useState([]);
@@ -188,7 +204,7 @@ export function AgentsDataTable() {
             <Table.Head>
               {/* <Table.HeadCell className="w-[60px]">ID</Table.HeadCell> */}
               <Table.HeadCell>Code</Table.HeadCell>
-              <Table.HeadCell>
+              <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
                 <SortButton
                   column="agentName"
                   currentSort={agentSort}
@@ -197,7 +213,7 @@ export function AgentsDataTable() {
                   Agent Name
                 </SortButton>
               </Table.HeadCell>
-              <Table.HeadCell>
+              <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
                 <SortButton
                   column="tradeName"
                   currentSort={agentSort}
@@ -206,7 +222,7 @@ export function AgentsDataTable() {
                   Trade Name
                 </SortButton>
               </Table.HeadCell>
-              <Table.HeadCell>
+              <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
                 <SortButton
                   column="registeredName"
                   currentSort={agentSort}
@@ -216,11 +232,21 @@ export function AgentsDataTable() {
                 </SortButton>
               </Table.HeadCell>
               <Table.HeadCell>TIN</Table.HeadCell>
-              <Table.HeadCell>Agent Address</Table.HeadCell>
-              <Table.HeadCell>Agent Type</Table.HeadCell>
-              <Table.HeadCell>Tax Classifiction</Table.HeadCell>
-              <Table.HeadCell>Registration Type</Table.HeadCell>
-              <Table.HeadCell>Authorized Representative</Table.HeadCell>
+              <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
+                Agent Address
+              </Table.HeadCell>
+              <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
+                Agent Type
+              </Table.HeadCell>
+              <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
+                Tax Classifiction
+              </Table.HeadCell>
+              <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
+                Registration Type
+              </Table.HeadCell>
+              <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
+                Authorized Representative
+              </Table.HeadCell>
               <Table.HeadCell className="w-[100px]">Actions</Table.HeadCell>
             </Table.Head>
             <Table.Body className="divide-y">
@@ -231,15 +257,61 @@ export function AgentsDataTable() {
                     className="bg-white dark:border-gray-700 dark:bg-gray-800"
                   >
                     <Table.Cell>{agent?.agentCode}</Table.Cell>
-                    <Table.Cell>{agent?.agentName}</Table.Cell>
+                    <Table.Cell className="capitalize">
+                      {agent?.agentName
+                        ? (() => {
+                            const parsedName = safeJsonParse(agent?.agentName);
+                            if (parsedName && typeof parsedName === "object") {
+                              return (
+                                <HandleFullNameFormat
+                                  firstName={parsedName?.firstName}
+                                  lastName={parsedName?.lastName}
+                                  middleName={parsedName?.middleName}
+                                />
+                              );
+                            } else {
+                              return agent?.agentName; // Pass the value as is if not JSON
+                            }
+                          })()
+                        : "Name not available"}
+                    </Table.Cell>
                     <Table.Cell>{agent?.tradeName}</Table.Cell>
-                    <Table.Cell>{agent?.registeredName}</Table.Cell>
+                    <Table.Cell className="capitalize">{agent?.registeredName}</Table.Cell>
                     <Table.Cell>{agent?.tin}</Table.Cell>
-                    <Table.Cell>{agent?.agentAddress}</Table.Cell>
-                    <Table.Cell>{agent?.agentType}</Table.Cell>
-                    <Table.Cell>{agent?.taxClassification}</Table.Cell>
-                    <Table.Cell>{agent?.registrationType}</Table.Cell>
-                    <Table.Cell>{agent?.authorizedRepresentative}</Table.Cell>
+                    <Table.Cell className="capitalize">
+                      {agent?.agentAddress
+                        ? (() => {
+                            const parsedAddress = safeJsonParse(
+                              agent?.agentAddress
+                            );
+                            if (
+                              parsedAddress &&
+                              typeof parsedAddress === "object"
+                            ) {
+                              return (
+                                <HandleSimpleAddressFormat
+                                  barangay={parsedAddress?.brgy}
+                                  city={parsedAddress?.city}
+                                />
+                              );
+                            } else {
+                              return agent?.agentAddress; // Pass the value as is if not JSON
+                            }
+                          })()
+                        : "Address not available"}
+                    </Table.Cell>
+                    <Table.Cell className="capitalize">
+                      {agent?.agentType}
+                    </Table.Cell>
+                    <Table.Cell className="capitalize">
+                      {agent?.taxClassification}
+                    </Table.Cell>
+                    <Table.Cell className="capitalize">
+                      {agent?.registrationType}
+                    </Table.Cell>
+                    <Table.Cell className="capitalize">
+                      {agent?.authorizedRepresentative}
+                    </Table.Cell>
                     <Table.Cell>
                       <div className="flex items-center gap-2">
                         <Button
@@ -308,6 +380,11 @@ export function AgentsDataTable() {
       </div>
 
       {/* Modal for CRUD */}
+      <AgentModalForm
+        agentData={agentData}
+        openModal={openModal}
+        setOpenModal={setOpenModal}
+      />
     </>
   );
 }

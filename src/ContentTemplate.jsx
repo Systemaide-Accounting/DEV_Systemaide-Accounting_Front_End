@@ -1,9 +1,8 @@
-
-export function CashDisbursement() {
+export function ContentTemplate() {
   return (
     <>
       <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
-        <h1>Cash Disbursement</h1>
+        <h1>Content Template</h1>
         {/* 3 columns but vertical for mobile devices */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
           <div className="flex items-center justify-center h-24 rounded bg-gray-100 dark:bg-gray-800"></div>
@@ -34,10 +33,10 @@ export function CashDisbursement() {
           <div className="flex items-center justify-center rounded bg-yellow-100 h-28 dark:bg-gray-800"></div>
         </div>
         {/* 2 columns but vertical for mobile devices */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-          <div className="flex items-center justify-center h-24 rounded bg-lime-500 dark:bg-gray-800"></div>
-          <div className="flex items-center justify-center h-24 rounded bg-lime-500 dark:bg-gray-800"></div>
-          <div className="flex items-center justify-center h-24 rounded bg-lime-500 dark:bg-gray-800"></div>
+        <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 mb-4">
+          <div className="flex items-center justify-center h-24 rounded bg-purple-100 dark:bg-gray-800"></div>
+          <div className="flex items-center justify-center h-24 rounded bg-purple-100 dark:bg-gray-800"></div>
+          <div className="flex items-center justify-center h-24 rounded bg-purple-100 dark:bg-gray-800"></div>
         </div>
         {/* 4 columns become 2 columns for mobile devices */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">

@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { createCompany, getLatestCompany, updateCompany } from "../../services/systemaideService";
 import swal2 from "sweetalert2";
+import { safeJsonParse } from "../../Components/reusable-functions/safeJsonParse";
 
 const months = [
   { value: 1, name: "January" },
@@ -35,15 +36,6 @@ const months = [
   { value: 11, name: "November" },
   { value: 12, name: "December" },
 ];
-
-const safeJsonParse = (jsonString) => {
-  try {
-    return JSON.parse(jsonString);
-  } catch (error) {
-    console.error("Error parsing JSON:", error);
-    return null;
-  }
-};
 
 export function SetupCompany() {
   

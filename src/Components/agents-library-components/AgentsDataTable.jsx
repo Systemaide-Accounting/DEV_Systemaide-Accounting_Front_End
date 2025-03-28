@@ -8,6 +8,7 @@ import { SimplePagination } from "../data-table-components/SimplePagination";
 import { AgentModalForm } from "./AgentModalForm";
 import { HandleFullNameFormat } from "../reusable-functions/NameFormatter";
 import { HandleSimpleAddressFormat } from "../reusable-functions/AddressFormatter";
+import { safeJsonParse } from "../reusable-functions/safeJsonParse";
 
 const rowSizeOptionsJSON = JSON.stringify([
   { value: 5, label: "5" },
@@ -15,19 +16,6 @@ const rowSizeOptionsJSON = JSON.stringify([
   { value: 20, label: "20" },
   { value: 50, label: "50" },
 ]);
-
-const safeJsonParse = (jsonString) => {
-  try {
-    // check if jsonString is parseable
-    if (!jsonString) return;
-    if (typeof jsonString !== "string") return;
-
-    return JSON.parse(jsonString);
-  } catch (error) {
-    // console.error("Error parsing JSON:", error);
-    return jsonString;
-  }
-};
 
 export function AgentsDataTable() {
   const [agentsData, setAgentsData] = useState([]);

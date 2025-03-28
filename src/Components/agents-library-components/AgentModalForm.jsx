@@ -2,19 +2,7 @@ import { Label, Modal, Select, TextInput } from "flowbite-react";
 import { createAgent, updateAgent } from "../../services/systemaideService";
 import { useEffect, useState } from "react";
 import { HandleFullNameFormat } from "../reusable-functions/NameFormatter";
-
-const safeJsonParse = (jsonString) => {
-  try {
-    // check if jsonString is parseable
-    if (!jsonString) return;
-    if (typeof jsonString !== "string") return;
-
-    return JSON.parse(jsonString);
-  } catch (error) {
-    // console.error("Error parsing JSON:", error);
-    return jsonString;
-  }
-};
+import { safeJsonParse } from "../reusable-functions/safeJsonParse"; // Assuming you have this function in a separate file
 
 export function AgentModalForm({ openModal, setOpenModal, agentData }) {
   

@@ -2,10 +2,12 @@ import { Button, Select, Table, TextInput } from "flowbite-react";
 import { Edit, Plus, Search, Trash } from "lucide-react";
 import { SortButton } from "../data-table-components/SortButton";
 import { SimplePagination } from "../data-table-components/SimplePagination";
-import { safeJsonParse } from "../reusable-functions/safeJsonParse";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getAllCashDisbursementTransactions } from "../../services/systemaideService";
+import { HandleDateFormat } from "../reusable-functions/DateFormatter";
+import { HandleFullNameFormat } from "../reusable-functions/NameFormatter";
+import { safeJsonParse } from "../reusable-functions/safeJsonParse";
 
 const rowSizeOptionsJSON = JSON.stringify([
   { value: 5, label: "5" },
@@ -49,6 +51,13 @@ export function CashDisbursementDataTable() {
     const intervalId = setInterval(fetchAllTransactions, 3000);
     return () => clearInterval(intervalId); // Cleanup interval on component unmount
   }, []);
+
+  // Handle edit action
+  const handleEditCashDisbursement = (transactionId) => {
+    navigate(`/transaction/cashdisbursement/form/${transactionId}`);
+  };
+
+  // Handle delete action
 
   const handleTransactionSort = (column) => {
     setTransactionSort({
@@ -184,41 +193,39 @@ export function CashDisbursementDataTable() {
                       {(transactionPage - 1) * transactionsPerPage + index + 1}
                     </Table.Cell>
                     <Table.Cell className="capitalize">
-                      {transaction?.date}
-                    </Table.Cell>
-                    <Table.Cell>{transaction?.date}</Table.Cell>
-                    <Table.Cell className="capitalize">
-                      {transaction?.registeredName}
-                    </Table.Cell>
-                    <Table.Cell>{transaction?.tin}</Table.Cell>
-                    <Table.Cell className="capitalize">
-                      {transaction?.date}
+                      <HandleDateFormat date={transaction?.date} />
                     </Table.Cell>
                     <Table.Cell className="capitalize">
-                      {transaction?.agentType}
+                      {transaction?.payeeName?.registeredName}
                     </Table.Cell>
                     <Table.Cell className="capitalize">
-                      {transaction?.taxClassification}
+                      {transaction?.cvNo}
+                    </Table.Cell>
+                    <Table.Cell>{transaction?.checkNo}</Table.Cell>
+                    <Table.Cell className="capitalize">
+                      {transaction?.cashAccount?.accountName}
                     </Table.Cell>
                     <Table.Cell className="capitalize">
-                      {transaction?.registrationType}
+                      {transaction?.location?.name}
                     </Table.Cell>
                     <Table.Cell className="capitalize">
-                      {transaction?.authorizedRepresentative}
+                      {transaction?.particular}
                     </Table.Cell>
                     <Table.Cell>
                       <div className="flex items-center gap-2">
                         <Button
                           size="xs"
                           color="light"
-                          // onClick={() => handleEditAgentModalForm(agent?._id)}
+                          onClick={() =>
+                            handleEditCashDisbursement(transaction?._id)
+                          }
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
                         <Button
                           size="xs"
                           color="failure"
-                          // onClick={() => handleDelete(agent?._id)}
+                          onClick={() => handleDelete(transaction?._id)}
                         >
                           <Trash className="h-4 w-4" />
                         </Button>

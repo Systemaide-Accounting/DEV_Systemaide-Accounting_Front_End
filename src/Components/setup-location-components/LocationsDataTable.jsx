@@ -20,7 +20,7 @@ export function LocationsDataTable() {
   const [locationPage, setLocationPage] = useState(1);
   const [locationSort, setLocationSort] = useState({
     column: "name",
-    order: "asc",
+    direction: "asc",
   });
   const [locationsPerPage, setLocationsPerPage] = useState(5);
   const [rowSizeOptions, setRowSizeOptions] = useState([]);
@@ -123,14 +123,14 @@ export function LocationsDataTable() {
         (location?.name?.toLowerCase() || "").includes(locationSearch.toLowerCase())
     )
     .sort((a, b) => {
-        const aValue = a[locationSort.column] || ""; // Default to empty string if missing
-        const bValue = b[locationSort.column] || "";
+      const aValue = (a[locationSort.column] || "").toLowerCase(); // Normalize to lowercase
+      const bValue = (b[locationSort.column] || "").toLowerCase(); // Normalize to lowercase
 
-        if (locationSort.direction === "asc") {
-          return aValue > bValue ? 1 : -1;
-        } else {
-          return aValue < bValue ? 1 : -1;
-        }
+      if (locationSort.direction === "asc") {
+        return aValue > bValue ? 1 : -1;
+      } else {
+        return aValue < bValue ? 1 : -1;
+      }
     });
 
     // Pagination for locations

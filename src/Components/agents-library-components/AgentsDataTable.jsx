@@ -21,7 +21,10 @@ export function AgentsDataTable() {
   const [agentsData, setAgentsData] = useState([]);
   const [agentSearch, setAgentSearch] = useState("");
   const [agentPage, setAgentPage] = useState(1);
-  const [agentSort, setAgentSort] = useState({ column: "name", order: "asc" });
+  const [agentSort, setAgentSort] = useState({
+    column: "name",
+    direction: "asc",
+  });
   const [agentsPerPage, setAgentsPerPage] = useState(5);
   const [rowSizeOptions, setRowSizeOptions] = useState([]);
   const [agentData, setAgentData] = useState(null);

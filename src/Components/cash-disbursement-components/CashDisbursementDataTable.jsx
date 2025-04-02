@@ -129,7 +129,9 @@ export function CashDisbursementDataTable() {
   // filtered and sorted transactions
   const filteredTransactions = transactionsData
     .filter((transaction) =>
-      (transaction?.payeeName?.agentName?.toLowerCase() || "").includes(transactionSearch.toLowerCase())
+      (transaction?.payeeName?.registeredName?.toLowerCase() || "").includes(
+        transactionSearch.toLowerCase()
+      )
     )
     .sort((a, b) => {
       let aValue, bValue;

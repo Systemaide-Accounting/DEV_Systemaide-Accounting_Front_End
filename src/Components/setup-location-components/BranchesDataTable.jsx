@@ -20,7 +20,7 @@ export function BranchesDataTable() {
   const [branchPage, setBranchPage] = useState(1);
   const [branchSort, setBranchSort] = useState({
     column: "name",
-    order: "asc",
+    direction: "asc",
   });
   const [branchesPerPage, setBranchesPerPage] = useState(5);
   const [rowSizeOptions, setRowSizeOptions] = useState([]);

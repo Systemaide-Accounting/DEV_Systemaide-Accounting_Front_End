@@ -14,7 +14,7 @@ export function Dashboard() {
   const [openSidebar, setOpenSidebar] = useState(false);
   const location = useLocation();
 
-  const isActiveLink = (path) => location.pathname === path;
+  const isActiveLink = (path) => location.pathname === path || location.pathname.startsWith(path);
 
   // TRANSACTION drop-down menu
   const [transactionDropdown, setTransactionDropdown] = useState(false);

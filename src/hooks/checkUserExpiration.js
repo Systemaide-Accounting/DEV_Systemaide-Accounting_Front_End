@@ -5,11 +5,6 @@ export const checkUserExpiration = async () => {
     const storedValue = localStorage.getItem("user");
     const isLoginPage = window.location.href === import.meta.env.VITE_SYSTEMAIDE_LOGIN;
 
-    console.log(window.location.href);
-    console.log(import.meta.env.VITE_SYSTEMAIDE_LOGIN);
-    console.log(!storedValue);
-    console.log(!isLoginPage);
-
     if (!storedValue) {
       if (!isLoginPage) {
         const response = await swal2.fire({

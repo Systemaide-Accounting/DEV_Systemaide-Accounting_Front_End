@@ -692,7 +692,7 @@ export function SetupCompany() {
                     >
                       Select Reg. Type
                     </option>
-                    <option className="uppercase" value="vat registered">
+                    <option className="uppercase" value="vat">
                       VAT REGISTERED
                     </option>
                   </Select>

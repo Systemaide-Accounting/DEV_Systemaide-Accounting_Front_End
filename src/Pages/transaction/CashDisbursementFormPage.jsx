@@ -12,6 +12,7 @@ import {
 } from "../../services/systemaideService";
 import swal2 from "sweetalert2";
 import { formatInputDate } from "../../Components/reusable-functions/formatInputDate";
+import { safeJsonParse } from "../../Components/reusable-functions/safeJsonParse";
 
 export function CashDisbursementFormPage() {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ export function CashDisbursementFormPage() {
     cashAccount: "",
     particular: "",
     // transactions: [], // Initialize transactions as an empty array
-    transactions: "",
+    transactionLines: "",
   });
   const [lines, setLines] = useState([
     {
@@ -107,7 +108,7 @@ export function CashDisbursementFormPage() {
       // Update the transactions array in formData
       setFormData((prevFormData) => ({
         ...prevFormData,
-        transactions: updatedLines,
+        transactionLines: updatedLines,
       }));
     }
   };
@@ -134,10 +135,10 @@ export function CashDisbursementFormPage() {
 
   const deleteLine = (id) => {
     setLines(lines.filter((line) => line.id !== id));
-    // Update the transactions array in formData after deleting a line
+    // Update the transactionLines array in formData after deleting a line
     setFormData((prevFormData) => ({
       ...prevFormData,
-      transactions: lines.filter((line) => line.id !== id),
+      transactionLines: lines.filter((line) => line.id !== id),
     }));
   };
 
@@ -151,24 +152,29 @@ export function CashDisbursementFormPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Data:", formData);
+
+    // Create a new object with the updated transactionLines
+    const updatedFormData = {
+      ...formData,
+      transactionLines: JSON.stringify(formData?.transactionLines),
+    };
     try {
       let response = null;
-      if(transactionData) {
+      if (transactionData) {
         response = await updateCashDisbursementTransaction(
           transactionData?._id,
-          JSON.stringify(formData)
+          JSON.stringify(updatedFormData)
         );
       } else {
         response = await createCashDisbursementTransaction(
-          JSON.stringify(formData)
+          JSON.stringify(updatedFormData)
         );
       }
       if (response?.success) {
         await swal2.fire({
           icon: "success",
           title: "Success",
-          text: response?.message,
+          text: "Transaction saved successfully!",
         });
         navigate(-1);
       } else {
@@ -209,32 +215,29 @@ export function CashDisbursementFormPage() {
   }, []);
 
   useEffect(() => {
-
-    const location = locationsSelectOptions?.find(
-      (location) => location?._id === formData?.location
-    );
-
     if (transactionData) {
       setFormData({
         date: formatInputDate(transactionData?.date),
         month: transactionData?.month,
         year: transactionData?.year,
-        location: location,
+        location: transactionData?.location?._id,
         cvNo: transactionData?.cvNo,
         checkNo: transactionData?.checkNo,
-        payeeName: transactionData?.payeeName,
+        payeeName: transactionData?.payeeName?._id,
         addressTIN: transactionData?.addressTIN,
-        cashAccount: transactionData?.cashAccount,
+        cashAccount: transactionData?.cashAccount?._id,
         particular: transactionData?.particular,
-        transactions: transactionData?.transactions || [],
+        transactionLines: transactionData?.transactionLines || [],
       });
       // Set the lines state with the transactions from transactionData
-      setLines(transactionData?.transactions || []);
+      setLines(
+        transactionData?.transactionLines &&
+          safeJsonParse(transactionData?.transactionLines).length > 0
+          ? safeJsonParse(transactionData?.transactionLines)
+          : []
+      );
     }
   }, [transactionData]);
-  
-  console.log("Form Data:", formData);
-  console.log(transactionData?.location?.name);
 
   return (
     <>
@@ -264,7 +267,7 @@ export function CashDisbursementFormPage() {
                   type="text"
                   onChange={handleChange}
                   value={formData?.month}
-                  readOnly
+                  readOnly={transactionData?.month ? false : true}
                   required
                 />
               </div>
@@ -277,7 +280,7 @@ export function CashDisbursementFormPage() {
                   type="text"
                   onChange={handleChange}
                   value={formData?.year}
-                  readOnly
+                  readOnly={transactionData?.year ? false : true}
                   required
                 />
               </div>
@@ -314,6 +317,7 @@ export function CashDisbursementFormPage() {
                   id="cvNo"
                   type="text"
                   name="cvNo"
+                  value={formData?.cvNo}
                   onChange={handleChange}
                   placeholder="CV No."
                   required
@@ -326,6 +330,7 @@ export function CashDisbursementFormPage() {
                   id="checkNo"
                   type="text"
                   name="checkNo"
+                  value={formData?.checkNo}
                   onChange={handleChange}
                   placeholder="Check No."
                   required
@@ -364,6 +369,7 @@ export function CashDisbursementFormPage() {
                   type="text"
                   name="addressTIN"
                   onChange={handleChange}
+                  value={formData?.addressTIN}
                   placeholder="Address/TIN"
                   required
                 />
@@ -401,6 +407,7 @@ export function CashDisbursementFormPage() {
                   type="text"
                   name="particular"
                   onChange={handleChange}
+                  value={formData?.particular}
                   placeholder="Particular"
                   required
                 />

@@ -4,10 +4,11 @@ import { SortButton } from "../data-table-components/SortButton";
 import { SimplePagination } from "../data-table-components/SimplePagination";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getAllCashDisbursementTransactions } from "../../services/systemaideService";
+import { deleteCashDisbursementTransaction, getAllCashDisbursementTransactions } from "../../services/systemaideService";
 import { HandleDateFormat } from "../reusable-functions/DateFormatter";
 import { HandleFullNameFormat } from "../reusable-functions/NameFormatter";
 import { safeJsonParse } from "../reusable-functions/safeJsonParse";
+import swal2 from "sweetalert2";
 
 const rowSizeOptionsJSON = JSON.stringify([
   { value: 5, label: "5" },
@@ -22,7 +23,7 @@ export function CashDisbursementDataTable() {
   const [transactionSearch, setTransactionSearch] = useState("");
   const [transactionPage, setTransactionPage] = useState(1);
   const [transactionSort, setTransactionSort] = useState({
-    column: "name",
+    column: "date",
     direction: "asc",
   });
   const [transactionsPerPage, setTransactionsPerPage] = useState(5);
@@ -58,8 +59,53 @@ export function CashDisbursementDataTable() {
   };
 
   // Handle delete action
+  const handleDelete = async (transactionId) => {
+    await swal2
+      .fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "No, cancel!",
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+      })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const response = await deleteCashDisbursementTransaction(
+              transactionId
+            );
+            if (response?.success) {
+              await fetchAllTransactions();
+              await swal2.fire(
+                "Deleted!",
+                "Your transaction has been deleted.",
+                "success"
+              );
+            } else {
+              await swal2.fire({
+                icon: "error",
+                title: "Error!",
+                text: "Transaction could not be deleted.",
+              });
+            }
+          } catch (error) {
+            console.error("Error deleting transaction:", error);
+            await swal2.fire({
+              icon: "error",
+              title: "Error!",
+              text: "An error occurred while deleting the transaction.",
+            });
+          }
+        }
+      });
+  };
 
   const handleTransactionSort = (column) => {
+    console.log("Sorting by column:", column);
+    
     setTransactionSort({
       column,
       direction:
@@ -83,13 +129,21 @@ export function CashDisbursementDataTable() {
   // filtered and sorted transactions
   const filteredTransactions = transactionsData
     .filter((transaction) =>
-      (transaction?.payeeName?.agentName?.toLowerCase() || "").includes(
-        transactionSearch.toLowerCase()
-      )
+      (transaction?.payeeName?.agentName?.toLowerCase() || "").includes(transactionSearch.toLowerCase())
     )
     .sort((a, b) => {
-      const aValue = a[transactionSort.column] || ""; // Default to empty string if missing
-      const bValue = b[transactionSort.column] || "";
+      let aValue, bValue;
+
+      if (transactionSort.column === "registeredName") {
+        aValue = (a.payeeName?.registeredName || "").toLowerCase();
+        bValue = (b.payeeName?.registeredName || "").toLowerCase();
+      } else if (transactionSort.column === "cashAccount") {
+        aValue = (a.cashAccount?.accountName || "").toLowerCase();
+        bValue = (b.cashAccount?.accountName || "").toLowerCase();
+      } else {
+        aValue = (a[transactionSort.column] || "").toLowerCase();
+        bValue = (b[transactionSort.column] || "").toLowerCase();
+      }
 
       if (transactionSort.direction === "asc") {
         return aValue > bValue ? 1 : -1;
@@ -152,7 +206,7 @@ export function CashDisbursementDataTable() {
               </Table.HeadCell>
               <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
                 <SortButton
-                  column="agentName"
+                  column="registeredName"
                   currentSort={transactionSort}
                   onSort={handleTransactionSort}
                 >

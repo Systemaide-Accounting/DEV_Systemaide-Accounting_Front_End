@@ -1,6 +1,122 @@
 [
-  { "id": 1, "code": "1000", "name": "Cash" },
-  { "id": 2, "code": "1100", "name": "Accounts Receivable" },
-  { "id": 3, "code": "1200", "name": "Inventory" },
-  { "id": 4, "code": "1300", "name": "Prepaid Expenses" }
+  {
+    "id": "1",
+    "name": "Assets",
+    "type": "Parent",
+    "balance": 125000,
+    "children": [
+      {
+        "id": "1-1",
+        "name": "Current Assets",
+        "type": "Child",
+        "balance": 75000,
+        "children": [
+          {
+            "id": "1-1-1",
+            "name": "Cash",
+            "type": "Sub",
+            "balance": 25000,
+            "children": []
+          },
+          {
+            "id": "1-1-2",
+            "name": "Accounts Receivable",
+            "type": "Sub",
+            "balance": 50000,
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": "1-2",
+        "name": "Fixed Assets",
+        "type": "Child",
+        "balance": 50000,
+        "children": [
+          {
+            "id": "1-2-1",
+            "name": "Equipment",
+            "type": "Sub",
+            "balance": 30000,
+            "children": []
+          },
+          {
+            "id": "1-2-2",
+            "name": "Buildings",
+            "type": "Sub",
+            "balance": 20000,
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "name": "Liabilities",
+    "type": "Parent",
+    "balance": 75000,
+    "children": [
+      {
+        "id": "2-1",
+        "name": "Current Liabilities",
+        "type": "Child",
+        "balance": 25000,
+        "children": [
+          {
+            "id": "2-1-1",
+            "name": "Accounts Payable",
+            "type": "Sub",
+            "balance": 15000,
+            "children": []
+          },
+          {
+            "id": "2-1-2",
+            "name": "Accrued Expenses",
+            "type": "Sub",
+            "balance": 10000,
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": "2-2",
+        "name": "Long-term Liabilities",
+        "type": "Child",
+        "balance": 50000,
+        "children": [
+          {
+            "id": "2-2-1",
+            "name": "Loans Payable",
+            "type": "Sub",
+            "balance": 50000,
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "3",
+    "name": "Equity",
+    "type": "Parent",
+    "balance": 50000,
+    "children": [
+      {
+        "id": "3-1",
+        "name": "Owner's Equity",
+        "type": "Child",
+        "balance": 50000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "id": "2-1",
+    "name": "Current Liabilities",
+    "type": "Child",
+    "balance": 25000,
+    "children": [
+    ]
+  }
 ]

@@ -30,7 +30,8 @@ export function CashDisbursementFormPage() {
     cvNo: "",
     checkNo: "",
     payeeName: "",
-    addressTIN: "",
+    address: "",
+    tin: "",
     cashAccount: "",
     particular: "",
     // transactions: [], // Initialize transactions as an empty array
@@ -224,7 +225,9 @@ export function CashDisbursementFormPage() {
         cvNo: transactionData?.cvNo,
         checkNo: transactionData?.checkNo,
         payeeName: transactionData?.payeeName?._id,
-        addressTIN: transactionData?.addressTIN,
+        // addressTIN: transactionData?.addressTIN,
+        address: transactionData?.address,
+        tin: transactionData?.tin,
         cashAccount: transactionData?.cashAccount?._id,
         particular: transactionData?.particular,
         transactionLines: transactionData?.transactionLines || [],
@@ -363,14 +366,27 @@ export function CashDisbursementFormPage() {
               </div>
 
               <div>
-                <Label htmlFor="addressTIN">Address/TIN</Label>
+                <Label htmlFor="address">Address</Label>
                 <TextInput
-                  id="addressTIN"
+                  id="address"
                   type="text"
-                  name="addressTIN"
+                  name="address"
                   onChange={handleChange}
-                  value={formData?.addressTIN}
-                  placeholder="Address/TIN"
+                  value={formData?.address}
+                  placeholder="Address"
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="tin">TIN</Label>
+                <TextInput
+                  id="tin"
+                  type="text"
+                  name="tin"
+                  onChange={handleChange}
+                  value={formData?.tin}
+                  placeholder="TIN"
                   required
                 />
               </div>

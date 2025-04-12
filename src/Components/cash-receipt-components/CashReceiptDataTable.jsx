@@ -4,10 +4,8 @@ import { SortButton } from "../data-table-components/SortButton";
 import { SimplePagination } from "../data-table-components/SimplePagination";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { deleteCashDisbursementTransaction, getAllCashDisbursementTransactions } from "../../services/systemaideService";
+import { deleteCashReceiptTransaction, getAllCashReceiptTransactions } from "../../services/systemaideService";
 import { HandleDateFormat } from "../reusable-functions/DateFormatter";
-import { HandleFullNameFormat } from "../reusable-functions/NameFormatter";
-import { safeJsonParse } from "../reusable-functions/safeJsonParse";
 import swal2 from "sweetalert2";
 
 const rowSizeOptionsJSON = JSON.stringify([
@@ -17,7 +15,7 @@ const rowSizeOptionsJSON = JSON.stringify([
   { value: 50, label: "50" },
 ]);
 
-export function CashDisbursementDataTable() {
+export function CashReceiptDataTable() {
   const navigate = useNavigate();
   const [transactionsData, setTransactionsData] = useState([]);
   const [transactionSearch, setTransactionSearch] = useState("");
@@ -31,7 +29,7 @@ export function CashDisbursementDataTable() {
 
   const fetchAllTransactions = async () => {
     try {
-      const response = await getAllCashDisbursementTransactions();
+      const response = await getAllCashReceiptTransactions();
       if (response?.success) {
         setTransactionsData(response?.data);
       } else {
@@ -53,15 +51,10 @@ export function CashDisbursementDataTable() {
     return () => clearInterval(intervalId); // Cleanup interval on component unmount
   }, []);
 
-  // Handle edit action
-  const handleEditCashDisbursement = (transactionId) => {
-    navigate(`/transaction/cashdisbursement/form/${transactionId}`);
-  };
-
   // Handle delete action
   const handleDelete = async (transactionId) => {
     await swal2
-      .fire({
+        .fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
         icon: "warning",
@@ -70,37 +63,35 @@ export function CashDisbursementDataTable() {
         cancelButtonText: "No, cancel!",
         confirmButtonColor: "#d33",
         cancelButtonColor: "#3085d6",
-      })
-      .then(async (result) => {
+        })
+        .then(async (result) => {
         if (result.isConfirmed) {
-          try {
-            const response = await deleteCashDisbursementTransaction(
-              transactionId
-            );
+            try {
+            const response = await deleteCashReceiptTransaction(transactionId);
             if (response?.success) {
-              await fetchAllTransactions();
-              await swal2.fire(
+                await fetchAllTransactions();
+                await swal2.fire(
                 "Deleted!",
                 "Your transaction has been deleted.",
                 "success"
-              );
+                );
             } else {
-              await swal2.fire({
+                await swal2.fire({
                 icon: "error",
                 title: "Error!",
                 text: "Transaction could not be deleted.",
-              });
+                });
             }
-          } catch (error) {
+            } catch (error) {
             console.error("Error deleting transaction:", error);
             await swal2.fire({
-              icon: "error",
-              title: "Error!",
-              text: "An error occurred while deleting the transaction.",
+                icon: "error",
+                title: "Error!",
+                text: "An error occurred while deleting the transaction.",
             });
-          }
+            }
         }
-      });
+        });
   };
 
   const handleTransactionSort = (column) => {
@@ -121,13 +112,16 @@ export function CashDisbursementDataTable() {
   };
 
   const navigateToForm = async () => {
-    navigate("/transaction/cashdisbursement/form");
+    navigate("/transaction/cashreceipts/form");
   };
 
   // filtered and sorted transactions
   const filteredTransactions = transactionsData
     .filter((transaction) =>
-      (transaction?.payeeName?.registeredName?.toLowerCase() || "").includes(
+      //   (transaction?.payorName?.registeredName?.toLowerCase() || "").includes(
+      //     transactionSearch.toLowerCase()
+      //   )
+      (transaction?.payorName?.toLowerCase() || "").includes(
         transactionSearch.toLowerCase()
       )
     )
@@ -162,6 +156,8 @@ export function CashDisbursementDataTable() {
     transactionPage * transactionsPerPage
   );
 
+  console.log(transactionsData);
+
   return (
     <>
       {/* Data Table */}
@@ -183,7 +179,7 @@ export function CashDisbursementDataTable() {
             <Button
               color="blue"
               className="w-full sm:w-auto"
-              onClick={navigateToForm}
+                onClick={navigateToForm}
             >
               <Plus className="mr-2 h-4 w-4" />
               New Entry
@@ -206,18 +202,15 @@ export function CashDisbursementDataTable() {
               </Table.HeadCell>
               <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
                 <SortButton
-                  column="registeredName"
+                  column="payorName"
                   currentSort={transactionSort}
                   onSort={handleTransactionSort}
                 >
-                  Payee's Name
+                  Payor's Name
                 </SortButton>
               </Table.HeadCell>
               <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
-                CV no.
-              </Table.HeadCell>
-              <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
-                Check no.
+                OR no.
               </Table.HeadCell>
               <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
                 <SortButton
@@ -230,6 +223,9 @@ export function CashDisbursementDataTable() {
               </Table.HeadCell>
               <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
                 Location
+              </Table.HeadCell>
+              <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
+                Cash (Debit)
               </Table.HeadCell>
               <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
                 Particular
@@ -250,17 +246,19 @@ export function CashDisbursementDataTable() {
                       <HandleDateFormat date={transaction?.date} />
                     </Table.Cell>
                     <Table.Cell className="capitalize">
-                      {transaction?.payeeName?.registeredName}
+                      {transaction?.payorName}
                     </Table.Cell>
                     <Table.Cell className="capitalize">
-                      {transaction?.cvNo}
+                      {transaction?.orNo}
                     </Table.Cell>
-                    <Table.Cell>{transaction?.checkNo}</Table.Cell>
-                    <Table.Cell className="capitalize">
+                    <Table.Cell>
                       {transaction?.cashAccount?.accountName}
                     </Table.Cell>
                     <Table.Cell className="capitalize">
                       {transaction?.location?.name}
+                    </Table.Cell>
+                    <Table.Cell className="capitalize">
+                      {transaction?.cashAmount}
                     </Table.Cell>
                     <Table.Cell className="capitalize">
                       {transaction?.particular}
@@ -270,16 +268,16 @@ export function CashDisbursementDataTable() {
                         <Button
                           size="xs"
                           color="light"
-                          onClick={() =>
-                            handleEditCashDisbursement(transaction?._id)
-                          }
+                          //   onClick={() =>
+                          //     handleEditCashDisbursement(transaction?._id)
+                          //   }
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
                         <Button
                           size="xs"
                           color="failure"
-                          onClick={() => handleDelete(transaction?._id)}
+                            onClick={() => handleDelete(transaction?._id)}
                         >
                           <Trash className="h-4 w-4" />
                         </Button>

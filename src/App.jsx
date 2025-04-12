@@ -12,6 +12,7 @@ import { userAllowedViewSystemConfig } from "./constants/UserConstants";
 // IMPORT PAGES ROUTES
 import { transactions } from "./Components/all-routes/transactions";
 import { CashDisbursementFormPage } from "./Pages/transaction/CashDisbursementFormPage";
+import { CashReceiptFormPage } from "./Pages/transaction/CashReceiptFormPage";
 import {
   journals,
   ledgers,
@@ -57,6 +58,7 @@ function App() {
                 );
               })}
               <Route path="/transaction/cashdisbursement/form/:id?" element={<CashDisbursementFormPage />} />
+              <Route path="/transaction/cashreceipts/form/:id?" element={<CashReceiptFormPage />} />
 
               {/* All pages under REPORTS section */}
               {/* This is the Journals */}

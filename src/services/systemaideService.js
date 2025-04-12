@@ -218,6 +218,17 @@ export const getChildAccounts = async (id) => {
   }
 };
 
+export const getAllChildAccounts = async () => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.get("/chart-of-account/accounts/child");
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
 export const createAccount = async (data) => {
   try {
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
@@ -228,6 +239,17 @@ export const createAccount = async (data) => {
     // return error?.response?.data;
   }
 };
+
+export const addSubAccount = async (parentAccountId, data) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.post(`/chart-of-account/${parentAccountId}/child`, data);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+}
 
 export const getAccountById = async (id) => {
   try {

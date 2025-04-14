@@ -1,12 +1,19 @@
 import { Badge, Button, Label, Select, Table, TextInput } from "flowbite-react";
 import { ChevronDown, ChevronUp, Plus, Trash } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { createCashReceiptTransaction, getAllAccounts, getAllLocations, getCashReceiptTransactionById, updateCashReceiptTransaction } from "../../services/systemaideService";
+import { formatInputDate } from "../../Components/reusable-functions/formatInputDate";
+import { safeJsonParse } from "../../Components/reusable-functions/safeJsonParse";
+import swal2 from "sweetalert2";
 
 export function CashReceiptFormPage() {
   const navigate = useNavigate();
   const params = useParams();
+   const [locationsSelectOptions, setLocationsSelectOptions] = useState([]);
+  const [accountsSelectOptions, setAccountsSelectOptions] = useState([]);
   const [isFirstOptionDisabled, setIsFirstOptionDisabled] = useState(false);
+  const [transactionData, setTransactionData] = useState(null);
   const [formData, setFormData] = useState({
     date: "",
     month: new Date().toLocaleString("default", { month: "long" }),
@@ -37,6 +44,26 @@ export function CashReceiptFormPage() {
     },
   ]);
   const [isLinesCollapsed, setIsLinesCollapsed] = useState(false);
+
+  const fetchAllLocations = async () => {
+    try {
+      const response = await getAllLocations();
+      if (!response?.success) console.log(response?.message);
+      setLocationsSelectOptions(response?.data);
+    } catch (error) {
+      console.error("Error fetching Locations:", error);
+    }
+  };
+
+  const fetchAllAccounts = async () => {
+    try {
+      const response = await getAllAccounts();
+      if (!response?.success) console.log(response?.message);
+      setAccountsSelectOptions(response?.data);
+    } catch (error) {
+      console.error("Error fetching Accounts:", error);
+    }
+  };
 
   const handleChange = async (e) => {
     const { name, value, type, dataset } = e.target;
@@ -107,14 +134,102 @@ export function CashReceiptFormPage() {
     navigate(-1);
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Create a new object with the updated transactionLines
+    const updatedFormData = {
+      ...formData,
+      transactionLines: JSON.stringify(formData?.transactionLines),
+    };
+
+    try {
+      let response = null;
+      if (transactionData) {
+        response = await updateCashReceiptTransaction(
+          transactionData?._id,
+          JSON.stringify(updatedFormData)
+        );
+      } else {
+        response = await createCashReceiptTransaction(
+          JSON.stringify(updatedFormData)
+        );
+      }
+      if (response?.success) {
+        await swal2.fire({
+          icon: "success",
+          title: "Success",
+          text: "Transaction saved successfully!",
+        });
+        navigate(-1);
+      } else {
+        await swal2.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to save transaction!",
+        });
+      }
+    } catch (error) {
+      console.error("Error saving transaction:", error);
+    }
+  };
+
+  const fetchTransactionById = async (id) => {
+    try {
+      const response = await getCashReceiptTransactionById(id);
+      if(response?.success) {
+        setTransactionData(response?.data);
+      } else {
+        console.log(response?.message);
+      }
+    } catch (error) {
+      console.error("Error fetching Transaction:", error);
+    } 
+  };
+
+  useEffect(() => {
+    fetchAllLocations();
+    fetchAllAccounts();
+
+    if(params?.id) {
+      fetchTransactionById(params?.id);
+    } else {
+      setTransactionData(null);
+    }
+  }, []);
+
+  useEffect(() => {
+      if (transactionData) {
+        setFormData({
+          date: formatInputDate(transactionData?.date),
+          month: transactionData?.month,
+          year: transactionData?.year,
+          location: transactionData?.location?._id,
+          orNo: transactionData?.orNo,
+          payorName: transactionData?.payorName,
+          address: transactionData?.address,
+          tin: transactionData?.tin,
+          cashAccount: transactionData?.cashAccount?._id,
+          cashAmount: transactionData?.cashAmount,
+          particular: transactionData?.particular,
+          transactionLines: transactionData?.transactionLines || [],
+        });
+        // Set the lines state with the transactions from transactionData
+        setLines(
+          transactionData?.transactionLines &&
+            safeJsonParse(transactionData?.transactionLines).length > 0
+            ? safeJsonParse(transactionData?.transactionLines)
+            : []
+        );
+      }
+    }, [transactionData]);
+
   return (
     <>
       <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
         <h2 className="text-xl font-semibold">Cash Receipt Journal</h2>
 
-        <form
-        // onSubmit={handleSubmit}
-        >
+        <form onSubmit={handleSubmit}>
           <div className="mb-4 rounded bg-white dark:bg-gray-800 p-4 shadow">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               <div>
@@ -123,8 +238,8 @@ export function CashReceiptFormPage() {
                   id="date"
                   name="date"
                   type="date"
-                  // onChange={handleChange}
-                  // value={formData?.date}
+                  onChange={handleChange}
+                  value={formData?.date}
                   required
                 />
               </div>
@@ -135,9 +250,9 @@ export function CashReceiptFormPage() {
                   id="month"
                   name="month"
                   type="text"
-                  // onChange={handleChange}
-                  // value={formData?.month}
-                  // readOnly={transactionData?.month ? false : true}
+                  onChange={handleChange}
+                  value={formData?.month}
+                  readOnly={transactionData?.month ? false : true}
                   required
                 />
               </div>
@@ -148,9 +263,9 @@ export function CashReceiptFormPage() {
                   id="year"
                   name="year"
                   type="text"
-                  // onChange={handleChange}
-                  // value={formData?.year}
-                  // readOnly={transactionData?.year ? false : true}
+                  onChange={handleChange}
+                  value={formData?.year}
+                  readOnly={transactionData?.year ? false : true}
                   required
                 />
               </div>
@@ -160,24 +275,24 @@ export function CashReceiptFormPage() {
                 <Select
                   id="location"
                   name="location"
-                  // onFocus={handleSelectFocus}
-                  // onChange={handleChange}
-                  // value={formData?.location}
-                  // defaultValue={formData?.location}
+                  onFocus={handleSelectFocus}
+                  onChange={handleChange}
+                  value={formData?.location}
+                  defaultValue={formData?.location}
                   required
                 >
                   <option
                     className="uppercase"
                     value=""
-                    // disabled={isFirstOptionDisabled}
+                    disabled={isFirstOptionDisabled}
                   >
                     Select location
                   </option>
-                  {/* {locationsSelectOptions.map((location, index) => (
-                        <option key={index + 1} value={location?._id}>
-                            {location?.name.toUpperCase()}
-                        </option>
-                        ))} */}
+                  {locationsSelectOptions.map((location, index) => (
+                    <option key={index + 1} value={location?._id}>
+                      {location?.name.toUpperCase()}
+                    </option>
+                  ))}
                 </Select>
               </div>
 
@@ -187,8 +302,8 @@ export function CashReceiptFormPage() {
                   id="orNo"
                   type="text"
                   name="orNo"
-                  // value={formData?.cvNo}
-                  // onChange={handleChange}
+                  value={formData?.orNo}
+                  onChange={handleChange}
                   placeholder="OR No."
                   required
                 />
@@ -200,8 +315,8 @@ export function CashReceiptFormPage() {
                   id="payorName"
                   type="text"
                   name="payorName"
-                  // value={formData?.checkNo}
-                  // onChange={handleChange}
+                  value={formData?.payorName}
+                  onChange={handleChange}
                   placeholder="Payor's Name"
                   required
                 />
@@ -213,8 +328,8 @@ export function CashReceiptFormPage() {
                   id="address"
                   type="text"
                   name="address"
-                  // onChange={handleChange}
-                  // value={formData?.address}
+                  onChange={handleChange}
+                  value={formData?.address}
                   placeholder="Address"
                   required
                 />
@@ -226,8 +341,8 @@ export function CashReceiptFormPage() {
                   id="tin"
                   type="text"
                   name="tin"
-                  // onChange={handleChange}
-                  // value={formData?.tin}
+                  onChange={handleChange}
+                  value={formData?.tin}
                   placeholder="TIN"
                   required
                 />
@@ -238,23 +353,23 @@ export function CashReceiptFormPage() {
                 <Select
                   id="cashAccount"
                   name="cashAccount"
-                  // onFocus={handleSelectFocus}
-                  // onChange={handleChange}
-                  // value={formData?.cashAccount}
+                  onFocus={handleSelectFocus}
+                  onChange={handleChange}
+                  value={formData?.cashAccount}
                   required
                 >
                   <option
                     className="uppercase"
                     value=""
-                    //   disabled={isFirstOptionDisabled}
+                    disabled={isFirstOptionDisabled}
                   >
                     Select account
                   </option>
-                  {/* {accountsSelectOptions.map((account, index) => (
-                      <option key={index + 1} value={account?._id}>
-                        {account?.accountName?.toUpperCase()}
-                      </option>
-                    ))} */}
+                  {accountsSelectOptions.map((account, index) => (
+                    <option key={index + 1} value={account?._id}>
+                      {account?.accountName?.toUpperCase()}
+                    </option>
+                  ))}
                 </Select>
               </div>
 
@@ -264,8 +379,8 @@ export function CashReceiptFormPage() {
                   id="cashAmount"
                   type="text"
                   name="cashAmount"
-                  // onChange={handleChange}
-                  // value={formData?.address}
+                  onChange={handleChange}
+                  value={formData?.cashAmount}
                   placeholder="Cash (Debit)"
                   required
                 />
@@ -277,8 +392,8 @@ export function CashReceiptFormPage() {
                   id="particular"
                   type="text"
                   name="particular"
-                  // onChange={handleChange}
-                  // value={formData?.particular}
+                  onChange={handleChange}
+                  value={formData?.particular}
                   placeholder="Particular"
                   required
                 />
@@ -493,7 +608,7 @@ export function CashReceiptFormPage() {
               Cancel
             </Button>
             <Button color="success" type="submit">
-              Save Disbursement
+              Save Receipt
             </Button>
           </div>
         </form>

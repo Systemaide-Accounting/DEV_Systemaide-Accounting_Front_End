@@ -182,11 +182,11 @@ export function CashDisbursementFormPage() {
         await swal2.fire({
           icon: "error",
           title: "Error",
-          text: response?.message,
+          text: "Failed to save transaction!",
         });
       }
     } catch (error) {
-      console.error("Error creating Transaction:", error);
+      console.error("Error saving transaction:", error);
     }
   };
 

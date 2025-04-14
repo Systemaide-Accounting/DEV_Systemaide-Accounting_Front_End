@@ -1,6 +1,7 @@
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useState } from "react";
 import { signIn } from "../../services/authService";
+import swal2 from "sweetalert2";
 
 export function LoginForm() {
 
@@ -34,6 +35,14 @@ export function LoginForm() {
         
         // window.location.replace(url);
         window.location.href = import.meta.env.VITE_SYSTEMAIDE_MAIN_URL;
+      } else {
+        setIsLoading(false);
+        swal2.fire({
+          icon: "error",
+          title: "Sign In Failed",
+          text: "Your email or password is incorrect.",
+          confirmButtonText: "Try Again",
+        });
       }
     };
 

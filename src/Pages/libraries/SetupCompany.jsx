@@ -559,9 +559,7 @@ export function SetupCompany() {
                         name="rdoNumber"
                         id="rdoNumber"
                         value={formData?.rdoNumber}
-                        placeholder="NUMBER"
-                        pattern="\d{3}"
-                        maxLength="3"
+                        placeholder="RDO"
                         onChange={handleChange}
                         required
                       />

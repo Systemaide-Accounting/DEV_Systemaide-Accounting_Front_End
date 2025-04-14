@@ -31,10 +31,10 @@ export function SubAccnt() {
   }, [selectedAccount]);
 
   // Fetch child accounts every 5 seconds
-  useEffect(() => {
-    const intervalId = setInterval(fetchChildAccounts, 5000);
-    return () => clearInterval(intervalId); // Cleanup interval on component unmount
-  }, []);
+  // useEffect(() => {
+  //   const intervalId = setInterval(fetchChildAccounts, 5000);
+  //   return () => clearInterval(intervalId); // Cleanup interval on component unmount
+  // }, []);
 
   const handleAddSubAccntModalForm = () => {
     setOpenModal(true);

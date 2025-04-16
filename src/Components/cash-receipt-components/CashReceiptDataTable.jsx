@@ -52,7 +52,7 @@ export function CashReceiptDataTable() {
   }, []);
 
   // Handle edit action
-  const handleEditCashDisbursement = (transactionId) => {
+  const handleEditTransaction = (transactionId) => {
     navigate(`/transaction/cashreceipts/form/${transactionId}`);
   };
 
@@ -272,7 +272,7 @@ export function CashReceiptDataTable() {
                           size="xs"
                           color="light"
                             onClick={() =>
-                              handleEditCashDisbursement(transaction?._id)
+                              handleEditTransaction(transaction?._id)
                             }
                         >
                           <Edit className="h-4 w-4" />

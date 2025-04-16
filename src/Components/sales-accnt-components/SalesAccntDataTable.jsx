@@ -2,16 +2,14 @@ import { Button, Select, Table, TextInput } from "flowbite-react";
 import { Edit, Plus, Search, Trash } from "lucide-react";
 import { SortButton } from "../data-table-components/SortButton";
 import { SimplePagination } from "../data-table-components/SimplePagination";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { deleteCashDisbursementTransaction, getAllCashDisbursementTransactions } from "../../services/systemaideService";
-import { HandleDateFormat } from "../reusable-functions/DateFormatter";
-import { HandleFullNameFormat } from "../reusable-functions/NameFormatter";
-import { safeJsonParse } from "../reusable-functions/safeJsonParse";
-import swal2 from "sweetalert2";
 import { rowSizeOptionsJSON } from "../data-table-components/rowSizeOptionsJSON";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { deleteSalesAccountTransaction, getAllSalesAccountTransactions, getSalesAccountTransactionById } from "../../services/systemaideService";
+import { HandleDateFormat } from "../reusable-functions/DateFormatter";
+import swal2 from "sweetalert2";
 
-export function CashDisbursementDataTable() {
+export function SalesAccntDataTable() {
   const navigate = useNavigate();
   const [transactionsData, setTransactionsData] = useState([]);
   const [transactionSearch, setTransactionSearch] = useState("");
@@ -25,7 +23,7 @@ export function CashDisbursementDataTable() {
 
   const fetchAllTransactions = async () => {
     try {
-      const response = await getAllCashDisbursementTransactions();
+      const response = await getAllSalesAccountTransactions();
       if (response?.success) {
         setTransactionsData(response?.data);
       } else {
@@ -49,7 +47,7 @@ export function CashDisbursementDataTable() {
 
   // Handle edit action
   const handleEditTransaction = (transactionId) => {
-    navigate(`/transaction/cashdisbursement/form/${transactionId}`);
+    navigate(`/transaction/salesonaccount/form/${transactionId}`);
   };
 
   // Handle delete action
@@ -68,9 +66,7 @@ export function CashDisbursementDataTable() {
       .then(async (result) => {
         if (result.isConfirmed) {
           try {
-            const response = await deleteCashDisbursementTransaction(
-              transactionId
-            );
+            const response = await deleteSalesAccountTransaction(transactionId);
             if (response?.success) {
               await fetchAllTransactions();
               await swal2.fire(
@@ -115,13 +111,13 @@ export function CashDisbursementDataTable() {
   };
 
   const navigateToForm = async () => {
-    navigate("/transaction/cashdisbursement/form");
+    navigate("/transaction/salesonaccount/form");
   };
 
   // filtered and sorted transactions
   const filteredTransactions = transactionsData
     .filter((transaction) =>
-      (transaction?.payeeName?.registeredName?.toLowerCase() || "").includes(
+      (transaction?.customerName?.toLowerCase() || "").includes(
         transactionSearch.toLowerCase()
       )
     )
@@ -162,6 +158,7 @@ export function CashDisbursementDataTable() {
       <div className="mb-4 rounded bg-white dark:bg-gray-800 p-4 shadow">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
           <h2 className="text-xl font-semibold">Summary</h2>
+
           <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
             <div className="relative w-full sm:w-64">
               <TextInput
@@ -199,31 +196,25 @@ export function CashDisbursementDataTable() {
                 </SortButton>
               </Table.HeadCell>
               <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
-                <SortButton
-                  column="registeredName"
-                  currentSort={transactionSort}
-                  onSort={handleTransactionSort}
-                >
-                  Payee's Name
-                </SortButton>
-              </Table.HeadCell>
-              <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
-                CV No.
-              </Table.HeadCell>
-              <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
-                Check No.
-              </Table.HeadCell>
-              <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
-                <SortButton
-                  column="cashAccount"
-                  currentSort={transactionSort}
-                  onSort={handleTransactionSort}
-                >
-                  Cash Account
-                </SortButton>
+                Invoice No.
               </Table.HeadCell>
               <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
                 Location
+              </Table.HeadCell>
+              <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
+                <SortButton
+                  column="customerName"
+                  currentSort={transactionSort}
+                  onSort={handleTransactionSort}
+                >
+                  Customer's Name
+                </SortButton>
+              </Table.HeadCell>
+              <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
+                Address
+              </Table.HeadCell>
+              <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
+                TIN
               </Table.HeadCell>
               <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
                 Particular
@@ -244,17 +235,17 @@ export function CashDisbursementDataTable() {
                       <HandleDateFormat date={transaction?.date} />
                     </Table.Cell>
                     <Table.Cell className="capitalize">
-                      {transaction?.payeeName?.registeredName}
-                    </Table.Cell>
-                    <Table.Cell className="capitalize">
-                      {transaction?.cvNo}
-                    </Table.Cell>
-                    <Table.Cell>{transaction?.checkNo}</Table.Cell>
-                    <Table.Cell className="capitalize">
-                      {transaction?.cashAccount?.accountName}
+                      {transaction?.invoiceNo}
                     </Table.Cell>
                     <Table.Cell className="capitalize">
                       {transaction?.location?.name}
+                    </Table.Cell>
+                    <Table.Cell>{transaction?.customerName}</Table.Cell>
+                    <Table.Cell className="capitalize">
+                      {transaction?.address}
+                    </Table.Cell>
+                    <Table.Cell className="capitalize">
+                      {transaction?.tin}
                     </Table.Cell>
                     <Table.Cell className="capitalize">
                       {transaction?.particular}

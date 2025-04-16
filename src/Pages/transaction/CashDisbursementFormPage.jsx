@@ -154,11 +154,20 @@ export function CashDisbursementFormPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    let updatedFormData = null;
     // Create a new object with the updated transactionLines
-    const updatedFormData = {
-      ...formData,
-      transactionLines: JSON.stringify(formData?.transactionLines),
-    };
+    if (transactionData?.transactionLines) {
+      updatedFormData = {
+        ...formData,
+        transactionLines: JSON.stringify(formData?.transactionLines),
+      };
+    } else {
+      updatedFormData = {
+        ...formData,
+        transactionLines: "",
+      };
+    }
+    
     try {
       let response = null;
       if (transactionData) {
@@ -196,7 +205,19 @@ export function CashDisbursementFormPage() {
       if(response?.success) {
         setTransactionData(response?.data);
       } else {
-        console.log(response?.message);
+        await swal2
+          .fire({
+            icon: "error",
+            title: "Error",
+            text: "Failed to fetch transaction!",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false,
+            confirmButtonText: "Go Back",
+          })
+          .then(() => {
+            navigate(-1);
+          });
       }
     } catch (error) {
       console.error("Error fetching Transaction:", error);

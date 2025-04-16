@@ -137,11 +137,19 @@ export function CashReceiptFormPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    let updatedFormData = null;
     // Create a new object with the updated transactionLines
-    const updatedFormData = {
-      ...formData,
-      transactionLines: JSON.stringify(formData?.transactionLines),
-    };
+    if (transactionData?.transactionLines) {
+      updatedFormData = {
+        ...formData,
+        transactionLines: JSON.stringify(formData?.transactionLines),
+      };
+    } else {
+      updatedFormData = {
+        ...formData,
+        transactionLines: "",
+      };
+    }
 
     try {
       let response = null;

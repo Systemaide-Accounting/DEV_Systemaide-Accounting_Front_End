@@ -276,7 +276,7 @@ export const updateAccount = async (id, data) => {
 export const deleteAccount = async (id) => {
   try {
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
-    const response = await authenticatedApiService.patch(`/chart-of-account/delete/${id}`);
+    const response = await authenticatedApiService.delete(`/chart-of-account/delete/${id}`);
     return response?.data;
   } catch (error) {
     console.log(error);
@@ -331,7 +331,7 @@ export const updateLocation = async (id, data) => {
 export const deleteLocation = async (id) => {
   try {
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
-    const response = await authenticatedApiService.patch(`/location/delete/${id}`);
+    const response = await authenticatedApiService.delete(`/location/delete/${id}`);
     return response?.data;
   } catch (error) {
     console.log(error);
@@ -386,7 +386,7 @@ export const updateBranch = async (id, data) => {
 export const deleteBranch = async (id) => {
   try {
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
-    const response = await authenticatedApiService.patch(`/branch/delete/${id}`);
+    const response = await authenticatedApiService.delete(`/branch/delete/${id}`);
     return response?.data;
   } catch (error) {
     console.log(error);
@@ -474,7 +474,7 @@ export const updateAgent = async (id, data) => {
 export const deleteAgent = async (id) => {
   try {
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
-    const response = await authenticatedApiService.patch(`/agent/delete/${id}`);
+    const response = await authenticatedApiService.delete(`/agent/delete/${id}`);
     return response?.data;
   } catch (error) {
     console.log(error);
@@ -529,7 +529,117 @@ export const updateCashDisbursementTransaction = async (id, data) => {
 export const deleteCashDisbursementTransaction = async (id) => {
   try {
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
-    const response = await authenticatedApiService.patch(`/cash-disbursement/delete/${id}`);
+    const response = await authenticatedApiService.delete(`/cash-disbursement/delete/${id}`);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const getAllCashReceiptTransactions = async () => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.get("/cash-receipts");
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const createCashReceiptTransaction = async (data) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.post("/cash-receipts", data);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const getCashReceiptTransactionById = async (id) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.get(`/cash-receipts/${id}`);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const updateCashReceiptTransaction = async (id, data) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.patch(`/cash-receipts/${id}`, data);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const deleteCashReceiptTransaction = async (id) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.delete(`/cash-receipts/delete/${id}`);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+}
+
+export const getAllSalesAccountTransactions = async () => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.get("/sales-on-account");
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const createSalesAccountTransaction = async (data) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.post("/sales-on-account", data);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const getSalesAccountTransactionById = async (id) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.get(`/sales-on-account/${id}`);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const updateSalesAccountTransaction = async (id, data) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.patch(`/sales-on-account/${id}`, data);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const deleteSalesAccountTransaction = async (id) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.delete(`/sales-on-account/delete/${id}`);
     return response?.data;
   } catch (error) {
     console.log(error);

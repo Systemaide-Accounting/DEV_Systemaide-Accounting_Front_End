@@ -4,14 +4,18 @@ import { SortButton } from "../data-table-components/SortButton";
 import { SimplePagination } from "../data-table-components/SimplePagination";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { deleteCashDisbursementTransaction, getAllCashDisbursementTransactions } from "../../services/systemaideService";
+import { deleteCashReceiptTransaction, getAllCashReceiptTransactions } from "../../services/systemaideService";
 import { HandleDateFormat } from "../reusable-functions/DateFormatter";
-import { HandleFullNameFormat } from "../reusable-functions/NameFormatter";
-import { safeJsonParse } from "../reusable-functions/safeJsonParse";
 import swal2 from "sweetalert2";
-import { rowSizeOptionsJSON } from "../data-table-components/rowSizeOptionsJSON";
 
-export function CashDisbursementDataTable() {
+const rowSizeOptionsJSON = JSON.stringify([
+  { value: 5, label: "5" },
+  { value: 10, label: "10" },
+  { value: 20, label: "20" },
+  { value: 50, label: "50" },
+]);
+
+export function CashReceiptDataTable() {
   const navigate = useNavigate();
   const [transactionsData, setTransactionsData] = useState([]);
   const [transactionSearch, setTransactionSearch] = useState("");
@@ -25,7 +29,7 @@ export function CashDisbursementDataTable() {
 
   const fetchAllTransactions = async () => {
     try {
-      const response = await getAllCashDisbursementTransactions();
+      const response = await getAllCashReceiptTransactions();
       if (response?.success) {
         setTransactionsData(response?.data);
       } else {
@@ -49,7 +53,7 @@ export function CashDisbursementDataTable() {
 
   // Handle edit action
   const handleEditTransaction = (transactionId) => {
-    navigate(`/transaction/cashdisbursement/form/${transactionId}`);
+    navigate(`/transaction/cashreceipts/form/${transactionId}`);
   };
 
   // Handle delete action
@@ -68,9 +72,7 @@ export function CashDisbursementDataTable() {
       .then(async (result) => {
         if (result.isConfirmed) {
           try {
-            const response = await deleteCashDisbursementTransaction(
-              transactionId
-            );
+            const response = await deleteCashReceiptTransaction(transactionId);
             if (response?.success) {
               await fetchAllTransactions();
               await swal2.fire(
@@ -115,13 +117,16 @@ export function CashDisbursementDataTable() {
   };
 
   const navigateToForm = async () => {
-    navigate("/transaction/cashdisbursement/form");
+    navigate("/transaction/cashreceipts/form");
   };
 
   // filtered and sorted transactions
   const filteredTransactions = transactionsData
     .filter((transaction) =>
-      (transaction?.payeeName?.registeredName?.toLowerCase() || "").includes(
+      //   (transaction?.payorName?.registeredName?.toLowerCase() || "").includes(
+      //     transactionSearch.toLowerCase()
+      //   )
+      (transaction?.payorName?.toLowerCase() || "").includes(
         transactionSearch.toLowerCase()
       )
     )
@@ -200,18 +205,15 @@ export function CashDisbursementDataTable() {
               </Table.HeadCell>
               <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
                 <SortButton
-                  column="registeredName"
+                  column="payorName"
                   currentSort={transactionSort}
                   onSort={handleTransactionSort}
                 >
-                  Payee's Name
+                  Payor's Name
                 </SortButton>
               </Table.HeadCell>
               <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
-                CV No.
-              </Table.HeadCell>
-              <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
-                Check No.
+                OR no.
               </Table.HeadCell>
               <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
                 <SortButton
@@ -224,6 +226,9 @@ export function CashDisbursementDataTable() {
               </Table.HeadCell>
               <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
                 Location
+              </Table.HeadCell>
+              <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
+                Cash (Debit)
               </Table.HeadCell>
               <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
                 Particular
@@ -244,17 +249,19 @@ export function CashDisbursementDataTable() {
                       <HandleDateFormat date={transaction?.date} />
                     </Table.Cell>
                     <Table.Cell className="capitalize">
-                      {transaction?.payeeName?.registeredName}
+                      {transaction?.payorName}
                     </Table.Cell>
                     <Table.Cell className="capitalize">
-                      {transaction?.cvNo}
+                      {transaction?.orNo}
                     </Table.Cell>
-                    <Table.Cell>{transaction?.checkNo}</Table.Cell>
-                    <Table.Cell className="capitalize">
+                    <Table.Cell>
                       {transaction?.cashAccount?.accountName}
                     </Table.Cell>
                     <Table.Cell className="capitalize">
                       {transaction?.location?.name}
+                    </Table.Cell>
+                    <Table.Cell className="capitalize">
+                      {transaction?.cashAmount}
                     </Table.Cell>
                     <Table.Cell className="capitalize">
                       {transaction?.particular}
@@ -264,9 +271,9 @@ export function CashDisbursementDataTable() {
                         <Button
                           size="xs"
                           color="light"
-                          onClick={() =>
-                            handleEditTransaction(transaction?._id)
-                          }
+                            onClick={() =>
+                              handleEditTransaction(transaction?._id)
+                            }
                         >
                           <Edit className="h-4 w-4" />
                         </Button>

@@ -12,6 +12,8 @@ import { userAllowedViewSystemConfig } from "./constants/UserConstants";
 // IMPORT PAGES ROUTES
 import { transactions } from "./Components/all-routes/transactions";
 import { CashDisbursementFormPage } from "./Pages/transaction/CashDisbursementFormPage";
+import { CashReceiptFormPage } from "./Pages/transaction/CashReceiptFormPage";
+import { SalesOnAccountFormPage } from "./Pages/transaction/SalesOnAccountFormPage";
 import {
   journals,
   ledgers,
@@ -22,7 +24,6 @@ import { libraries } from "./Components/all-routes/libraries";
 import { utilities, backups } from "./Components/all-routes/utilities";
 import { SystemConfiguration } from "./Pages/SystemConfiguration";
 import { useEffect } from "react";
-
 
 function App() {
 
@@ -57,6 +58,8 @@ function App() {
                 );
               })}
               <Route path="/transaction/cashdisbursement/form/:id?" element={<CashDisbursementFormPage />} />
+              <Route path="/transaction/cashreceipts/form/:id?" element={<CashReceiptFormPage />} />
+              <Route path="/transaction/salesonaccount/form/:id?" element={<SalesOnAccountFormPage />} />
 
               {/* All pages under REPORTS section */}
               {/* This is the Journals */}

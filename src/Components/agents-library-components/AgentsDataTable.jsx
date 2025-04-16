@@ -66,7 +66,7 @@ export function AgentsDataTable() {
   };
 
   // Handle row size change
-  const handleLocationRowSizeChange = (e) => {
+  const handleAgentRowSizeChange = (e) => {
     const newSize = Number.parseInt(e.target.value);
     setAgentsPerPage(newSize);
     setAgentPage(1); // Reset to first page when changing row size
@@ -343,7 +343,7 @@ export function AgentsDataTable() {
               <Select
                 className="w-16"
                 value={agentsPerPage}
-                onChange={handleLocationRowSizeChange}
+                onChange={handleAgentRowSizeChange}
               >
                 {rowSizeOptions.map((option) => (
                   <option key={option.value} value={option.value}>

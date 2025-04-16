@@ -1,6 +1,6 @@
-import { Edit, Plus, Trash } from "lucide-react";
+import { Edit, Plus, Search, Trash } from "lucide-react";
 import mainAccountsDataJSON from "../../sample-data/mainAccountsData.json";
-import { Button, Table } from "flowbite-react";
+import { Button, Table, TextInput } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { getColorByLevel } from "../reusable-functions/getColorByLevel";
 import { deleteAccount, getAccountById, getAllParentAccounts } from "../../services/systemaideService";
@@ -127,12 +127,33 @@ export function CombinedAccnts() {
 
   const flattenedAccounts = flattenAccounts(filteredAccntsData);
   
-  console.log("flattenedAccounts", flattenedAccounts);
-  
   return (
     <>
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
-        <h2 className="text-xl mb-4">Account Classification</h2>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+          <h2 className="text-xl font-semibold">Account Classification</h2>
+          <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
+            <div className="relative w-full sm:w-64">
+              <TextInput
+                icon={Search}
+                placeholder="Search accounts..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <Button
+              color="blue"
+              className="w-full sm:w-auto"
+              onClick={() => handleAddMainAccntModalForm()}
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Add Main Account
+            </Button>
+          </div>
+        </div>
+        
+        {/* old search design */}
+        {/* <h2 className="text-xl mb-4">Account Classification</h2>
         <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
           <input
             type="text"
@@ -148,7 +169,7 @@ export function CombinedAccnts() {
             <Plus className="w-5 h-5 mr-2" />
             Add Main Account
           </button>
-        </div>
+        </div> */}
 
         <div className="overflow-x-auto" style={{ minHeight: "200px" }}>
           <Table hoverable striped>

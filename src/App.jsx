@@ -14,6 +14,7 @@ import { transactions } from "./Components/all-routes/transactions";
 import { CashDisbursementFormPage } from "./Pages/transaction/CashDisbursementFormPage";
 import { CashReceiptFormPage } from "./Pages/transaction/CashReceiptFormPage";
 import { SalesOnAccountFormPage } from "./Pages/transaction/SalesOnAccountFormPage";
+import { GeneralJournalFormPage } from "./Pages/transaction/GeneralJournalFormPage";
 import {
   journals,
   ledgers,
@@ -60,6 +61,7 @@ function App() {
               <Route path="/transaction/cashdisbursement/form/:id?" element={<CashDisbursementFormPage />} />
               <Route path="/transaction/cashreceipts/form/:id?" element={<CashReceiptFormPage />} />
               <Route path="/transaction/salesonaccount/form/:id?" element={<SalesOnAccountFormPage />} />
+              <Route path="/transaction/generaljournal/form/:id?" element={<GeneralJournalFormPage />} />
 
               {/* All pages under REPORTS section */}
               {/* This is the Journals */}

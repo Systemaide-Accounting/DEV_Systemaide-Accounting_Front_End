@@ -156,7 +156,9 @@ export function CashDisbursementFormPage() {
 
     let updatedFormData = null;
     // Create a new object with the updated transactionLines
-    if (transactionData?.transactionLines) {
+    if (formData?.transactionLines &&
+      Array.isArray(formData.transactionLines) &&
+      formData.transactionLines.length > 0) {
       updatedFormData = {
         ...formData,
         transactionLines: JSON.stringify(formData?.transactionLines),

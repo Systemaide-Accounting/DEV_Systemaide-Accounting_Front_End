@@ -119,7 +119,9 @@ export function SalesOnAccountFormPage() {
 
       let updatedFormData = null;
       // Create a new object with the updated transactionLines
-      if (transactionData?.transactionLines) {
+      if (formData?.transactionLines &&
+        Array.isArray(formData.transactionLines) &&
+        formData.transactionLines.length > 0) {
         updatedFormData = {
           ...formData,
           transactionLines: JSON.stringify(formData?.transactionLines),
@@ -157,9 +159,9 @@ export function SalesOnAccountFormPage() {
                 text: "Failed to save transaction!",
               });
             }
-          } catch (error) {
-            console.error("Error saving transaction:", error);
-          }
+      } catch (error) {
+        console.error("Error saving transaction:", error);
+      }
     };
 
     const fetchTransactionById = async (id) => {

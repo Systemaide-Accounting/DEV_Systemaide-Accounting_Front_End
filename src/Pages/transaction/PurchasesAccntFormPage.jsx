@@ -1,25 +1,17 @@
-import { Button, Label, TextInput, Select, Table, Badge } from "flowbite-react";
-import { useEffect, useState } from "react";
+import { Badge, Button, Label, Select, Table, TextInput } from "flowbite-react";
 import { ChevronDown, ChevronUp, Plus, Trash } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  createCashDisbursementTransaction,
-  getCashDisbursementTransactionById,
-  updateCashDisbursementTransaction,
-  getAllAccounts,
-  getAllAgents,
-  getAllLocations,
-} from "../../services/systemaideService";
+import { createPurchasesAccountTransaction, getAllAgents, getAllLocations, getPurchasesAccountTransactionById, updatePurchasesAccountTransaction } from "../../services/systemaideService";
 import swal2 from "sweetalert2";
 import { formatInputDate } from "../../Components/reusable-functions/formatInputDate";
 import { safeJsonParse } from "../../Components/reusable-functions/safeJsonParse";
 
-export function CashDisbursementFormPage() {
+export function PurchasesAccntFormPage() {
   const navigate = useNavigate();
   const params = useParams();
   const [locationsSelectOptions, setLocationsSelectOptions] = useState([]);
   const [agentsSelectOptions, setAgentsSelectOptions] = useState([]);
-  const [accountsSelectOptions, setAccountsSelectOptions] = useState([]);
   const [isFirstOptionDisabled, setIsFirstOptionDisabled] = useState(false);
   const [transactionData, setTransactionData] = useState(null);
   const [formData, setFormData] = useState({
@@ -27,28 +19,23 @@ export function CashDisbursementFormPage() {
     month: new Date().toLocaleString("default", { month: "long" }),
     year: new Date().getFullYear(),
     location: "",
-    cvNo: "",
-    checkNo: "",
-    payeeName: "",
+    pvNo: "",
+    invoiceNo: "",
+    supplierName: "",
     address: "",
     tin: "",
-    cashAccount: "",
     particular: "",
-    // transactions: [], // Initialize transactions as an empty array
     transactionLines: "",
   });
   const [lines, setLines] = useState([
     {
       id: Date.now(),
-      invoiceNo: "",
       purchaseType: "",
-      vatComputation: "",
-      inventoryAccount: "",
-      grossAmount: "",
+      purchaseDebit: "",
+      inputDebit: "",
       withholdingTax: "",
-      ap: "",
-      expenseAccountTitle: "",
-      taxSource: "",
+      atc: "",
+      nature: "",
     },
   ]);
   const [isLinesCollapsed, setIsLinesCollapsed] = useState(false);
@@ -63,25 +50,16 @@ export function CashDisbursementFormPage() {
     }
   };
 
+  // fetch agent with supplier as agentType (not yet implemented)
   const fetchAllAgents = async () => {
-    try {
-      const response = await getAllAgents();
-      if (!response?.success) console.log(response?.message);
-      setAgentsSelectOptions(response?.data);
-    } catch (error) {
-      console.error("Error fetching Agents:", error);
-    }
-  };
-
-  const fetchAllAccounts = async () => {
-    try {
-      const response = await getAllAccounts();
-      if (!response?.success) console.log(response?.message);
-      setAccountsSelectOptions(response?.data);
-    } catch (error) {
-      console.error("Error fetching Accounts:", error);
-    }
-  };
+      try {
+        const response = await getAllAgents();
+        if (!response?.success) console.log(response?.message);
+        setAgentsSelectOptions(response?.data);
+      } catch (error) {
+        console.error("Error fetching Agents:", error);
+      }
+    };
 
   const handleChange = async (e) => {
     const { name, value, type, dataset } = e.target;
@@ -116,20 +94,17 @@ export function CashDisbursementFormPage() {
 
   const handleSelectFocus = () => {
     setIsFirstOptionDisabled(true);
-  };
+  };  
 
   const addLine = () => {
     const newLine = {
       id: Date.now(),
-      invoiceNo: "",
       purchaseType: "",
-      vatComputation: "",
-      inventoryAccount: "",
-      grossAmount: "",
+      purchaseDebit: "",
+      inputDebit: "",
       withholdingTax: "",
-      ap: "",
-      expenseAccountTitle: "",
-      taxSource: "",
+      atc: "",
+      nature: "",
     };
     setLines([...lines, newLine]);
   };
@@ -156,9 +131,11 @@ export function CashDisbursementFormPage() {
 
     let updatedFormData = null;
     // Create a new object with the updated transactionLines
-    if (formData?.transactionLines &&
+    if (
+      formData?.transactionLines &&
       Array.isArray(formData.transactionLines) &&
-      formData.transactionLines.length > 0) {
+      formData.transactionLines.length > 0
+    ) {
       updatedFormData = {
         ...formData,
         transactionLines: JSON.stringify(formData?.transactionLines),
@@ -169,106 +146,103 @@ export function CashDisbursementFormPage() {
         transactionLines: "",
       };
     }
-    
+
     try {
-      let response = null;
-      if (transactionData) {
-        response = await updateCashDisbursementTransaction(
-          transactionData?._id,
-          JSON.stringify(updatedFormData)
+        let response = null;
+        if (transactionData) {
+        response = await updatePurchasesAccountTransaction(
+            transactionData?._id,
+            JSON.stringify(updatedFormData)
         );
-      } else {
-        response = await createCashDisbursementTransaction(
-          JSON.stringify(updatedFormData)
+        } else {
+        response = await createPurchasesAccountTransaction(
+            JSON.stringify(updatedFormData)
         );
-      }
-      if (response?.success) {
+        }
+        if (response?.success) {
         await swal2.fire({
-          icon: "success",
-          title: "Success",
-          text: "Transaction saved successfully!",
+            icon: "success",
+            title: "Success",
+            text: "Transaction saved successfully!",
         });
         navigate(-1);
-      } else {
+        } else {
         await swal2.fire({
-          icon: "error",
-          title: "Error",
-          text: "Failed to save transaction!",
+            icon: "error",
+            title: "Error",
+            text: "Failed to save transaction!",
         });
-      }
+        }
     } catch (error) {
-      console.error("Error saving transaction:", error);
+        console.error("Error saving transaction:", error);
     }
   };
 
   const fetchTransactionById = async (id) => {
-    try {
-      const response = await getCashDisbursementTransactionById(id);
-      if(response?.success) {
-        setTransactionData(response?.data);
-      } else {
-        await swal2
-          .fire({
-            icon: "error",
-            title: "Error",
-            text: "Failed to fetch transaction!",
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            allowEnterKey: false,
-            confirmButtonText: "Go Back",
-          })
-          .then(() => {
-            navigate(-1);
-          });
-      }
-    } catch (error) {
-      console.error("Error fetching Transaction:", error);
-    } 
-  };
+      try {
+        const response = await getPurchasesAccountTransactionById(id);
+        if(response?.success) {
+          setTransactionData(response?.data);
+        } else {
+          await swal2
+            .fire({
+              icon: "error",
+              title: "Error",
+              text: "Failed to fetch transaction!",
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              allowEnterKey: false,
+              confirmButtonText: "Go Back",
+            })
+            .then(() => {
+              navigate(-1);
+            });
+        }
+      } catch (error) {
+        console.error("Error fetching Transaction:", error);
+      } 
+    };
 
-  useEffect(() => {
-    fetchAllLocations();
-    fetchAllAgents();
-    fetchAllAccounts();
+    useEffect(() => {
+        fetchAllLocations();
+        fetchAllAgents();
 
-    if(params?.id) {
-      fetchTransactionById(params?.id);
-    } else {
-      setTransactionData(null);
-    }
-  }, []);
+        if(params?.id) {
+            fetchTransactionById(params?.id);
+        } else {
+            setTransactionData(null);
+        }
+    }, []);
 
-  useEffect(() => {
-    if (transactionData) {
-      setFormData({
-        date: formatInputDate(transactionData?.date),
-        month: transactionData?.month,
-        year: transactionData?.year,
-        location: transactionData?.location?._id,
-        cvNo: transactionData?.cvNo,
-        checkNo: transactionData?.checkNo,
-        payeeName: transactionData?.payeeName?._id,
-        // addressTIN: transactionData?.addressTIN,
-        address: transactionData?.address,
-        tin: transactionData?.tin,
-        cashAccount: transactionData?.cashAccount?._id,
-        particular: transactionData?.particular,
-        transactionLines: transactionData?.transactionLines || [],
-      });
-      // Set the lines state with the transactions from transactionData
-      setLines(
-        transactionData?.transactionLines &&
-          safeJsonParse(transactionData?.transactionLines).length > 0
-          ? safeJsonParse(transactionData?.transactionLines)
-          : []
-      );
-    }
-  }, [transactionData]);
+    useEffect(() => {
+        if (transactionData) {
+        setFormData({
+          date: formatInputDate(transactionData?.date),
+          month: transactionData?.month,
+          year: transactionData?.year,
+          location: transactionData?.location?._id,
+          pvNo: transactionData?.pvNo,
+          invoiceNo: transactionData?.invoiceNo,
+          supplierName: transactionData?.supplierName?._id,
+          address: transactionData?.address,
+          tin: transactionData?.tin,
+          particular: transactionData?.particular,
+          transactionLines: transactionData?.transactionLines || [],
+        });
+        // Set the lines state with the transactions from transactionData
+        setLines(
+            transactionData?.transactionLines &&
+            safeJsonParse(transactionData?.transactionLines).length > 0
+            ? safeJsonParse(transactionData?.transactionLines)
+            : []
+        );
+        }
+    }, [transactionData]);
 
   return (
     <>
       <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
-        <h2 className="text-xl font-semibold">Cash Disbursement Journal</h2>
+        <h2 className="text-xl font-semibold">Purchases Journal</h2>
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4 rounded bg-white dark:bg-gray-800 p-4 shadow">
@@ -338,39 +312,39 @@ export function CashDisbursementFormPage() {
               </div>
 
               <div>
-                <Label htmlFor="cvNo">CV No.</Label>
+                <Label htmlFor="pvNo">PV No.</Label>
                 <TextInput
-                  id="cvNo"
+                  id="pvNo"
                   type="text"
-                  name="cvNo"
-                  value={formData?.cvNo}
+                  name="pvNo"
+                  value={formData?.pvNo}
                   onChange={handleChange}
-                  placeholder="CV No."
+                  placeholder="PV No."
                   required
                 />
               </div>
 
               <div>
-                <Label htmlFor="checkNo">Check No.</Label>
+                <Label htmlFor="cvNo">Invoice No.</Label>
                 <TextInput
-                  id="checkNo"
+                  id="invoiceNo"
                   type="text"
-                  name="checkNo"
-                  value={formData?.checkNo}
+                  name="invoiceNo"
+                  value={formData?.invoiceNo}
                   onChange={handleChange}
-                  placeholder="Check No."
+                  placeholder="Invoice No."
                   required
                 />
               </div>
 
               <div>
-                <Label htmlFor="payeeName">Payee's Name</Label>
+                <Label htmlFor="supplierName">Supplier's Name</Label>
                 <Select
-                  id="payeeName"
-                  name="payeeName"
+                  id="supplierName"
+                  name="supplierName"
                   onFocus={handleSelectFocus}
                   onChange={handleChange}
-                  value={formData?.payeeName}
+                  value={formData?.supplierName}
                   required
                 >
                   <option
@@ -378,7 +352,7 @@ export function CashDisbursementFormPage() {
                     value=""
                     disabled={isFirstOptionDisabled}
                   >
-                    Select agent
+                    Select supplier
                   </option>
                   {agentsSelectOptions.map((agent, index) => (
                     <option key={index + 1} value={agent?._id}>
@@ -412,31 +386,6 @@ export function CashDisbursementFormPage() {
                   placeholder="TIN"
                   required
                 />
-              </div>
-
-              <div>
-                <Label htmlFor="cashAccount">Cash Account</Label>
-                <Select
-                  id="cashAccount"
-                  name="cashAccount"
-                  onFocus={handleSelectFocus}
-                  onChange={handleChange}
-                  value={formData?.cashAccount}
-                  required
-                >
-                  <option
-                    className="uppercase"
-                    value=""
-                    disabled={isFirstOptionDisabled}
-                  >
-                    Select account
-                  </option>
-                  {accountsSelectOptions.map((account, index) => (
-                    <option key={index + 1} value={account?._id}>
-                      {account?.accountName?.toUpperCase()}
-                    </option>
-                  ))}
-                </Select>
               </div>
 
               <div>
@@ -488,31 +437,22 @@ export function CashDisbursementFormPage() {
                 <Table>
                   <Table.Head>
                     <Table.HeadCell className=" bg-blue-300 whitespace-nowrap overflow-hidden truncate">
-                      Invoice No.
-                    </Table.HeadCell>
-                    <Table.HeadCell className=" bg-blue-300 whitespace-nowrap overflow-hidden truncate">
                       Purchase Type
                     </Table.HeadCell>
                     <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
-                      VAT Computation
+                      Purchase (Debit)
                     </Table.HeadCell>
                     <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
-                      Inventory Account
-                    </Table.HeadCell>
-                    <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
-                      Gross Amount
+                      Input (Debit)
                     </Table.HeadCell>
                     <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
                       Withholding Tax
                     </Table.HeadCell>
                     <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
-                      A/P
+                      ATC
                     </Table.HeadCell>
                     <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
-                      Expense Account Title
-                    </Table.HeadCell>
-                    <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
-                      Tax Source
+                      Nature
                     </Table.HeadCell>
                     <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
                       Action
@@ -521,17 +461,6 @@ export function CashDisbursementFormPage() {
                   <Table.Body>
                     {lines.map((line) => (
                       <Table.Row key={line.id}>
-                        <Table.Cell className="p-2">
-                          <TextInput
-                            type="text"
-                            id="invoiceNo"
-                            name="invoiceNo"
-                            data-line-id={line.id}
-                            onChange={handleChange}
-                            placeholder="Invoice No."
-                            value={line.invoiceNo}
-                          />
-                        </Table.Cell>
                         <Table.Cell className="p-2">
                           <TextInput
                             type="text"
@@ -546,34 +475,23 @@ export function CashDisbursementFormPage() {
                         <Table.Cell className="p-2">
                           <TextInput
                             type="text"
-                            id="vatComputation"
-                            name="vatComputation"
+                            id="purchaseDebit"
+                            name="purchaseDebit"
                             data-line-id={line.id}
                             onChange={handleChange}
-                            placeholder="VAT Computation"
-                            value={line.vatComputation}
+                            placeholder="Purchase (Debit)"
+                            value={line.purchaseDebit}
                           />
                         </Table.Cell>
                         <Table.Cell className="p-2">
                           <TextInput
                             type="text"
-                            id="inventoryAccount"
-                            name="inventoryAccount"
+                            id="inputDebit"
+                            name="inputDebit"
                             data-line-id={line.id}
                             onChange={handleChange}
-                            placeholder="Inventory Account"
-                            value={line.inventoryAccount}
-                          />
-                        </Table.Cell>
-                        <Table.Cell className="p-2">
-                          <TextInput
-                            type="text"
-                            id="grossAmount"
-                            name="grossAmount"
-                            data-line-id={line.id}
-                            onChange={handleChange}
-                            placeholder="Gross Amount"
-                            value={line.grossAmount}
+                            placeholder="Input (Debit)"
+                            value={line.inputDebit}
                           />
                         </Table.Cell>
                         <Table.Cell className="p-2">
@@ -590,34 +508,23 @@ export function CashDisbursementFormPage() {
                         <Table.Cell className="p-2">
                           <TextInput
                             type="text"
-                            id="ap"
-                            name="ap"
+                            id="atc"
+                            name="atc"
                             data-line-id={line.id}
                             onChange={handleChange}
-                            placeholder="A/P"
-                            value={line.ap}
+                            placeholder="ATC"
+                            value={line.atc}
                           />
                         </Table.Cell>
                         <Table.Cell className="p-2">
                           <TextInput
                             type="text"
-                            id="expenseAccountTitle"
-                            name="expenseAccountTitle"
+                            id="nature"
+                            name="nature"
                             data-line-id={line.id}
                             onChange={handleChange}
-                            placeholder="Expense Account Title"
-                            value={line.expenseAccountTitle}
-                          />
-                        </Table.Cell>
-                        <Table.Cell className="p-2">
-                          <TextInput
-                            type="text"
-                            id="taxSource"
-                            name="taxSource"
-                            data-line-id={line.id}
-                            onChange={handleChange}
-                            placeholder="Tax Source"
-                            value={line.taxSource}
+                            placeholder="Nature"
+                            value={line.nature}
                           />
                         </Table.Cell>
                         <Table.Cell>
@@ -647,7 +554,7 @@ export function CashDisbursementFormPage() {
               Cancel
             </Button>
             <Button color="success" type="submit">
-              Save Disbursement
+              Save Purchases
             </Button>
           </div>
         </form>

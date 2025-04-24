@@ -9,6 +9,8 @@ import { LoginSignUp } from "./Pages/LoginSignUp";
 import { Home } from "./Pages/Home";
 // AUTHENTICATION SERVICES
 import { userAllowedViewSystemConfig } from "./constants/UserConstants";
+// IMPORT PRINTABLES
+// DisbursementJournal
 // IMPORT PAGES ROUTES
 import { transactions } from "./Components/all-routes/transactions";
 import { CashDisbursementFormPage } from "./Pages/transaction/CashDisbursementFormPage";
@@ -66,6 +68,7 @@ function App() {
               <Route path="/transaction/purchasesonaccount/form/:id?" element={<PurchasesAccntFormPage />} />
 
               {/* All pages under REPORTS section */}
+
               {/* This is the Journals */}
               {journals.map((page, index) => {
                 return (

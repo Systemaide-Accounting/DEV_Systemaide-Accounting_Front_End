@@ -66,17 +66,17 @@ export function CashReceiptFormPage() {
   };
 
   const handleChange = async (e) => {
-    const { name, value, type, dataset } = e.target;
+    const { name, value } = e.target;
 
     // Handle changes for the main form data
-    if (!dataset.lineId) {
+    if (!e.target.dataset.lineId) {
       setFormData((prev) => ({
         ...prev,
         [name]: value,
       }));
     } else {
       // Handle changes for the transaction lines
-      const lineId = parseInt(dataset.lineId);
+      const lineId = parseInt(e.target.dataset.lineId);
       const updatedLines = lines.map((line) => {
         if (line.id === lineId) {
           return {
@@ -206,7 +206,7 @@ export function CashReceiptFormPage() {
     } else {
       setTransactionData(null);
     }
-  }, []);
+  }, [params?.id]);
 
   useEffect(() => {
       if (transactionData) {
@@ -320,7 +320,7 @@ export function CashReceiptFormPage() {
               </div>
 
               <div>
-                <Label htmlFor="payorName">Payor's Name</Label>
+                <Label htmlFor="payorName">Payor&apos;s Name</Label>
                 <TextInput
                   id="payorName"
                   type="text"

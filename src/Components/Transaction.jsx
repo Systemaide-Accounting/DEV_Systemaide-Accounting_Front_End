@@ -1,6 +1,7 @@
-// import React from "react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
+import React from "react";
 
 import { transactions } from "./all-routes/transactions";
 import { transactionIcons } from "./icons/transactionIcons";
@@ -10,26 +11,23 @@ export function Transaction({
   transactionDropdown,
   setTransactionDropdown,
 }) {
-
   const isActiveTransaction = transactions.some((transaction) =>
     isActiveLink(transaction.path)
   );
 
   const getDropdownIcon = (isOpen) => (
     <svg
-      className="w-3 h-3"
+      className={`w-4 h-4 transition-transform duration-200 ${
+        isActiveTransaction ? "text-blue-600" : "text-gray-400 group-hover:text-gray-500"
+      }`}
+      style={{ transform: isOpen ? "rotate(-180deg)" : "rotate(0deg)" }}
       aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
-      viewBox="0 0 10 6"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
     >
-      <path
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        d={isOpen ? "M1 5L5 1L9 5" : "m1 1 4 4 4-4"}
-      />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
     </svg>
   );
 
@@ -38,66 +36,69 @@ export function Transaction({
   }, [isActiveTransaction, setTransactionDropdown]);
 
   return (
-    <li>
+    <div className="px-3 pt-1.5" data-section="transactions">
       <button
         type="button"
-        className={`flex items-center w-full p-2 text-base ${
+        className={`flex items-center justify-between w-full px-4 py-2.5 text-sm font-medium rounded-lg group transition duration-200 ${
           isActiveTransaction
-            ? "text-gray-900 bg-gray-100"
-            : "text-white hover:text-gray-900"
-        } transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700`}
-        aria-controls="dropdown-example"
-        data-collapse-toggle="dropdown-example"
+            ? "bg-blue-50 text-blue-700"
+            : "text-gray-700 hover:bg-gray-50"
+        }`}
         onClick={() => setTransactionDropdown(!transactionDropdown)}
       >
-        <svg
-          className="w-[30px] h-[30px] dark:text-white"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <path
+        <div className="flex items-center gap-3">
+          <svg
+            className={`w-5 h-5 transition-colors duration-200 ${
+              isActiveTransaction
+                ? "text-blue-600"
+                : "text-gray-400 group-hover:text-gray-500"
+            }`}
+            fill="none"
+            viewBox="0 0 24 24"
             stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="3"
-            d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3"
-          />
-        </svg>
-        <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">
-          Transaction
-        </span>
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+            />
+          </svg>
+          <span>Transaction</span>
+        </div>
         {getDropdownIcon(transactionDropdown)}
       </button>
-      <ul
-        id="dropdown-example"
-        className={`${transactionDropdown ? "" : "hidden"} py-2 space-y-2`}
-      >
+      
+      <div className={`mt-1.5 space-y-1 ${transactionDropdown ? "block" : "hidden"}`}>
         {transactions.map((transaction, index) => (
-          <>
-            <li key={index} className="ml-5">
-              <Link to={`${transaction.path}`}>
-                {/* <div className="flex items-center p-2 text-white hover:text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"> */}
-                <div
-                  className={`flex items-center w-full p-2 ${
-                    isActiveLink(`${transaction.path}`)
-                      ? "text-gray-900 bg-gray-100"
-                      : "text-white hover:text-gray-900 hover:bg-gray-100"
-                  } transition duration-75 rounded-lg group dark:text-white dark:hover:bg-gray-700`}
-                >
-                  {transactionIcons[index].svg}
-                  <span className="flex-1 ms-3 whitespace-nowrap">
-                    {transaction.name}
-                  </span>
-                </div>
-              </Link>
-            </li>
-          </>
+          <Link
+            key={index}
+            to={transaction.path}
+            className={`flex items-center gap-2.5 w-full pl-11 pr-4 py-1.5 text-xs text-gray-500 font-poppins rounded-lg transition duration-200 ${
+              isActiveLink(transaction.path)
+                ? "text-blue-600 bg-blue-50/50"
+                : "hover:text-gray-900 hover:bg-gray-50"
+            }`}
+          >
+            <span className={`${
+              isActiveLink(transaction.path)
+                ? "text-blue-600"
+                : "text-gray-400 group-hover:text-gray-500"
+            }`}>
+              {React.cloneElement(transactionIcons[index].svg, {
+                className: "w-5 h-5"
+              })}
+            </span>
+            <span className={isActiveLink(transaction.path) ? "text-blue-600" : ""}>{transaction.name}</span>
+          </Link>
         ))}
-      </ul>
-    </li>
+      </div>
+    </div>
   );
 }
+
+Transaction.propTypes = {
+  isActiveLink: PropTypes.func.isRequired,
+  transactionDropdown: PropTypes.bool.isRequired,
+  setTransactionDropdown: PropTypes.func.isRequired,
+};

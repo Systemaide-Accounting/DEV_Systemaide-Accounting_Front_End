@@ -9,14 +9,19 @@ import { LoginSignUp } from "./Pages/LoginSignUp";
 import { Home } from "./Pages/Home";
 // AUTHENTICATION SERVICES
 import { userAllowedViewSystemConfig } from "./constants/UserConstants";
+// IMPORT PRINTABLES
+// DisbursementJournal
 // IMPORT PAGES ROUTES
 import { transactions } from "./Components/all-routes/transactions";
 import { CashDisbursementFormPage } from "./Pages/transaction/CashDisbursementFormPage";
 import { CashReceiptFormPage } from "./Pages/transaction/CashReceiptFormPage";
 import { SalesOnAccountFormPage } from "./Pages/transaction/SalesOnAccountFormPage";
+import { GeneralJournalFormPage } from "./Pages/transaction/GeneralJournalFormPage";
+import { PurchasesAccntFormPage } from "./Pages/transaction/PurchasesAccntFormPage";
 import {
   journals,
   ledgers,
+  printableJournals,
   triBalances,
   worksheets,
 } from "./Components/all-routes/reports";
@@ -60,8 +65,25 @@ function App() {
               <Route path="/transaction/cashdisbursement/form/:id?" element={<CashDisbursementFormPage />} />
               <Route path="/transaction/cashreceipts/form/:id?" element={<CashReceiptFormPage />} />
               <Route path="/transaction/salesonaccount/form/:id?" element={<SalesOnAccountFormPage />} />
+              <Route path="/transaction/generaljournal/form/:id?" element={<GeneralJournalFormPage />} />
+              <Route path="/transaction/purchasesonaccount/form/:id?" element={<PurchasesAccntFormPage />} />
 
               {/* All pages under REPORTS section */}
+
+              {/* This is the Printable Journals */}
+              {printableJournals.map((page, index) => {
+                return (
+                  <>
+                    <Route
+                      key={index}
+                      path={page.path}
+                      element={<page.element />}
+                    />
+                    ;
+                  </>
+                );
+              })}
+
               {/* This is the Journals */}
               {journals.map((page, index) => {
                 return (

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-
+import PropTypes from "prop-types";
+import React from "react";
 import { libraries } from "./all-routes/libraries";
 import { libraryIcons } from "./icons/libraryIcons";
 
@@ -9,26 +10,23 @@ export function Library({
   libraryDropdown,
   setLibraryDropdown,
 }) {
-
   const isActiveLibrary = libraries.some((library) =>
     isActiveLink(library.path)
   );
 
   const getDropdownIcon = (isOpen) => (
     <svg
-      className="w-3 h-3"
+      className={`w-4 h-4 transition-transform duration-200 ${
+        isActiveLibrary ? "text-blue-600" : "text-gray-400 group-hover:text-gray-500"
+      }`}
+      style={{ transform: isOpen ? "rotate(-180deg)" : "rotate(0deg)" }}
       aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
-      viewBox="0 0 10 6"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
     >
-      <path
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        d={isOpen ? "M1 5L5 1L9 5" : "m1 1 4 4 4-4"}
-      />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
     </svg>
   );
 
@@ -37,68 +35,69 @@ export function Library({
   }, [isActiveLibrary, setLibraryDropdown]);
 
   return (
-    <>
-      <li>
-        <button
-          type="button"
-          className={`flex items-center w-full p-2 text-base ${
-            isActiveLibrary
-              ? "text-gray-900 bg-gray-100"
-              : "text-white hover:text-gray-900"
-          } transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700`}
-          aria-controls="dropdown-example"
-          data-collapse-toggle="dropdown-example"
-          onClick={() => {
-            setLibraryDropdown(!libraryDropdown);
-          }}
-        >
+    <div className="px-3" data-section="library">
+      <button
+        type="button"
+        className={`flex items-center justify-between w-full px-4 py-2.5 text-sm font-medium rounded-lg group transition duration-200 ${
+          isActiveLibrary
+            ? "bg-blue-50 text-blue-700"
+            : "text-gray-700 hover:bg-gray-50"
+        }`}
+        onClick={() => setLibraryDropdown(!libraryDropdown)}
+      >
+        <div className="flex items-center gap-3">
           <svg
-            className="flex-shrink-0 w-[30px] h-[30px] transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            viewBox="0 0 22 21"
+            className={`w-6 h-6 transition-colors duration-200 ${
+              isActiveLibrary
+                ? "text-blue-600"
+                : "text-gray-400 group-hover:text-gray-500"
+            }`}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
             <path
-              fillRule="evenodd"
-              d="M6 5a2 2 0 0 1 2-2h4.157a2 2 0 0 1 1.656.879L15.249 6H19a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2v-5a3 3 0 0 0-3-3h-3.22l-1.14-1.682A3 3 0 0 0 9.157 6H6V5Z"
-              clipRule="evenodd"
-            />
-            <path
-              fillRule="evenodd"
-              d="M3 9a2 2 0 0 1 2-2h4.157a2 2 0 0 1 1.656.879L12.249 10H3V9Zm0 3v7a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-7H3Z"
-              clipRule="evenodd"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z"
             />
           </svg>
-          <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">
-            Library
-          </span>
-          {getDropdownIcon(libraryDropdown)}
-        </button>
-        <ul
-          id="dropdown-example"
-          className={`${libraryDropdown ? "" : "hidden"} py-2 space-y-2`}
-        >
-          {libraries.map((library, index) => (
-            <li key={index} className="ml-5">
-              <Link to={`${library.path}`}>
-                <div
-                  className={`flex items-center w-full p-2 ${
-                    isActiveLink(`${library.path}`)
-                      ? "text-gray-900 bg-gray-100"
-                      : "text-white hover:text-gray-900 hover:bg-gray-100"
-                  } transition duration-75 rounded-lg group dark:text-white dark:hover:bg-gray-700`}
-                >
-                  {libraryIcons[index].svg}
-                  <span className="flex-1 ms-3 whitespace-nowrap">
-                    {library.name}
-                  </span>
-                </div>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </li>
-    </>
+          <span>Library</span>
+        </div>
+        {getDropdownIcon(libraryDropdown)}
+      </button>
+      
+      <div className={`mt-1.5 space-y-1 ${libraryDropdown ? "block" : "hidden"}`}>
+        {libraries.map((library, index) => (
+          <Link
+            key={index}
+            to={library.path}
+            className={`flex items-center gap-2.5 w-full pl-11 pr-4 py-1.5 text-xs text-gray-500 font-poppins rounded-lg transition duration-200 ${
+              isActiveLink(library.path)
+                ? "text-blue-600 bg-blue-50/50"
+                : "hover:text-gray-900 hover:bg-gray-50"
+            }`}
+          >
+            <span className={`${
+              isActiveLink(library.path)
+                ? "text-blue-600"
+                : "text-gray-400 group-hover:text-gray-500"
+            }`}>
+              {React.cloneElement(libraryIcons[index].svg, {
+                className: "w-5 h-5"
+              })}
+            </span>
+            <span className={isActiveLink(library.path) ? "text-blue-600" : ""}>{library.name}</span>
+          </Link>
+        ))}
+      </div>
+    </div>
   );
 }
+
+Library.propTypes = {
+  isActiveLink: PropTypes.func.isRequired,
+  libraryDropdown: PropTypes.bool.isRequired,
+  setLibraryDropdown: PropTypes.func.isRequired,
+};

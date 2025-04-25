@@ -1,7 +1,6 @@
 // JOURNAL REPORTS
 import { CashReceiptsJournal } from "../../Pages/reports/journals/CashReceiptsJournal";
 import { DisbursementJournal } from "../../Pages/reports/journals/DisbursementJournal";
-import PrintDisbursementJournal from "../../Pages/reports/journals/DisbursementJournalPrintable";
 import { GeneralJournalReports } from "../../Pages/reports/journals/GeneralJournalReports";
 import { PurchasesJournal } from "../../Pages/reports/journals/PurchasesJournal";
 import { SalesJournal } from "../../Pages/reports/journals/SalesJournal";
@@ -43,14 +42,6 @@ export const journals = [
     name: "General Reports",
   },
 ];
-
-export const printableJournals = [
-  {
-    path: `${REPORTS_URL}/print-disbursement-journal`,
-    element: PrintDisbursementJournal,
-    name: "Print Disbursement Journal",
-  },
-]
 
 export const ledgers = [
   {

@@ -85,7 +85,7 @@ const mockDisbursements = [
 	},
 ];
 
-const PrintDisbursementJournal = () => {
+export function PrintDisbursementJournal () {
 	const [reportData, setReportData] = useState([]);
 	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
@@ -207,5 +207,3 @@ const PrintDisbursementJournal = () => {
 		</div>
 	);
 };
-
-export default PrintDisbursementJournal;

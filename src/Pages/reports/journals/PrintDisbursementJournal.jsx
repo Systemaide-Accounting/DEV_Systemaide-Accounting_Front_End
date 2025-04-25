@@ -1,3 +1,4 @@
+import { Button, Table } from "flowbite-react";
 import { formatInputDate } from "../../../Components/reusable-functions/formatInputDate";
 import { useState, useEffect } from "react";
 
@@ -145,6 +146,11 @@ export function PrintDisbursementJournal () {
 		// }
 	};
 
+	const printReport = () => {
+		document.title = `CashDisbursementJournal_${startDate}-${endDate}`;
+    	window.print();
+	};
+
 	const start = new Date(startDate);
 	const end = new Date(endDate);
 
@@ -155,55 +161,83 @@ export function PrintDisbursementJournal () {
 	}
 
 	return (
-		<div className="p-8 max-w-4xl mx-auto bg-white print:bg-white">
-			<h1 className="text-2xl font-bold mb-2">Cash Disbursement Journal</h1>
-			<h2 className="text-base text-gray-600 mb-4">
-				{formatInputDate(start)} to {formatInputDate(end)}
-			</h2>
-			<div className="text-sm text-gray-500 mb-6">
-				Generated on: {formatInputDate(new Date())}
-			</div>
-			{reportData.length === 0 ? (
-				<div>Loading...</div>
-			) : (
-				<table className="w-full border-collapse mb-8">
-					<thead>
-						<tr className="bg-blue-500 text-white">
-							<th className="text-left p-2 border-b">Date</th>
-							<th className="text-left p-2 border-b">Payee</th>
-							<th className="text-left p-2 border-b">Description</th>
-							<th className="text-left p-2 border-b">Check #</th>
-							<th className="text-right p-2 border-b">Amount</th>
-						</tr>
-					</thead>
-					<tbody>
-						{reportData.map((item, index) => (
-							<tr
-								key={item.id}
-								className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
-							>
-								<td className="p-2 border-b">
-									{formatInputDate(new Date(item.date))}
-								</td>
-								<td className="p-2 border-b">{item.payee}</td>
-								<td className="p-2 border-b">{item.description}</td>
-								<td className="p-2 border-b">{item.checkNumber}</td>
-								<td className="p-2 border-b text-right">
-									${item.amount.toFixed(2)}
-								</td>
-							</tr>
-						))}
-						<tr className="bg-gray-100 font-bold">
-							<td colSpan={4} className="p-2 border-b text-right">
-								Total
-							</td>
-							<td className="p-2 border-b text-right">
-								${totalAmount.toFixed(2)}
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			)}
-		</div>
-	);
+    <div className="p-8 max-w mx-auto bg-white print:bg-white">
+      <Button
+        color="blue"
+        onClick={printReport}
+        className="w-full mb-2 print:hidden"
+      >
+        Print
+      </Button>
+      <h1 className="text-2xl font-bold mb-2 text-center">
+        Cash Disbursement Journal
+      </h1>
+      <h2 className="text-base text-gray-600 mb-4 text-center">
+        {formatInputDate(start)} to {formatInputDate(end)}
+      </h2>
+      <div className="text-sm text-gray-500 mb-6 text-center">
+        Generated on: {formatInputDate(new Date())}
+      </div>
+      {reportData.length === 0 ? (
+        <div>Loading...</div>
+      ) : (
+        <table className="w-full border-collapse">
+          <thead>
+            <tr>
+              <th className="bg-blue-500 text-white font-normal text-base p-2 text-left">
+                Date
+              </th>
+              <th className="bg-blue-500 text-white font-normal text-base p-2 text-left">
+                Payee
+              </th>
+              <th className="bg-blue-500 text-white font-normal text-base p-2 text-left">
+                Description
+              </th>
+              <th className="bg-blue-500 text-white font-normal text-base p-2 text-left">
+                Check No.
+              </th>
+              <th className="bg-blue-500 text-white font-normal text-base p-2 text-right">
+                Amount
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200">
+            {reportData.map((item, index) => (
+              <tr
+                key={index + 1}
+                className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+              >
+                <td className="font-thin p-2 border-b border-gray-200">
+                  {formatInputDate(new Date(item.date))}
+                </td>
+                <td className="font-normal p-2 border-b border-gray-200">
+                  {item.payee}
+                </td>
+                <td className="font-normal p-2 border-b border-gray-200">
+                  {item.description}
+                </td>
+                <td className="font-normal p-2 border-b border-gray-200">
+                  {item.checkNumber}
+                </td>
+                <td className="text-right font-normal p-2 border-b border-gray-200">
+                  ${item.amount.toFixed(2)}
+                </td>
+              </tr>
+            ))}
+            <tr className="bg-gray-100">
+              <td
+                colSpan={4}
+                className="text-base text-right p-2 font-semibold"
+              >
+                Total
+              </td>
+              <td className="text-right p-2 font-semibold">
+                ${totalAmount.toFixed(2)}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
 };

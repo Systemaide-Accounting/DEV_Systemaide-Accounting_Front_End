@@ -21,6 +21,7 @@ import { PurchasesAccntFormPage } from "./Pages/transaction/PurchasesAccntFormPa
 import {
   journals,
   ledgers,
+  printableJournals,
   triBalances,
   worksheets,
 } from "./Components/all-routes/reports";
@@ -68,6 +69,20 @@ function App() {
               <Route path="/transaction/purchasesonaccount/form/:id?" element={<PurchasesAccntFormPage />} />
 
               {/* All pages under REPORTS section */}
+
+              {/* This is the Printable Journals */}
+              {printableJournals.map((page, index) => {
+                return (
+                  <>
+                    <Route
+                      key={index}
+                      path={page.path}
+                      element={<page.element />}
+                    />
+                    ;
+                  </>
+                );
+              })}
 
               {/* This is the Journals */}
               {journals.map((page, index) => {

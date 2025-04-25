@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { SubMenu } from "./SubMenu";
+import React from "react";
 
 // IMPORT PAGES ROUTES OF REPORTS
 import { journals, ledgers, triBalances, worksheets } from "./all-routes/reports";
@@ -28,6 +30,8 @@ export function Reports({ isActiveLink, reportsDropdown, setReportsDropdown }) {
   const isActiveWorksheet = worksheets.some((worksheet) =>
     isActiveLink(worksheet.path)
   );
+
+  const isAnyReportActive = isActiveJournals || isActiveLedgers || isActiveTriBalance || isActiveWorksheet;
 
   const reports = [
     {
@@ -65,12 +69,7 @@ export function Reports({ isActiveLink, reportsDropdown, setReportsDropdown }) {
   ];
 
   useEffect(() => {
-    isActiveJournals ||
-    isActiveLedgers ||
-    isActiveTriBalance ||
-    isActiveWorksheet
-      ? setReportsDropdown(true)
-      : setReportsDropdown(false);
+    setReportsDropdown(isAnyReportActive);
     setJournalsDropdown(isActiveJournals);
     setLedgersDropdown(isActiveLedgers);
     setTriBalanceDropdown(isActiveTriBalance);
@@ -81,111 +80,130 @@ export function Reports({ isActiveLink, reportsDropdown, setReportsDropdown }) {
     isActiveTriBalance,
     isActiveWorksheet,
     setReportsDropdown,
+    isAnyReportActive,
   ]);
 
   const getDropdownIcon = (isOpen) => (
     <svg
-      className="w-3 h-3"
+      className={`w-4 h-4 transition-transform duration-200 ${
+        isAnyReportActive ? "text-blue-600" : "text-gray-400 group-hover:text-gray-500"
+      }`}
+      style={{ transform: isOpen ? "rotate(-180deg)" : "rotate(0deg)" }}
       aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
-      viewBox="0 0 10 6"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
     >
-      <path
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        d={isOpen ? "M1 5L5 1L9 5" : "m1 1 4 4 4-4"}
-      />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
     </svg>
   );
 
-  const getSubMenuDropdownIcon = (isOpen) => (
+  const getSubMenuDropdownIcon = (isOpen, isActive) => (
     <svg
-      className="w-[20px] h-[20px] dark:text-white"
+      className={`w-4 h-4 transition-all duration-500 ease-in-out ${
+        isActive ? "text-blue-600" : "text-gray-400 group-hover:text-gray-500"
+      }`}
+      style={{ 
+        transform: isOpen ? "rotate(360deg) scale(0.8)" : "rotate(0deg) scale(1)",
+        transformOrigin: "center"
+      }}
       aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
       fill="none"
       viewBox="0 0 24 24"
+      stroke="currentColor"
     >
-      <path
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="3"
-        d={isOpen ? "M5 12h14" : "M5 12h14M12 5v14"}
-      />
+      {isOpen ? (
+        <path 
+          strokeLinecap="round" 
+          strokeLinejoin="round" 
+          strokeWidth="2" 
+          d="M6 18L18 6M6 6l12 12" 
+        />
+      ) : (
+        <path 
+          strokeLinecap="round" 
+          strokeLinejoin="round" 
+          strokeWidth="2" 
+          d="M12 4v16m8-8H4" 
+        />
+      )}
     </svg>
   );
 
   return (
-    <li>
+    <div className="px-3" data-section="reports">
       <button
         type="button"
-        className={`flex items-center w-full p-2 text-base ${
-          // reportsDropdown
-          isActiveJournals ||
-          isActiveLedgers ||
-          isActiveTriBalance ||
-          isActiveWorksheet
-            ? "text-gray-900 bg-gray-100"
-            : "text-white hover:text-gray-900"
-        } transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700`}
+        className={`flex items-center justify-between w-full px-4 py-2.5 text-sm font-medium rounded-lg group transition duration-200 ${
+          isAnyReportActive
+            ? "bg-blue-50 text-blue-700"
+            : "text-gray-700 hover:bg-gray-50"
+        }`}
         onClick={() => setReportsDropdown(!reportsDropdown)}
       >
-        <svg
-          className="w-[30px] h-[30px] dark:text-white"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            fillRule="evenodd"
-            d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Zm2 0V2h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Zm-1 9a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0v-2Zm2-5a1 1 0 0 1 1 1v6a1 1 0 1 1-2 0v-6a1 1 0 0 1 1-1Zm4 4a1 1 0 1 0-2 0v3a1 1 0 1 0 2 0v-3Z"
-            clipRule="evenodd"
-          />
-        </svg>
-        <span className="flex-1 ms-3 text-left whitespace-nowrap">Reports</span>
+        <div className="flex items-center gap-3">
+          <svg
+            className={`w-5 h-5 transition-colors duration-200 ${
+              isAnyReportActive
+                ? "text-blue-600"
+                : "text-gray-400 group-hover:text-gray-500"
+            }`}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            />
+          </svg>
+          <span>Reports</span>
+        </div>
         {getDropdownIcon(reportsDropdown)}
       </button>
-      {reportsDropdown && (
-        <ul className="py-2 space-y-2">
+
+      <div className={`mt-1 ${reportsDropdown ? "block" : "hidden"}`}>
+        <div className="space-y-1">
           {reports.map((report, index) => (
-            <>
-              <li key={index} className="ml-5">
-                <button
-                  className={`flex items-center w-full p-2 ${
-                    report.isActive
-                      ? "text-gray-900 bg-gray-100"
-                      : "text-white hover:text-gray-900 hover:bg-gray-100"
-                  } transition duration-75 rounded-lg group dark:text-white dark:hover:bg-gray-700`}
-                  onClick={() => {
-                    report.setDropDown(!report.dropDown);
-                  }}
-                >
-                  <span className="flex-1 text-left rtl:text-right whitespace-nowrap">
-                    {report.name}
-                  </span>
-                  {getSubMenuDropdownIcon(report.dropDown)}
-                </button>
-                {report.dropDown && (
-                  <ul key={index} className="py-2 space-y-2">
-                    <SubMenu
-                      items={report.menu}
-                      icons={report.icons}
-                      isActiveLink={isActiveLink}
-                    />
-                  </ul>
-                )}
-              </li>
-            </>
+            <div key={index} className="pl-3">
+              <button
+                className={`flex items-center justify-between w-full px-4 py-1.5 text-xs text-gray-500 font-poppins rounded-lg transition duration-200 ${
+                  report.isActive
+                    ? "text-blue-600 bg-blue-50/50"
+                    : "hover:text-gray-900 hover:bg-gray-50"
+                }`}
+                onClick={() => report.setDropDown(!report.dropDown)}
+              >
+                <span>{report.name}</span>
+                {getSubMenuDropdownIcon(report.dropDown, report.isActive)}
+              </button>
+              
+              <div className={`mt-1 ${report.dropDown ? "block" : "hidden"}`}>
+                <SubMenu
+                  items={report.menu}
+                  icons={report.icons.map(icon => ({
+                    ...icon,
+                    svg: React.cloneElement(icon.svg, {
+                      className: "w-5 h-5"
+                    })
+                  }))}
+                  isActiveLink={isActiveLink}
+                />
+              </div>
+            </div>
           ))}
-        </ul>
-      )}
-    </li>
+        </div>
+      </div>
+    </div>
   );
 }
+
+Reports.propTypes = {
+  isActiveLink: PropTypes.func.isRequired,
+  reportsDropdown: PropTypes.bool.isRequired,
+  setReportsDropdown: PropTypes.func.isRequired,
+};

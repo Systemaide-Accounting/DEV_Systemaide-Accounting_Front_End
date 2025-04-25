@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import React from "react";
 import { SubMenu } from "./SubMenu";
 
 // IMPORT PAGES ROUTES OF UTILITIES
@@ -14,6 +16,7 @@ export function Utilities({ isActiveLink, utilitiesDropdown, setUtilitiesDropdow
     isActiveLink(utility.path)
   );
   const isActiveBackups = backups.some((backup) => isActiveLink(backup.path));
+  const isAnyUtilityActive = isActiveUtilities || isActiveBackups;
 
   const utilitiesSection = [
     {
@@ -35,119 +38,130 @@ export function Utilities({ isActiveLink, utilitiesDropdown, setUtilitiesDropdow
   ];
 
   useEffect(() => {
-    isActiveUtilities ||
-    isActiveBackups
-      ? setUtilitiesDropdown(true) 
-      : setUtilitiesDropdown(false);
-      setUtilitiesSectionDropdown(isActiveUtilities);
-      setBackupsDropdown(isActiveBackups);
-  }, [setUtilitiesDropdown, isActiveUtilities, isActiveBackups]);
+    setUtilitiesDropdown(isAnyUtilityActive);
+    setUtilitiesSectionDropdown(isActiveUtilities);
+    setBackupsDropdown(isActiveBackups);
+  }, [setUtilitiesDropdown, isActiveUtilities, isActiveBackups, isAnyUtilityActive]);
 
   const getDropdownIcon = (isOpen) => (
     <svg
-      className="w-3 h-3"
+      className={`w-4 h-4 transition-transform duration-200 ${
+        isAnyUtilityActive ? "text-blue-600" : "text-gray-400 group-hover:text-gray-500"
+      }`}
+      style={{ transform: isOpen ? "rotate(-180deg)" : "rotate(0deg)" }}
       aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
-      viewBox="0 0 10 6"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
     >
-      <path
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        d={isOpen ? "M1 5L5 1L9 5" : "m1 1 4 4 4-4"}
-      />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
     </svg>
   );
 
-  const getSubMenuDropdownIcon = (isOpen) => (
+  const getSubMenuDropdownIcon = (isOpen, isActive) => (
     <svg
-      className="w-[20px] h-[20px] dark:text-white"
+      className={`w-4 h-4 transition-all duration-500 ease-in-out ${
+        isActive ? "text-blue-600" : "text-gray-400 group-hover:text-gray-500"
+      }`}
+      style={{ 
+        transform: isOpen ? "rotate(360deg) scale(0.8)" : "rotate(0deg) scale(1)",
+        transformOrigin: "center"
+      }}
       aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
       fill="none"
       viewBox="0 0 24 24"
+      stroke="currentColor"
     >
-      <path
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="3"
-        d={isOpen ? "M5 12h14" : "M5 12h14M12 5v14"}
-      />
+      {isOpen ? (
+        <path 
+          strokeLinecap="round" 
+          strokeLinejoin="round" 
+          strokeWidth="2" 
+          d="M6 18L18 6M6 6l12 12" 
+        />
+      ) : (
+        <path 
+          strokeLinecap="round" 
+          strokeLinejoin="round" 
+          strokeWidth="2" 
+          d="M12 4v16m8-8H4" 
+        />
+      )}
     </svg>
   );
 
   return (
-    <li>
+    <div className="px-3" data-section="utilities">
       <button
         type="button"
-        className={`flex items-center w-full p-2 text-base ${
-          // reportsDropdown
-          isActiveUtilities || isActiveBackups
-            ? "text-gray-900 bg-gray-100"
-            : "text-white hover:text-gray-900"
-        } transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700`}
+        className={`flex items-center justify-between w-full px-4 py-2.5 text-sm font-medium rounded-lg group transition duration-200 ${
+          isAnyUtilityActive
+            ? "bg-blue-50 text-blue-700"
+            : "text-gray-700 hover:bg-gray-50"
+        }`}
         onClick={() => setUtilitiesDropdown(!utilitiesDropdown)}
       >
-        <svg
-          className="w-[30px] h-[30px] dark:text-white"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <path
+        <div className="flex items-center gap-3">
+          <svg
+            className={`w-6 h-6 transition-colors duration-200 ${
+              isAnyUtilityActive
+                ? "text-blue-600"
+                : "text-gray-400 group-hover:text-gray-500"
+            }`}
+            fill="none"
+            viewBox="0 0 24 24"
             stroke="currentColor"
-            strokeLinecap="round"
-            strokeWidth="2"
-            d="M20 6H10m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4m16 6h-2m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4m16 6H10m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4"
-          />
-        </svg>
-        <span className="flex-1 ms-3 text-left whitespace-nowrap">
-          Utilities
-        </span>
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+            />
+          </svg>
+          <span>Utilities</span>
+        </div>
         {getDropdownIcon(utilitiesDropdown)}
       </button>
-      {utilitiesDropdown && (
-        <ul className="py-2 space-y-2">
-          {utilitiesSection.map((utility, index) => (
-            <>
-              <li key={index} className="ml-5">
-                <button
-                  className={`flex items-center w-full p-2 ${
-                    utility.isActive
-                      ? "text-gray-900 bg-gray-100"
-                      : "text-white hover:text-gray-900 hover:bg-gray-100"
-                  } transition duration-75 rounded-lg group dark:text-white dark:hover:bg-gray-700`}
-                  onClick={() => {
-                    utility.setDropDown(!utility.dropDown);
-                  }}
-                >
-                  <span className="flex-1 text-left rtl:text-right whitespace-nowrap">
-                    {utility.name}
-                  </span>
-                  {getSubMenuDropdownIcon(utility.dropDown)}
-                </button>
-                {utility.dropDown && (
-                  <ul key={index} className="py-2 space-y-2">
-                    <SubMenu
-                      items={utility.menu}
-                      isActiveLink={isActiveLink}
-                      icons={utility.icons}
-                    />
-                  </ul>
-                )}
-              </li>
-            </>
-          ))}
-        </ul>
-      )}
-    </li>
+      
+      <div className={`mt-1.5 space-y-1 ${utilitiesDropdown ? "block" : "hidden"}`}>
+        {utilitiesSection.map((utility, index) => (
+          <div key={index} className="pl-3">
+            <button
+              className={`flex items-center justify-between w-full px-4 py-1.5 text-xs text-gray-500 font-poppins rounded-lg transition duration-200 ${
+                utility.isActive
+                  ? "text-gray-900 bg-blue-50/50"
+                  : "hover:text-gray-900 hover:bg-gray-50"
+              }`}
+              onClick={() => utility.setDropDown(!utility.dropDown)}
+            >
+              <span>{utility.name}</span>
+              {getSubMenuDropdownIcon(utility.dropDown, utility.isActive)}
+            </button>
+            
+            <div className={`mt-1 ${utility.dropDown ? "block" : "hidden"}`}>
+              <SubMenu
+                items={utility.menu}
+                isActiveLink={isActiveLink}
+                icons={utility.icons.map(icon => ({
+                  ...icon,
+                  svg: React.cloneElement(icon.svg, {
+                    className: "w-5 h-5"
+                  })
+                }))}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
+
+Utilities.propTypes = {
+  isActiveLink: PropTypes.func.isRequired,
+  utilitiesDropdown: PropTypes.bool.isRequired,
+  setUtilitiesDropdown: PropTypes.func.isRequired,
+};

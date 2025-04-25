@@ -5,7 +5,6 @@ import { useEffect } from "react";
 import { checkUserExpiration } from "../hooks/checkUserExpiration";
 
 export function PrivateRoute() {
-
   useEffect(() => {
     const checkAuthentication = async () => {
       await checkUserExpiration();
@@ -18,6 +17,12 @@ export function PrivateRoute() {
         title: "Successfully logged in",
         text: "Redirecting to home page",
         icon: "success",
+        customClass: {
+          popup: 'rounded-xl shadow-lg',
+          title: 'text-xl font-light font-poppins',
+          text: 'text-sm font-light font-poppins',
+          icon: 'border-2'
+        }
       });
       localStorage.setItem("successfulLoginAlertShown", true);
     }
@@ -25,11 +30,9 @@ export function PrivateRoute() {
   
   return (
     <>
-      {/* <Header /> */}
-      <Dashboard />
-      <div className="lg:ml-72 mt-[64px] lg:mt-[56px]">
+      <Dashboard>
         <Outlet />
-      </div>
+      </Dashboard>
     </>
   );
 }

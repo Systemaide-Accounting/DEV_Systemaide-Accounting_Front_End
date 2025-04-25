@@ -2,7 +2,7 @@ export const utilitiesIcons = [
   {
     svg: (
       <svg
-        className="w-[30px] h-[30px] dark:text-white"
+        className="dark:text-white"
         aria-hidden="true"
         xmlns="http://www.w3.org/2000/svg"
         width="24"
@@ -23,7 +23,7 @@ export const utilitiesIcons = [
   {
     svg: (
       <svg
-        className="w-[30px] h-[30px] dark:text-white"
+        className="dark:text-white"
         aria-hidden="true"
         xmlns="http://www.w3.org/2000/svg"
         width="24"
@@ -44,7 +44,7 @@ export const utilitiesIcons = [
   {
     svg: (
       <svg
-        className="w-[30px] h-[30px] dark:text-white"
+        className="dark:text-white"
         aria-hidden="true"
         xmlns="http://www.w3.org/2000/svg"
         width="24"
@@ -64,7 +64,7 @@ export const utilitiesIcons = [
   {
     svg: (
       <svg
-        className="w-[30px] h-[30px] dark:text-white"
+        className="dark:text-white"
         aria-hidden="true"
         xmlns="http://www.w3.org/2000/svg"
         width="24"
@@ -92,7 +92,7 @@ export const utilitiesIcons = [
   {
     svg: (
       <svg
-        className="w-[30px] h-[30px] dark:text-white"
+        className="dark:text-white"
         aria-hidden="true"
         xmlns="http://www.w3.org/2000/svg"
         width="24"
@@ -120,7 +120,7 @@ export const backupIcons = [
   {
     svg: (
       <svg
-        className="w-[30px] h-[30px] dark:text-white"
+        className="dark:text-white"
         aria-hidden="true"
         xmlns="http://www.w3.org/2000/svg"
         width="24"
@@ -140,7 +140,7 @@ export const backupIcons = [
   {
     svg: (
       <svg
-        className="w-[30px] h-[30px] dark:text-white"
+        className="dark:text-white"
         aria-hidden="true"
         xmlns="http://www.w3.org/2000/svg"
         width="24"

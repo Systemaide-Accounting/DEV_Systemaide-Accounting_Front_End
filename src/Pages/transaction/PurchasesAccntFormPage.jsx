@@ -241,8 +241,10 @@ export function PurchasesAccntFormPage() {
 
   return (
     <>
-      <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
-        <h2 className="text-xl font-semibold">Purchases Journal</h2>
+      {/* Header */}
+      <h2 className="text-xl font-semibold">Purchases Journal</h2>
+      <div className="border-2 border-gray-200 rounded-lg dark:border-gray-700">
+        {/* <h2 className="text-xl font-semibold">Purchases Journal</h2> */}
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4 rounded bg-white dark:bg-gray-800 p-4 shadow">
@@ -549,7 +551,7 @@ export function PurchasesAccntFormPage() {
             </div>
           </div>
 
-          <div className="mt-6 flex justify-end gap-3">
+          <div className="p-4 flex justify-end gap-3">
             <Button color="red" onClick={handleCancel}>
               Cancel
             </Button>

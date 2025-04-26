@@ -161,7 +161,7 @@ export function GeneralJournalDataTable() {
   return (
     <>
       {/* Data Table */}
-      <div className="mb-4 rounded bg-white dark:bg-gray-800 p-4 shadow">
+      <div className="rounded bg-white dark:bg-gray-800 p-4 shadow">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
           <h2 className="text-xl font-semibold">Summary</h2>
           <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">

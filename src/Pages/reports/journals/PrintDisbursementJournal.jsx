@@ -1,90 +1,9 @@
-import { Button, Table } from "flowbite-react";
+import { Button } from "flowbite-react";
 import { formatInputDate } from "../../../Components/reusable-functions/formatInputDate";
 import { useState, useEffect } from "react";
-
-// Mock data for demonstration
-const mockDisbursements = [
-	{
-		id: 1,
-		date: "2025-04-01",
-		payee: "Office Supplies Co.",
-		description: "Monthly office supplies",
-		checkNumber: "10045",
-		amount: 245.67,
-	},
-	{
-		id: 2,
-		date: "2025-04-03",
-		payee: "City Utilities",
-		description: "Electricity bill",
-		checkNumber: "10046",
-		amount: 378.9,
-	},
-	{
-		id: 3,
-		date: "2025-04-05",
-		payee: "ABC Insurance",
-		description: "Quarterly insurance premium",
-		checkNumber: "10047",
-		amount: 1250.0,
-	},
-	{
-		id: 4,
-		date: "2025-04-10",
-		payee: "Rent Properties LLC",
-		description: "Office rent",
-		checkNumber: "10048",
-		amount: 2200.0,
-	},
-	{
-		id: 5,
-		date: "2025-04-15",
-		payee: "Internet Provider",
-		description: "Monthly internet service",
-		checkNumber: "10049",
-		amount: 89.99,
-	},
-	{
-		id: 6,
-		date: "2025-04-18",
-		payee: "Marketing Agency",
-		description: "Social media campaign",
-		checkNumber: "10050",
-		amount: 750.0,
-	},
-	{
-		id: 7,
-		date: "2025-04-22",
-		payee: "Office Cleaning",
-		description: "Bi-weekly cleaning service",
-		checkNumber: "10051",
-		amount: 175.0,
-	},
-	{
-		id: 8,
-		date: "2025-04-25",
-		payee: "Employee Reimbursement",
-		description: "Travel expenses",
-		checkNumber: "10052",
-		amount: 328.45,
-	},
-	{
-		id: 9,
-		date: "2025-04-28",
-		payee: "Software Subscription",
-		description: "Accounting software",
-		checkNumber: "10053",
-		amount: 49.99,
-	},
-	{
-		id: 10,
-		date: "2025-04-30",
-		payee: "Maintenance Service",
-		description: "HVAC repair",
-		checkNumber: "10054",
-		amount: 425.0,
-	},
-];
+import disbursementJournalReportDataJSON from "../../../sample-data/disbursementJournalReportData.json";
+import { getDisbursementJournalReport } from "../../../services/systemaideService";
+import { HandleDateFormat } from "../../../Components/reusable-functions/DateFormatter";
 
 export function PrintDisbursementJournal () {
 	const [reportData, setReportData] = useState([]);
@@ -104,18 +23,43 @@ export function PrintDisbursementJournal () {
 	}, []);
 
 	useEffect(() => {
-		fetchDisbursements()
+		fetchReportData()
 			.then((data) => setReportData(data))
 			.catch((err) => {
 				console.error(err);
 			});
+	}, [startDate, endDate]);
+
+	useEffect(() => {
+		// Add print styles to document head
+		const style = document.createElement("style");
+		style.innerHTML = `
+			@media print {
+			@page { size: auto; margin: 10mm; }
+			body { -webkit-print-color-adjust: exact !important; color-adjust: exact !important; }
+			th { background-color: #3b82f6 !important; color: white !important; }
+			tr:nth-child(even) { background-color: #f9fafb !important; }
+			}
+		`;
+		document.head.appendChild(style);
+
+		return () => document.head.removeChild(style);
 	}, []);
 
 	// API call to fetch disbursements
-	const fetchDisbursements = async () => {
+	const fetchReportData = async () => {
 		// Replace with actual API call when ready
 		try {
-			return mockDisbursements; // Mock data
+			const response = await getDisbursementJournalReport(
+				JSON.stringify({
+					startDate: startDate,
+					endDate: endDate,
+				})
+			);
+			if (!response?.success) console.log(response?.message);
+			console.log("reportData:", response?.data);
+			return response?.data; 
+			// return disbursementJournalReportDataJSON; // Mock data
 		} catch {
 			throw new Error("Error fetching disbursements");
 		}
@@ -154,7 +98,7 @@ export function PrintDisbursementJournal () {
 	const start = new Date(startDate);
 	const end = new Date(endDate);
 
-	const totalAmount = reportData.reduce((sum, item) => sum + item.amount, 0);
+	const totalAmount = reportData?.reduce((sum, item) => sum + item.amount, 0);
 
 	if (!startDate || !endDate) {
 		return <div className="p-8 text-gray-500">No report range provided.</div>;
@@ -178,7 +122,7 @@ export function PrintDisbursementJournal () {
       <div className="text-sm text-gray-500 mb-6 text-center">
         Generated on: {formatInputDate(new Date())}
       </div>
-      {reportData.length === 0 ? (
+      {reportData?.length === 0 ? (
         <div>Loading...</div>
       ) : (
         <table className="w-full border-collapse">
@@ -188,43 +132,43 @@ export function PrintDisbursementJournal () {
                 Date
               </th>
               <th className="bg-blue-500 text-white font-normal text-base p-2 text-left">
-                Payee
+                Agent
               </th>
               <th className="bg-blue-500 text-white font-normal text-base p-2 text-left">
-                Description
+                Particulars
               </th>
               <th className="bg-blue-500 text-white font-normal text-base p-2 text-left">
-                Check No.
+                Account Title
               </th>
-              <th className="bg-blue-500 text-white font-normal text-base p-2 text-right">
+              {/* <th className="bg-blue-500 text-white font-normal text-base p-2 text-right">
                 Amount
-              </th>
+              </th> */}
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {reportData.map((item, index) => (
+            {reportData?.map((item, index) => (
               <tr
                 key={index + 1}
                 className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
               >
                 <td className="font-thin p-2 border-b border-gray-200">
-                  {formatInputDate(new Date(item.date))}
+                  <HandleDateFormat date={item?.date} />
                 </td>
                 <td className="font-normal p-2 border-b border-gray-200">
-                  {item.payee}
+                  {item?.payeeName?.registeredName}
                 </td>
                 <td className="font-normal p-2 border-b border-gray-200">
-                  {item.description}
+                  {item?.particular}
                 </td>
                 <td className="font-normal p-2 border-b border-gray-200">
-                  {item.checkNumber}
+                  {item?.cashAccount?.accountName}
                 </td>
-                <td className="text-right font-normal p-2 border-b border-gray-200">
+                {/* <td className="text-right font-normal p-2 border-b border-gray-200">
                   ${item.amount.toFixed(2)}
-                </td>
+                </td> */}
               </tr>
             ))}
-            <tr className="bg-gray-100">
+            {/* <tr className="bg-gray-100">
               <td
                 colSpan={4}
                 className="text-base text-right p-2 font-semibold"
@@ -234,7 +178,7 @@ export function PrintDisbursementJournal () {
               <td className="text-right p-2 font-semibold">
                 ${totalAmount.toFixed(2)}
               </td>
-            </tr>
+            </tr> */}
           </tbody>
         </table>
       )}

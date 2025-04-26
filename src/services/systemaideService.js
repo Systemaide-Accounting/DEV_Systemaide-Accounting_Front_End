@@ -756,3 +756,17 @@ export const deletePurchasesAccountTransaction = async (id) => {
     // return error?.response?.data;
   }
 }
+
+export const getDisbursementJournalReport = async (data) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.post(
+      "/reports/cash-disbursement",
+      data
+    );
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};

@@ -8,7 +8,7 @@ export function SubMenu({ items, icons, isActiveLink }) {
         <Link
           key={index}
           to={item.path}
-          className={`flex items-center gap-3 w-full pl-12 pr-4 py-1.5 text-xs text-gray-500 font-poppins rounded-lg transition duration-200 ${
+          className={`flex items-center gap-3 w-full pl-8 pr-4 py-1.5 text-xs text-gray-500 font-poppins rounded-lg transition duration-200 ${
             isActiveLink(item.path)
               ? "text-blue-600 bg-blue-50/50"
               : "hover:text-gray-900 hover:bg-gray-50"

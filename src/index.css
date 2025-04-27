@@ -38,3 +38,20 @@ p {
   font-family: "Lato", sans-serif;
   font-weight: 400;
 }
+
+/* Reusable horizontal scrollbar for datatables */
+.table-scroll-x {
+  overflow-x: auto;
+  width: 100%;
+  scrollbar-width: thick; /* Make scrollbar thicker (Firefox) */
+  scrollbar-color: #888 #f5f5f5; /* Thumb color, Track color (Firefox) */
+}
+.table-scroll-x::-webkit-scrollbar {
+  height: 14px; /* Thicker scrollbar for horizontal */
+  background: #f5f5f5;
+}
+.table-scroll-x::-webkit-scrollbar-thumb {
+  background-color: #888; /* Grey thumb */
+  border-radius: 8px;
+  border: 2px solid #f5f5f5; /* Slight border for contrast */
+}

@@ -1,5 +1,5 @@
 // import "./App.css";
-import "./index.css"
+import "./index.css";
 import { Route, HashRouter as Router, Routes } from "react-router-dom";
 import { PrivateRoute } from "./Components/PrivateRoute";
 import AuthContext from "./context/AuthContext";
@@ -10,7 +10,11 @@ import { Home } from "./Pages/Home";
 // AUTHENTICATION SERVICES
 import { userAllowedViewSystemConfig } from "./constants/UserConstants";
 // IMPORT PRINTABLES
-// DisbursementJournal
+import { PrintDisbursementJournal } from "./Pages/reports/journals/PrintDisbursementJournal";
+import { PrintReceiptsJournal } from "./Pages/reports/journals/PrintReceiptsJournal";
+import { PrintSalesJournal } from "./Pages/reports/journals/PrintSalesJournal";
+import { PrintPurchasesJournal } from "./Pages/reports/journals/PrintPurchasesJournal";
+import { PrintGeneralJournal } from "./Pages/reports/journals/PrintGeneralJournal";
 // IMPORT PAGES ROUTES
 import { transactions } from "./Components/all-routes/transactions";
 import { CashDisbursementFormPage } from "./Pages/transaction/CashDisbursementFormPage";
@@ -21,7 +25,6 @@ import { PurchasesAccntFormPage } from "./Pages/transaction/PurchasesAccntFormPa
 import {
   journals,
   ledgers,
-  printableJournals,
   triBalances,
   worksheets,
 } from "./Components/all-routes/reports";
@@ -30,9 +33,9 @@ import { utilities, backups } from "./Components/all-routes/utilities";
 import { SystemConfiguration } from "./Pages/SystemConfiguration";
 import { useEffect } from "react";
 
-function App() {
 
-  const user = useGetAuth();  
+function App() {
+  const user = useGetAuth();
 
   const checkAuthentication = async () => {
     await checkUserExpiration();
@@ -45,9 +48,17 @@ function App() {
   return (
     <>
       <Router>
-        <AuthContext.Provider value={{user}}>
+        <AuthContext.Provider value={{ user }}>
           <Routes>
             <Route path="/" element={<LoginSignUp />} />
+
+            {/* All Printable Pages */}
+            <Route path="/reports/print-disbursement-journal" element={<PrintDisbursementJournal />} />
+            <Route path="/reports/print-receipts-journal" element={<PrintReceiptsJournal />} />
+            <Route path="/reports/print-sales-journal" element={<PrintSalesJournal />} />
+            <Route path="/reports/print-purchases-journal" element={<PrintPurchasesJournal />} />
+            <Route path="/reports/print-general-journal" element={<PrintGeneralJournal />} />
+
             <Route element={<PrivateRoute />}>
               <Route path="/home" element={<Home />} />
               {/* All pages under TRANSACTION section */}
@@ -62,28 +73,28 @@ function App() {
                   </>
                 );
               })}
-              <Route path="/transaction/cashdisbursement/form/:id?" element={<CashDisbursementFormPage />} />
-              <Route path="/transaction/cashreceipts/form/:id?" element={<CashReceiptFormPage />} />
-              <Route path="/transaction/salesonaccount/form/:id?" element={<SalesOnAccountFormPage />} />
-              <Route path="/transaction/generaljournal/form/:id?" element={<GeneralJournalFormPage />} />
-              <Route path="/transaction/purchasesonaccount/form/:id?" element={<PurchasesAccntFormPage />} />
+              <Route
+                path="/transaction/cashdisbursement/form/:id?"
+                element={<CashDisbursementFormPage />}
+              />
+              <Route
+                path="/transaction/cashreceipts/form/:id?"
+                element={<CashReceiptFormPage />}
+              />
+              <Route
+                path="/transaction/salesonaccount/form/:id?"
+                element={<SalesOnAccountFormPage />}
+              />
+              <Route
+                path="/transaction/generaljournal/form/:id?"
+                element={<GeneralJournalFormPage />}
+              />
+              <Route
+                path="/transaction/purchasesonaccount/form/:id?"
+                element={<PurchasesAccntFormPage />}
+              />
 
               {/* All pages under REPORTS section */}
-
-              {/* This is the Printable Journals */}
-              {printableJournals.map((page, index) => {
-                return (
-                  <>
-                    <Route
-                      key={index}
-                      path={page.path}
-                      element={<page.element />}
-                    />
-                    ;
-                  </>
-                );
-              })}
-
               {/* This is the Journals */}
               {journals.map((page, index) => {
                 return (
@@ -176,7 +187,12 @@ function App() {
                   </>
                 );
               })}
-              {userAllowedViewSystemConfig(user?.permissions) && (<Route path="/system-config" element={<SystemConfiguration />} />)}
+              {userAllowedViewSystemConfig(user?.permissions) && (
+                <Route
+                  path="/system-config"
+                  element={<SystemConfiguration />}
+                />
+              )}
             </Route>
           </Routes>
         </AuthContext.Provider>

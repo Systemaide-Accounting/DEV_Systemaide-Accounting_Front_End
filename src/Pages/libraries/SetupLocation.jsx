@@ -4,8 +4,11 @@ import { LocationsDataTable } from "../../Components/setup-location-components/L
 export function SetupLocation() {
   return (
     <>
-      <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
-        <h1 className="text-2xl font-bold mb-2">Setup Location</h1>
+      {/* Header */}
+      <h1 className="text-xl font-semibold">Setup Location</h1>
+
+      <div className="border-2 border-gray-200 rounded-lg dark:border-gray-700">
+        {/* <h1 className="text-2xl font-bold mb-2">Setup Location</h1> */}
 
         {/* Locations Table */}
         <LocationsDataTable />

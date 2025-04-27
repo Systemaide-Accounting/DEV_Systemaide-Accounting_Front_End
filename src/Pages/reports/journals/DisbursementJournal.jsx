@@ -99,8 +99,6 @@ export function DisbursementJournal() {
 	// Calculate total amount
 	const totalAmount = reportData?.reduce((sum, item) => sum + item?.amount, 0);
 
-  console.log("Report Data:", reportData);
-
 	return (
     <div className="w-full border-2 rounded-lg shadow-sm overflow-hidden">
       {/* Header */}

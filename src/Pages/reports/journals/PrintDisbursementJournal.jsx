@@ -105,83 +105,84 @@ export function PrintDisbursementJournal () {
 	}
 
 	return (
-    <div className="p-8 max-w mx-auto bg-white print:bg-white">
-      <Button
-        color="blue"
-        onClick={printReport}
-        className="w-full mb-2 print:hidden"
-      >
-        Print
-      </Button>
-      <h1 className="text-2xl font-bold mb-2 text-center">
-        Cash Disbursement Journal
-      </h1>
-      <h2 className="text-base text-gray-600 mb-4 text-center">
-        {formatInputDate(start)} to {formatInputDate(end)}
-      </h2>
-      <div className="text-sm text-gray-500 mb-6 text-center">
-        Generated on: {formatInputDate(new Date())}
-      </div>
-      {reportData?.length === 0 ? (
-        <div>Loading...</div>
-      ) : (
-        <table className="w-full border-collapse">
-          <thead>
-            <tr>
-              <th className="bg-blue-500 text-white font-normal text-base p-2 text-left">
-                Date
-              </th>
-              <th className="bg-blue-500 text-white font-normal text-base p-2 text-left">
-                Agent
-              </th>
-              <th className="bg-blue-500 text-white font-normal text-base p-2 text-left">
-                Particulars
-              </th>
-              <th className="bg-blue-500 text-white font-normal text-base p-2 text-left">
-                Account Title
-              </th>
-              {/* <th className="bg-blue-500 text-white font-normal text-base p-2 text-right">
-                Amount
-              </th> */}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {reportData?.map((item, index) => (
-              <tr
-                key={index + 1}
-                className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
-              >
-                <td className="font-thin p-2 border-b border-gray-200">
-                  <HandleDateFormat date={item?.date} />
-                </td>
-                <td className="font-normal p-2 border-b border-gray-200">
-                  {item?.payeeName?.registeredName}
-                </td>
-                <td className="font-normal p-2 border-b border-gray-200">
-                  {item?.particular}
-                </td>
-                <td className="font-normal p-2 border-b border-gray-200">
-                  {item?.cashAccount?.accountName}
-                </td>
-                {/* <td className="text-right font-normal p-2 border-b border-gray-200">
-                  ${item.amount.toFixed(2)}
-                </td> */}
-              </tr>
-            ))}
-            {/* <tr className="bg-gray-100">
-              <td
-                colSpan={4}
-                className="text-base text-right p-2 font-semibold"
-              >
-                Total
-              </td>
-              <td className="text-right p-2 font-semibold">
-                ${totalAmount.toFixed(2)}
-              </td>
-            </tr> */}
-          </tbody>
-        </table>
-      )}
-    </div>
-  );
+		<div className="p-8 max-w mx-auto bg-white print:bg-white">
+		<Button
+			color="blue"
+			onClick={printReport}
+			className="w-full mb-2 print:hidden"
+		>
+			Print
+		</Button>
+		<h1 className="text-2xl font-bold mb-2 text-center">
+			Cash Disbursement Journal
+		</h1>
+		<h2 className="text-base text-gray-600 mb-4 text-center">
+			{/* {formatInputDate(start)} to {formatInputDate(end)} */}
+			<HandleDateFormat date={start} /> to <HandleDateFormat date={end} />
+		</h2>
+		<div className="text-sm text-gray-500 mb-6 text-center">
+			Generated on: {<HandleDateFormat date={new Date()} />}
+		</div>
+		{reportData?.length === 0 ? (
+			<div>Loading...</div>
+		) : (
+			<table className="w-full border-collapse">
+			<thead>
+				<tr>
+				<th className="bg-blue-500 text-white font-normal text-base p-2 text-left">
+					Date
+				</th>
+				<th className="bg-blue-500 text-white font-normal text-base p-2 text-left">
+					Agent
+				</th>
+				<th className="bg-blue-500 text-white font-normal text-base p-2 text-left">
+					Particulars
+				</th>
+				<th className="bg-blue-500 text-white font-normal text-base p-2 text-left">
+					Account Title
+				</th>
+				{/* <th className="bg-blue-500 text-white font-normal text-base p-2 text-right">
+					Amount
+				</th> */}
+				</tr>
+			</thead>
+			<tbody className="divide-y divide-gray-200">
+				{reportData?.map((item, index) => (
+				<tr
+					key={index + 1}
+					className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+				>
+					<td className="font-thin p-2 border-b border-gray-200">
+					<HandleDateFormat date={item?.date} />
+					</td>
+					<td className="font-normal p-2 border-b border-gray-200">
+					{item?.payeeName?.registeredName}
+					</td>
+					<td className="font-normal p-2 border-b border-gray-200">
+					{item?.particular}
+					</td>
+					<td className="font-normal p-2 border-b border-gray-200">
+					{item?.cashAccount?.accountName}
+					</td>
+					{/* <td className="text-right font-normal p-2 border-b border-gray-200">
+					${item.amount.toFixed(2)}
+					</td> */}
+				</tr>
+				))}
+				{/* <tr className="bg-gray-100">
+				<td
+					colSpan={4}
+					className="text-base text-right p-2 font-semibold"
+				>
+					Total
+				</td>
+				<td className="text-right p-2 font-semibold">
+					${totalAmount.toFixed(2)}
+				</td>
+				</tr> */}
+			</tbody>
+			</table>
+		)}
+		</div>
+	);
 };

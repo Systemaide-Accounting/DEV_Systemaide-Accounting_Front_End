@@ -784,3 +784,17 @@ export const getReceiptsJournalReport = async (data) => {
     // return error?.response?.data;
   }
 };
+
+export const getSalesJournalReport = async (data) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.post(
+      "/reports/sales-on-account",
+      data
+    );
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};

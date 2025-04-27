@@ -10,9 +10,9 @@ export function CashReceiptsJournal() {
   const [reportData, setReportData] = useState([]);
   const [isReportGenerated, setIsReportGenerated] = useState(false);
   const [formData, setFormData] = useState({
-      startDate: "",
-      endDate: "",
-    });
+    startDate: "",
+    endDate: "",
+  });
 
   const handleDateChange = (e) => {
     const { name, value } = e.target;
@@ -40,31 +40,31 @@ export function CashReceiptsJournal() {
   };
 
   // Generate report based on date range
-    const generateReport = async (e) => {
-      e.preventDefault();
-  
-      if (!formData?.startDate || !formData?.endDate) {
-        // alert("Please select both start and end dates");
-        sweetalert2.fire({
-          icon: "error",
-          title: "Error!",
-          text: "Please select both start and end dates",
-        });
-        return;
-      }
-  
-      try {
-        const response = await getReceiptsJournalReport(
-          JSON.stringify(formData)
-        );
-        if (!response?.success) console.log(response?.message);
-        // setReportData(disbursementJournalReportDataJSON);
-        setReportData(response?.data);
-        setIsReportGenerated(true);
-      } catch (error) {
-        console.error("Error generating report:", error);
-      }
-    };
+  const generateReport = async (e) => {
+    e.preventDefault();
+
+    if (!formData?.startDate || !formData?.endDate) {
+      // alert("Please select both start and end dates");
+      sweetalert2.fire({
+        icon: "error",
+        title: "Error!",
+        text: "Please select both start and end dates",
+      });
+      return;
+    }
+
+    try {
+      const response = await getReceiptsJournalReport(
+        JSON.stringify(formData)
+      );
+      if (!response?.success) console.log(response?.message);
+      // setReportData(disbursementJournalReportDataJSON);
+      setReportData(response?.data);
+      setIsReportGenerated(true);
+    } catch (error) {
+      console.error("Error generating report:", error);
+    }
+  };
 
   // Handle preview report button click
   const handlePreviewReport = () => {

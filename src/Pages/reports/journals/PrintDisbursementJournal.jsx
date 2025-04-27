@@ -117,10 +117,11 @@ export function PrintDisbursementJournal () {
         Cash Disbursement Journal
       </h1>
       <h2 className="text-base text-gray-600 mb-4 text-center">
-        {formatInputDate(start)} to {formatInputDate(end)}
+        {/* {formatInputDate(start)} to {formatInputDate(end)} */}
+		<HandleDateFormat date={start} /> to <HandleDateFormat date={end} />
       </h2>
       <div className="text-sm text-gray-500 mb-6 text-center">
-        Generated on: {formatInputDate(new Date())}
+        Generated on: {<HandleDateFormat date={new Date()} />}
       </div>
       {reportData?.length === 0 ? (
         <div>Loading...</div>

@@ -179,7 +179,7 @@ export function PermissionsDataTable() {
           </div>
         </div>
 
-        <div className="overflow-x-auto" style={{ minHeight: "200px" }}>
+        <div className="table-scroll-x" style={{ minHeight: "200px" }}>
           <Table hoverable striped>
             <Table.Head>
               <Table.HeadCell className="w-[50px]">ID</Table.HeadCell>

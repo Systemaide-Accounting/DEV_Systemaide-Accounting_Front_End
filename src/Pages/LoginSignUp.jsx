@@ -18,9 +18,9 @@ export function LoginSignUp() {
         {/* Left Section - Branding */}
         <div className="w-full md:w-1/2 flex items-center justify-center p-8 md:p-12 bg-gradient-to-br from-blue-700 to-blue-900">
           <div className="text-center space-y-10">
-            <div className="relative w-72 h-44 mx-auto bg-white rounded-xl p-8 flex items-center justify-center shadow-lg">
-              <img src={companyLogo} alt="Systemaide Logo" className="w-full h-full object-contain" />
-            </div>
+            <div className="relative w-92 h-60 mx-auto bg-white rounded-xl p-2 flex items-center justify-center shadow-lg">
+  <img src={companyLogo} alt="Systemaide Logo" className="max-w-[90%] max-h-[90%] object-contain" />
+</div>
             <div className="space-y-6">
               <h1 className="text-4xl font-light text-white tracking-tight">
                 Welcome to Systemaide

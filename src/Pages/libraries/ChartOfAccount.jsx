@@ -8,9 +8,15 @@ export function ChartOfAccount() {
   const [selectedAccount, setSelectedAccount] = useState(null);
 
   return (
-    <ChartOfAccntContext.Provider value={{ selectedAccount, setSelectedAccount }}>
-      <div className="p-4 rounded-lg dark:border-gray-700">
-        <h1 className="text-2xl mb-4">Chart Of Accounts</h1>
+    <ChartOfAccntContext.Provider
+      value={{ selectedAccount, setSelectedAccount }}
+    >
+      {/* Header */}
+      <h1 className="text-xl font-semibold">Chart Of Accounts</h1>
+
+      {/* Chart Of Accounts Section */}
+      <div className="rounded-lg dark:border-gray-700">
+        {/* <h1 className="text-2xl mb-4">Chart Of Accounts</h1> */}
 
         <div className="grid grid-cols-1 gap-4">
           <CombinedAccnts />

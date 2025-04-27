@@ -13,6 +13,7 @@ import { userAllowedViewSystemConfig } from "./constants/UserConstants";
 import { PrintDisbursementJournal } from "./Pages/reports/journals/PrintDisbursementJournal";
 import { PrintReceiptsJournal } from "./Pages/reports/journals/PrintReceiptsJournal";
 import { PrintSalesJournal } from "./Pages/reports/journals/PrintSalesJournal";
+import { PrintPurchasesJournal } from "./Pages/reports/journals/PrintPurchasesJournal";
 // IMPORT PAGES ROUTES
 import { transactions } from "./Components/all-routes/transactions";
 import { CashDisbursementFormPage } from "./Pages/transaction/CashDisbursementFormPage";
@@ -54,6 +55,7 @@ function App() {
             <Route path="/reports/print-disbursement-journal" element={<PrintDisbursementJournal />} />
             <Route path="/reports/print-receipts-journal" element={<PrintReceiptsJournal />} />
             <Route path="/reports/print-sales-journal" element={<PrintSalesJournal />} />
+            <Route path="/reports/print-purchases-journal" element={<PrintPurchasesJournal />} />
 
             <Route element={<PrivateRoute />}>
               <Route path="/home" element={<Home />} />

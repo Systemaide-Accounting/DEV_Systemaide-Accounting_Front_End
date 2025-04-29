@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "../../../calendar-input.css";
 import { CalendarIcon } from "lucide-react";
 import { Button, Table, Label } from "flowbite-react";
 import { HandleDateFormat } from "../../../Components/reusable-functions/DateFormatter";
@@ -100,18 +101,17 @@ export function DisbursementJournal() {
 	const totalAmount = reportData?.reduce((sum, item) => sum + item?.amount, 0);
 
 	return (
-    <div className="w-full border-2 rounded-lg shadow-sm overflow-hidden">
-      {/* Header */}
-      <div className="bg-blue-50 p-3 border-b">
-        <div className="flex items-center gap-2">
-          <h2 className="text-xl font-semibold text-blue-900">
-            Cash Disbursement Journal Report
-          </h2>
+    <>
+      {/* Title Card */}
+      <div className="w-full border rounded-lg bg-white mb-4">
+        <div className="p-4">
+          <h2 className="text-xl font-bold text-gray-900">Cash Disbursement Journal Report</h2>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="p-4">
+      {/* Content Card */}
+      <div className="w-full border rounded-lg bg-white p-4">
+
         <div className="flex flex-col gap-6">
           {/* Date Range Selection */}
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
@@ -119,7 +119,7 @@ export function DisbursementJournal() {
               <div className="mb-2 block">
                 <Label htmlFor="startDate" value="Start Date" />
               </div>
-              <div className="relative">
+              <div className="relative calendar-input-container">
                 <input
                   id="startDate"
                   name="startDate"
@@ -139,7 +139,7 @@ export function DisbursementJournal() {
               <div className="mb-2 block">
                 <Label htmlFor="endDate" value="End Date" />
               </div>
-              <div className="relative">
+              <div className="relative calendar-input-container">
                 <input
                   id="endDate"
                   name="endDate"
@@ -240,6 +240,7 @@ export function DisbursementJournal() {
           )}
         </div>
       </div>
-    </div>
+ 
+  </>
   );
 }

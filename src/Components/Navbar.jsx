@@ -73,9 +73,9 @@ export function Navbar({ openSidebar, setOpenSidebar, sidebarRef }) {
   return (
     <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-100 shadow-sm">
       <div className="max-w-[2000px] mx-auto">
-        <div className="flex items-center justify-between px-4 py-2.5 lg:px-6">
-          {/* Logo & Menu Toggle */}
-          <div className="flex items-center gap-4">
+        <div className="flex justify-between items-center w-full px-4 sm:px-8 py-2.5 text-lg font-semibold group transition duration-200">
+          {/* Left: Logo & Menu Toggle */}
+          <div className="flex items-center gap-4 flex-shrink-0">
             <button
               data-drawer-target="logo-sidebar"
               data-drawer-toggle="logo-sidebar"
@@ -83,7 +83,7 @@ export function Navbar({ openSidebar, setOpenSidebar, sidebarRef }) {
               aria-expanded={openSidebar}
               type="button"
               onClick={() => setOpenSidebar((prev) => !prev)}
-              className="inline-flex items-center justify-center w-8 h-8 text-gray-500 rounded-full hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 lg:hidden"
+              className="inline-flex items-center justify-center w-8 h-8 text-gray-500 rounded-full focus:outline-none focus:ring-transparent lg:hidden"
             >
               <svg
                 className="w-5 h-5"
@@ -100,30 +100,28 @@ export function Navbar({ openSidebar, setOpenSidebar, sidebarRef }) {
                 />
               </svg>
             </button>
-
             <div 
-              className="flex items-center gap-3 cursor-pointer transition-transform duration-200 hover:transform hover:scale-[0.98]" 
+              className="flex items-center gap-3 cursor-pointer transition-transform duration-200 hover:scale-[0.98] flex-shrink-0" 
               onClick={navigateToHome}
             >
               <img src={companyLogo} className="h-8 w-auto" alt="Systemaide Logo" />
               <div className="hidden sm:flex flex-col">
-                <span className="text-gray-900 font-semibold text-lg tracking-tight font-poppins">
+                <span className="text-gray-900 font-bold text-lg tracking-tight font-inter">
                   Systemaide
                 </span>
-                <span className="text-xs text-gray-500 -mt-1 font-poppins">
+                <span className="text-xs text-gray-500 -mt-1 font-normal font-inter">
                   Solutions Inc.
                 </span>
               </div>
             </div>
           </div>
-
-          {/* Right Section: Profile */}
-          <div className="flex items-center gap-4">
+          {/* Right: Profile Section */}
+          <div className="flex items-center gap-3 sm:gap-4 flex-shrink-0">
             {/* Profile Dropdown */}
             <div className="relative" ref={dropdownRef}>
               <button
                 type="button"
-                className="flex items-center gap-2 p-1.5 rounded-full hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                className="flex items-center gap-2 p-1.5 rounded-full focus:outline-none focus:ring-transparent"
                 onClick={() => setProfileDropdown(!profileDropdown)}
               >
                 <img
@@ -131,6 +129,12 @@ export function Navbar({ openSidebar, setOpenSidebar, sidebarRef }) {
                   src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
                   alt="User"
                 />
+                {/* First name next to avatar */}
+                {user?.firstName && (
+                  <span className="hidden sm:inline text-gray-900 font-medium text-sm">
+                    {user.firstName.slice(0, 3)}{user.lastName?.[0] ?? ''}
+                  </span>
+                )}
                 <svg 
                   className="w-4 h-4 text-gray-500" 
                   fill="none" 

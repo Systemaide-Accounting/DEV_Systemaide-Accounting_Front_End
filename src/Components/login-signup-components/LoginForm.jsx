@@ -59,7 +59,7 @@ export function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6 font-inter">
       <div className="space-y-5">
         <div>
           <label
@@ -74,7 +74,7 @@ export function LoginForm() {
               id="email"
               name="email"
               placeholder="Enter your email"
-              className="block w-full px-4 py-3 rounded-lg bg-blue-50/80 border-0 font-light text-gray-700 font-poppins placeholder:text-gray-500"
+              className="block w-full px-4 py-3 rounded-lg bg-blue-50/80 border-0 font-light text-gray-700 font-inter placeholder:text-gray-500"
               onChange={handleChange}
               required
             />
@@ -94,7 +94,7 @@ export function LoginForm() {
               id="password"
               name="password"
               placeholder="Enter your password"
-              className="block w-full px-4 py-3 rounded-lg bg-blue-50/80 border-0 font-light text-gray-700 font-poppins placeholder:text-gray-500"
+              className="block w-full px-4 py-3 rounded-lg bg-blue-50/80 border-0 font-light text-gray-700 font-inter placeholder:text-gray-500"
               onChange={handleChange}
               required
             />

@@ -1,0 +1,8 @@
+.calendar-input-container:hover input {
+  border-color: #1976d2 !important;
+  box-shadow: 0 0 0 0.5px #1976d2;
+}
+
+.calendar-input-container input {
+  transition: border-color 0.2s, box-shadow 0.2s;
+}

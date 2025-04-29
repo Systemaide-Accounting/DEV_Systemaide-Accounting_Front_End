@@ -242,8 +242,8 @@ export function PurchasesAccntFormPage() {
   return (
     <>
       {/* Header */}
-      <h2 className="text-xl font-semibold">Purchases Journal</h2>
-      <div className="border-2 border-gray-200 rounded-lg dark:border-gray-700">
+      <h2 className="text-xl font-semibold mb-4">Purchases Journal</h2>
+      {/* <div className="border-2 border-gray-200 rounded-lg dark:border-gray-700"> */}
         {/* <h2 className="text-xl font-semibold">Purchases Journal</h2> */}
 
         <form onSubmit={handleSubmit}>
@@ -560,7 +560,7 @@ export function PurchasesAccntFormPage() {
             </Button>
           </div>
         </form>
-      </div>
+      {/* </div> */}
     </>
   );
 }

@@ -12,8 +12,7 @@ export function ChartOfAccount() {
       value={{ selectedAccount, setSelectedAccount }}
     >
       {/* Header */}
-      <h1 className="text-xl font-semibold">Chart Of Accounts</h1>
-
+      <h1 className="text-xl font-semibold mb-4">Chart Of Accounts</h1>
       {/* Chart Of Accounts Section */}
       <div className="rounded-lg dark:border-gray-700">
         {/* <h1 className="text-2xl mb-4">Chart Of Accounts</h1> */}

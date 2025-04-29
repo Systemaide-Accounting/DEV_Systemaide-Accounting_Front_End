@@ -214,8 +214,8 @@ export function SalesOnAccountFormPage() {
     return (
       <>
         {/* Header */}
-        <h2 className="text-xl font-semibold">Sales Journal</h2>
-        <div className="border-2 border-gray-200 rounded-lg dark:border-gray-700">
+        <h2 className="text-xl font-semibold mb-4">Sales Journal</h2>
+        {/* <div className="border-2 border-gray-200 rounded-lg dark:border-gray-700"> */}
           {/* <h2 className="text-xl font-semibold">Sales Journal</h2> */}
 
           <form onSubmit={handleSubmit}>
@@ -507,7 +507,7 @@ export function SalesOnAccountFormPage() {
               </Button>
             </div>
           </form>
-        </div>
+        {/* </div> */}
       </>
     );
 }

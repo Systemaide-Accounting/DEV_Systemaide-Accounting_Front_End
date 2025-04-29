@@ -136,7 +136,7 @@ export function Reports({ isActiveLink, reportsDropdown, setReportsDropdown }) {
     <div className="px-3" data-section="reports">
       <button
         type="button"
-        className={`flex items-center justify-between w-full px-4 py-2.5 text-sm font-medium rounded-lg group transition duration-200 ${
+        className={`flex items-center justify-between w-full px-4 py-2.5 text-4xl rounded-lg group transition duration-200 ${
           isAnyReportActive
             ? "bg-blue-50 text-blue-700"
             : "text-gray-700 hover:bg-gray-50"

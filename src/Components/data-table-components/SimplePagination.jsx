@@ -7,40 +7,49 @@ import {
   ChevronsRight,
 } from "lucide-react";
 
-export function SimplePagination ({ currentPage, totalPages, onPageChange }) {
+export function SimplePagination({ currentPage, totalPages, onPageChange }) {
   return (
-    <div className="flex items-center gap-2">
-      <Button
-        size="xs"
+    <div className="pagination">
+      <button
+        className="pagination-btn"
         disabled={currentPage === 1}
+        aria-label="First page"
         onClick={() => onPageChange(1)}
+        type="button"
       >
         <ChevronsLeft className="h-4 w-4" />
-      </Button>
-      <Button
-        size="xs"
+      </button>
+      <button
+        className="pagination-btn"
         disabled={currentPage === 1}
+        aria-label="Previous page"
         onClick={() => onPageChange(currentPage - 1)}
+        type="button"
       >
         <ChevronLeft className="h-4 w-4" />
-      </Button>
+      </button>
       <span className="text-sm">
         Page {currentPage} of {totalPages}
       </span>
-      <Button
-        size="xs"
+      <button
+        className="pagination-btn"
         disabled={currentPage === totalPages}
+        aria-label="Next page"
         onClick={() => onPageChange(currentPage + 1)}
+        type="button"
       >
         <ChevronRight className="h-4 w-4" />
-      </Button>
-      <Button
-        size="xs"
+      </button>
+      <button
+        className="pagination-btn"
         disabled={currentPage === totalPages}
+        aria-label="Last page"
         onClick={() => onPageChange(totalPages)}
+        type="button"
       >
         <ChevronsRight className="h-4 w-4" />
-      </Button>
+      </button>
     </div>
   );
-};
+}
+;

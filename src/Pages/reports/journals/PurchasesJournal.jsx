@@ -1,12 +1,12 @@
 import { Button, Label, Table } from "flowbite-react";
 import { CalendarIcon } from "lucide-react";
+import "../../../calendar-input.css";
 import { useState } from "react";
 import { HandleDateFormat } from "../../../Components/reusable-functions/DateFormatter";
 import sweetalert2 from "sweetalert2";
 import { getPurchasesJournalReport } from "../../../services/systemaideService";
 
 export function PurchasesJournal() {
-
   const [reportData, setReportData] = useState([]);
   const [isReportGenerated, setIsReportGenerated] = useState(false);
   const [formData, setFormData] = useState({
@@ -44,7 +44,6 @@ export function PurchasesJournal() {
     e.preventDefault();
 
     if (!formData?.startDate || !formData?.endDate) {
-      // alert("Please select both start and end dates");
       sweetalert2.fire({
         icon: "error",
         title: "Error!",
@@ -58,7 +57,6 @@ export function PurchasesJournal() {
         JSON.stringify(formData)
       );
       if (!response?.success) console.log(response?.message);
-      // setReportData(disbursementJournalReportDataJSON);
       setReportData(response?.data);
       setIsReportGenerated(true);
     } catch (error) {
@@ -69,7 +67,6 @@ export function PurchasesJournal() {
   // Handle preview report button click
   const handlePreviewReport = () => {
     if (!formData?.startDate || !formData?.endDate) {
-      // alert("Please select both start and end dates");
       sweetalert2.fire({
         icon: "error",
         title: "Error!",
@@ -96,18 +93,16 @@ export function PurchasesJournal() {
   };
 
   return (
-    <div className="w-full border-2 rounded-lg shadow-sm overflow-hidden">
-      {/* Header */}
-      <div className="bg-blue-50 p-3 border-b">
-        <div className="flex items-center gap-2">
-          <h2 className="text-xl font-semibold text-blue-900">
-            Purchases Journal Report
-          </h2>
+    <>
+      {/* Title Card */}
+      <div className="w-full border rounded-lg bg-white mb-4">
+        <div className="p-4">
+          <h2 className="text-xl font-bold text-gray-900">Purchases Journal Report</h2>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="p-4">
+      {/* Content Card */}
+      <div className="w-full border rounded-lg bg-white p-4">
         <div className="flex flex-col gap-6">
           {/* Date Range Selection */}
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
@@ -115,7 +110,7 @@ export function PurchasesJournal() {
               <div className="mb-2 block">
                 <Label htmlFor="startDate" value="Start Date" />
               </div>
-              <div className="relative">
+              <div className="relative calendar-input-container">
                 <input
                   id="startDate"
                   name="startDate"
@@ -135,7 +130,7 @@ export function PurchasesJournal() {
               <div className="mb-2 block">
                 <Label htmlFor="endDate" value="End Date" />
               </div>
-              <div className="relative">
+              <div className="relative calendar-input-container">
                 <input
                   id="endDate"
                   name="endDate"
@@ -218,6 +213,6 @@ export function PurchasesJournal() {
           )}
         </div>
       </div>
-    </div>
+    </>
   );
 }

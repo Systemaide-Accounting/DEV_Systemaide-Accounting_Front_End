@@ -231,8 +231,8 @@ export function Home({ setOpenSidebar, setTransactionDropdown, setReportsDropdow
   ];
 
   return (
-    <div className="min-h-[92vh] bg-gradient-to-br from-gray-100 to-white dark:from-gray-900 dark:to-gray-800 p-6 font-poppins">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-[92vh] bg-gradient-to-br from-gray-100 to-white dark:from-gray-900 dark:to-gray-800 px-2 font-poppins">
+      <div className="max-w-5xl mx-auto px-2">
         {/* Welcome Section */}
         <div className="backdrop-blur-lg bg-white/80 dark:bg-white/5 border border-gray-200 dark:border-gray-700 rounded-3xl shadow-xl p-10 mb-12 transition-transform duration-300 hover:scale-[1.02]">
           <div className="flex justify-center mb-6">
@@ -252,7 +252,7 @@ export function Home({ setOpenSidebar, setTransactionDropdown, setReportsDropdow
         </div>
 
         {/* Shortcut Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
           {shortcutCards.map((card) => (
             <div
               key={card.id}

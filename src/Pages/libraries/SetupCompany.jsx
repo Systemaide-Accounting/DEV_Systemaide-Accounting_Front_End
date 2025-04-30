@@ -242,9 +242,8 @@ export function SetupCompany() {
   return (
     <>
       {/* Header */}
-      <h1 className="text-xl font-semibold">Setup Company</h1>
-
-      <div className="border-2 border-gray-200 rounded-lg dark:border-gray-700">
+      <h1 className="text-xl font-semibold mb-4">Setup Company</h1>
+      {/* <div className="border-2 border-gray-200 rounded-lg dark:border-gray-700"> */}
         {/* <h1 className="text-2xl font-bold mb-2">Setup Company</h1> */}
 
         {/* SETUP COMPANY FORM */}
@@ -289,6 +288,7 @@ export function SetupCompany() {
                       onFocus={handleSelectFocus}
                       onChange={handleChange}
                       required
+                      className="border-blue-600 focus:border-blue-600 focus:ring-blue-600"
                     >
                       <option
                         className="uppercase"
@@ -591,6 +591,7 @@ export function SetupCompany() {
                                 formData?.companyPeriod === "calendar"
                               }
                               onChange={handleChange}
+                              className="checked:bg-blue-600 checked:border-blue-600 focus:ring-blue-600"
                             />
                             <Label htmlFor="companyPeriod-1" className="ms-2">
                               CALENDAR
@@ -603,6 +604,7 @@ export function SetupCompany() {
                               value="fiscal"
                               checked={formData?.companyPeriod === "fiscal"}
                               onChange={handleChange}
+                              className="checked:bg-blue-600 checked:border-blue-600 focus:ring-blue-600"
                             />
                             <Label htmlFor="companyPeriod-2" className="ms-2">
                               FISCAL
@@ -625,6 +627,7 @@ export function SetupCompany() {
                       onFocus={handleSelectFocus}
                       onChange={handleChange}
                       required={companyPeriod === "fiscal"}
+                      className="border-blue-600 focus:border-blue-600 focus:ring-blue-600"
                     >
                       <option
                         className="uppercase"
@@ -660,6 +663,7 @@ export function SetupCompany() {
                       onFocus={handleSelectFocus}
                       onChange={handleChange}
                       required
+                      className="border-blue-600 focus:border-blue-600 focus:ring-blue-600"
                     >
                       <option
                         className="uppercase"
@@ -686,6 +690,7 @@ export function SetupCompany() {
                       onFocus={handleSelectFocus}
                       onChange={handleChange}
                       required
+                      className="border-blue-600 focus:border-blue-600 focus:ring-blue-600"
                     >
                       <option
                         className="uppercase"
@@ -708,32 +713,31 @@ export function SetupCompany() {
           <div className="mt-4">
             <Button
               type="submit"
-              gradientDuoTone="greenToBlue"
-              className="w-full py-3 font-semibold text-base"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base py-3 rounded-lg transition-colors duration-200 disabled:bg-blue-300 disabled:cursor-not-allowed"
               disabled={formStatus !== "idle"}
             >
               {formStatus === "idle" && (
                 <>
                   <Save className="mr-2 h-5 w-5" />
-                  SAVE COMPANY INFORMATION
+                  Save Company Info
                 </>
               )}
               {formStatus === "submitting" && (
                 <>
                   <div className="mr-3 h-4 w-4 animate-spin rounded-full border-2 border-white border-r-transparent" />
-                  SAVING...
+                  Saving...
                 </>
               )}
               {formStatus === "success" && (
                 <>
                   <CheckCircle className="mr-2 h-5 w-5" />
-                  SAVED SUCCESSFULLY
+                  Saved Successfully
                 </>
               )}
             </Button>
           </div>
         </form>
-      </div>
+      {/* </div> */}
     </>
   );
 }

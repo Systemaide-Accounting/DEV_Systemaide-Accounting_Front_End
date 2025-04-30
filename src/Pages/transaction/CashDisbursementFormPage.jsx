@@ -268,8 +268,8 @@ export function CashDisbursementFormPage() {
   return (
     <>
       {/* Header */}
-      <h2 className="text-xl font-semibold">Cash Disbursement Journal</h2>
-      <div className=" border-2 border-gray-200 rounded-lg dark:border-gray-700">
+      <h2 className="text-xl font-semibold mb-4">Cash Disbursement Journal</h2>
+      {/* <div className=" border-2 border-gray-200 rounded-lg dark:border-gray-700"> */}
         {/* <h2 className="text-xl font-semibold">Cash Disbursement Journal</h2> */}
 
         <form onSubmit={handleSubmit}>
@@ -653,7 +653,7 @@ export function CashDisbursementFormPage() {
             </Button>
           </div>
         </form>
-      </div>
+      {/* </div> */}
     </>
   );
 }

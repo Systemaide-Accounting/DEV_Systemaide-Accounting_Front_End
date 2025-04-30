@@ -24,7 +24,7 @@ export function Dashboard({ children }) {
   const [utilitiesDropdown, setUtilitiesDropdown] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 font-inter">
       <Navbar
         openSidebar={openSidebar}
         setOpenSidebar={setOpenSidebar}

@@ -1,13 +1,151 @@
-import { Button } from "flowbite-react";
-import { HandleDateFormat } from "../../../Components/reusable-functions/DateFormatter";
 import { useEffect, useState } from "react";
 import { getReceiptsJournalReport } from "../../../services/systemaideService";
+import { HandleDateFormat } from "../../../Components/reusable-functions/DateFormatter";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import * as XLSX from "xlsx";
 
 export function PrintReceiptsJournal() {
-
     const [reportData, setReportData] = useState([]);
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+    // Download as PDF
+    const downloadPDF = () => {
+        const input = document.querySelector('.print-content');
+        html2canvas(input).then((canvas) => {
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF();
+            
+            // Calculate margins to match print area
+            const marginLeft = 15; // mm
+            const marginTop = 10; // mm
+            const width = 180; // mm (A4 width - margins)
+            
+            pdf.addImage(imgData, 'PNG', marginLeft, marginTop, width, 0);
+            pdf.save(`ReceiptsJournal_${startDate}-${endDate}.pdf`);
+        });
+    };
+
+    // Download as Excel
+    const downloadExcel = () => {
+        // Create worksheet
+        const worksheet = XLSX.utils.json_to_sheet([]);
+        
+        // Add title and date range
+        worksheet['A1'] = { t: 's', v: 'Cash Receipts Journal', s: {
+            font: { bold: true, sz: 14 },
+            alignment: { horizontal: 'center' }
+        } };
+        worksheet['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 4 } }];
+        
+        // Format dates for display
+        const formatDate = (date) => {
+            const d = new Date(date);
+            return d.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+        };
+        
+        worksheet['A2'] = { t: 's', v: `${formatDate(startDate)} to ${formatDate(endDate)}`, s: {
+            font: { sz: 11 },
+            alignment: { horizontal: 'center' }
+        } };
+        worksheet['!merges'] = worksheet['!merges'].concat([{ s: { r: 1, c: 0 }, e: { r: 1, c: 4 } }]);
+        
+        worksheet['A3'] = { t: 's', v: `Generated on: ${formatDate(new Date())}`, s: {
+            font: { sz: 10 },
+            alignment: { horizontal: 'center' }
+        } };
+        worksheet['!merges'] = worksheet['!merges'].concat([{ s: { r: 2, c: 0 }, e: { r: 2, c: 4 } }]);
+        
+        // Add data starting from row 5
+        const data = reportData.map(item => ({
+            Date: formatDate(item.date),
+            'Payor\'s Name': item.payorName,
+            Particulars: item.particular,
+            'Account Title': item.cashAccount?.accountName,
+            Amount: parseFloat(item?.cashAmount || 0)?.toFixed(2)
+        }));
+        
+        // Add data to worksheet
+        const wsData = XLSX.utils.json_to_sheet(data, { origin: 'A5' });
+        Object.assign(worksheet, wsData);
+        
+        // Add total row
+        const totalAmount = reportData?.reduce((sum, item) => sum + parseFloat(item?.cashAmount || 0), 0);
+        worksheet[XLSX.utils.encode_cell({ r: data.length + 5, c: 3 })] = { t: 's', v: 'Total', s: {
+            font: { bold: true },
+            alignment: { horizontal: 'right' }
+        } };
+        worksheet[XLSX.utils.encode_cell({ r: data.length + 5, c: 4 })] = { t: 'n', v: totalAmount, s: {
+            font: { bold: true },
+            alignment: { horizontal: 'right' },
+            numFmt: "0.00"
+        } };
+        
+        // Add formatting
+        worksheet['!cols'] = [
+            { wch: 15 }, // Date column width
+            { wch: 20 }, // Payor's Name column width
+            { wch: 30 }, // Particulars column width
+            { wch: 25 }, // Account Title column width
+            { wch: 15 }  // Amount column width
+        ];
+        
+        // Add header styles
+        const range = XLSX.utils.decode_range(worksheet['!ref']);
+        for (let C = range.s.c; C <= range.e.c; ++C) {
+            const address = XLSX.utils.encode_cell({ r: 4, c: C });
+            worksheet[address].s = {
+                font: { bold: true },
+                fill: { fgColor: { rgb: "3B82F6" } },
+                alignment: {
+                    horizontal: "center",
+                    vertical: "middle",
+                    wrapText: true
+                },
+                border: {
+                    top: { style: "thin" },
+                    bottom: { style: "thin" },
+                    left: { style: "thin" },
+                    right: { style: "thin" }
+                }
+            };
+        }
+        
+        // Add cell borders and text wrapping
+        for (let R = 5; R <= range.e.r; ++R) {
+            for (let C = range.s.c; C <= range.e.c; ++C) {
+                const address = XLSX.utils.encode_cell({ r: R, c: C });
+                if (worksheet[address]) {
+                    worksheet[address].s = {
+                        border: {
+                            top: { style: "thin" },
+                            bottom: { style: "thin" },
+                            left: { style: "thin" },
+                            right: { style: "thin" }
+                        },
+                        alignment: {
+                            horizontal: C === 4 ? "right" : "left",
+                            vertical: "top",
+                            wrapText: true
+                        }
+                    };
+                }
+            }
+        }
+        
+        // Create workbook
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Cash Receipts Journal");
+        
+        // Save file
+        XLSX.writeFile(workbook, `ReceiptsJournal_${startDate}-${endDate}.xlsx`);
+    };
 
     useEffect(() => {
         const stored = sessionStorage.getItem("receiptsReportRange");
@@ -58,15 +196,9 @@ export function PrintReceiptsJournal() {
             if (!response?.success) console.log(response?.message);
             console.log("reportData:", response?.data);
             return response?.data; 
-            // return disbursementJournalReportDataJSON; // Mock data
         } catch {
             throw new Error("Error fetching disbursements");
         }
-    };
-
-    const printReport = () => {
-      document.title = `CashReceiptsJournal_${startDate}-${endDate}`;
-      window.print();
     };
 
     const start = new Date(startDate);
@@ -79,83 +211,124 @@ export function PrintReceiptsJournal() {
     }
 
     return (
-      <div className="p-8 max-w mx-auto bg-white print:bg-white">
-        <Button
-          color="blue"
-          onClick={printReport}
-          className="w-full mb-2 print:hidden"
-        >
-          Print
-        </Button>
-        <h1 className="text-2xl font-bold mb-2 text-center">
-          Cash Receipts Journal
-        </h1>
-        <h2 className="text-base text-gray-600 mb-4 text-center">
-          <HandleDateFormat date={start} /> to <HandleDateFormat date={end} />
-        </h2>
-        <div className="text-sm text-gray-500 mb-6 text-center">
-          Generated on: {<HandleDateFormat date={new Date()} />}
-        </div>
-        {reportData?.length === 0 ? (
-          <div>Loading...</div>
-        ) : (
-          <table className="w-full border-collapse">
-            <thead>
-              <tr>
-                <th className="bg-blue-500 text-white font-normal text-base p-2 text-left">
-                  Date
-                </th>
-                <th className="bg-blue-500 text-white font-normal text-base p-2 text-left">
-                  Payor's Name
-                </th>
-                <th className="bg-blue-500 text-white font-normal text-base p-2 text-left">
-                  Particulars
-                </th>
-                <th className="bg-blue-500 text-white font-normal text-base p-2 text-left">
-                  Account Title
-                </th>
-                <th className="bg-blue-500 text-white font-normal text-base p-2 text-right">
-                  Amount
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {reportData?.map((item, index) => (
-                <tr
-                  key={index + 1}
-                  className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+      <>
+        <div className="max-w-4xl mx-auto px-6 mt-6 print:hidden">
+          <div className="relative">
+            <button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="w-full bg-blue-500 text-white hover:bg-blue-600 flex items-center justify-center gap-3 px-4 py-3 rounded-lg transition-all duration-200"
+            >
+              Download
+              <span className="text-sm">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </span>
+            </button>
+            {isDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200">
+                {/* <button
+                  onClick={() => {
+                    printReport();
+                    setIsDropdownOpen(false);
+                  }}
+                  className="w-full text-left px-4 py-3 hover:bg-gray-100 transition-colors duration-200"
                 >
-                  <td className="font-thin p-2 border-b border-gray-200">
-                    <HandleDateFormat date={item?.date} />
+                  Print
+                </button> */}
+                <button
+                  onClick={() => {
+                    downloadPDF();
+                    setIsDropdownOpen(false);
+                  }}
+                  className="w-full text-left px-4 py-3 hover:bg-gray-100 transition-colors duration-200"
+                >
+                  PDF
+                </button>
+                <button
+                  onClick={() => {
+                    downloadExcel();
+                    setIsDropdownOpen(false);
+                  }}
+                  className="w-full text-left px-4 py-3 hover:bg-gray-100 transition-colors duration-200"
+                >
+                  Excel
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="print-content p-8 max-w mx-auto bg-white print:bg-white">
+          <h1 className="text-2xl font-bold mb-2 text-center">
+            Cash Receipts Journal
+          </h1>
+          <h2 className="text-base text-gray-600 mb-4 text-center">
+            <HandleDateFormat date={start} /> to <HandleDateFormat date={end} />
+          </h2>
+          <div className="text-sm text-gray-500 mb-6 text-center">
+            Generated on: {<HandleDateFormat date={new Date()} />}
+          </div>
+          {reportData?.length === 0 ? (
+            <div>Loading...</div>
+          ) : (
+            <table className="w-full border-collapse">
+              <thead>
+                <tr>
+                  <th className="bg-blue-500 text-white font-normal text-base p-2 text-left">
+                    Date
+                  </th>
+                  <th className="bg-blue-500 text-white font-normal text-base p-2 text-left">
+                    Payor's Name
+                  </th>
+                  <th className="bg-blue-500 text-white font-normal text-base p-2 text-left">
+                    Particulars
+                  </th>
+                  <th className="bg-blue-500 text-white font-normal text-base p-2 text-left">
+                    Account Title
+                  </th>
+                  <th className="bg-blue-500 text-white font-normal text-base p-2 text-right">
+                    Amount
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {reportData?.map((item, index) => (
+                  <tr
+                    key={index + 1}
+                    className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                  >
+                    <td className="font-thin p-2 border-b border-gray-200">
+                      <HandleDateFormat date={item?.date} />
+                    </td>
+                    <td className="font-normal p-2 border-b border-gray-200">
+                      {item?.payorName}
+                    </td>
+                    <td className="font-normal p-2 border-b border-gray-200">
+                      {item?.particular}
+                    </td>
+                    <td className="font-normal p-2 border-b border-gray-200">
+                      {item?.cashAccount?.accountName}
+                    </td>
+                    <td className="text-right font-normal p-2 border-b border-gray-200">
+                      {parseFloat(item?.cashAmount || 0)?.toFixed(2)}
+                    </td>
+                  </tr>
+                ))}
+                <tr className="bg-gray-100">
+                  <td
+                    colSpan={4}
+                    className="text-base text-right p-2 font-semibold"
+                  >
+                    Total
                   </td>
-                  <td className="font-normal p-2 border-b border-gray-200">
-                    {item?.payorName}
-                  </td>
-                  <td className="font-normal p-2 border-b border-gray-200">
-                    {item?.particular}
-                  </td>
-                  <td className="font-normal p-2 border-b border-gray-200">
-                    {item?.cashAccount?.accountName}
-                  </td>
-                  <td className="text-right font-normal p-2 border-b border-gray-200">
-                    {parseFloat(item?.cashAmount || 0)?.toFixed(2)}
+                  <td className="text-right p-2 font-semibold">
+                    {totalAmount?.toFixed(2)}
                   </td>
                 </tr>
-              ))}
-              <tr className="bg-gray-100">
-                <td
-                  colSpan={4}
-                  className="text-base text-right p-2 font-semibold"
-                >
-                  Total
-                </td>
-                <td className="text-right p-2 font-semibold">
-                  {totalAmount?.toFixed(2)}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        )}
-      </div>
+              </tbody>
+            </table>
+          )}
+        </div>
+      </>
     );
-};
+}

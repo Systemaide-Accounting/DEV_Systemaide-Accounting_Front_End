@@ -1,12 +1,14 @@
 import companyLogo from "../assets/company-logo.gif";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronUp, Receipt, FileText, BookOpen, Settings, Shield } from "lucide-react";
+import { ChevronUp } from "lucide-react";
 import PropTypes from "prop-types";
+import { HomeCards } from "../Components/HomeCards.jsx";
 
 export function Home({ setOpenSidebar, setTransactionDropdown, setReportsDropdown, setLibraryDropdown, setUtilitiesDropdown }) {
   const [expandedCard, setExpandedCard] = useState(null);
   const navigate = useNavigate();
+  const filteredCards = HomeCards();
 
   const toggleCard = (cardId) => {
     setExpandedCard(expandedCard === cardId ? null : cardId);
@@ -24,6 +26,9 @@ export function Home({ setOpenSidebar, setTransactionDropdown, setReportsDropdow
         setTransactionDropdown(prev => !prev);
         sectionElement = document.querySelector(`[data-section="${section}"]`);
         if (sectionElement) {
+          // Remove any existing ring classes
+          sectionElement.classList.remove('ring-2', 'ring-blue-600', 'ring-purple-600', 'ring-green-600', 'ring-orange-600', 'ring-red-600', 'ring-opacity-75', 'ring-opacity-0');
+          // Add blue highlight
           sectionElement.classList.add('ring-2', 'ring-blue-600', 'ring-opacity-75', 'transition-all', 'duration-400', 'ease-in-out', 'rounded-xl', 'relative', 'z-[9999]');
           // Scroll into view smoothly if element is not visible
           sectionElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -48,7 +53,10 @@ export function Home({ setOpenSidebar, setTransactionDropdown, setReportsDropdow
         setReportsDropdown(prev => !prev);
         sectionElement = document.querySelector(`[data-section="${section}"]`);
         if (sectionElement) {
-          sectionElement.classList.add('ring-2', 'ring-blue-600', 'ring-opacity-75', 'transition-all', 'duration-400', 'ease-in-out', 'rounded-xl', 'relative', 'z-50');
+          // Remove any existing ring classes
+          sectionElement.classList.remove('ring-2', 'ring-blue-600', 'ring-purple-600', 'ring-green-600', 'ring-orange-600', 'ring-red-600', 'ring-opacity-75', 'ring-opacity-0');
+          // Add blue highlight
+          sectionElement.classList.add('ring-2', 'ring-blue-600', 'ring-opacity-75', 'transition-all', 'duration-400', 'ease-in-out', 'rounded-xl', 'relative', 'z-[9999]');
           // Scroll into view smoothly if element is not visible
           sectionElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
           setTimeout(() => {
@@ -61,7 +69,7 @@ export function Home({ setOpenSidebar, setTransactionDropdown, setReportsDropdow
                 sectionElement.classList.remove('ring-opacity-75');
                 sectionElement.classList.add('ring-opacity-0', 'transition-all', 'duration-1000', 'ease-in-out');
                 setTimeout(() => {
-                  sectionElement.classList.remove('ring-2', 'ring-blue-600', 'ring-opacity-0', 'transition-all', 'duration-1000', 'ease-in-out', 'rounded-xl', 'relative', 'z-50');
+                  sectionElement.classList.remove('ring-2', 'ring-blue-600', 'ring-opacity-0', 'transition-all', 'duration-1000', 'ease-in-out', 'rounded-xl', 'relative', 'z-[9999]');
                 }, 1000);
               }, 400);
             }, 400);
@@ -72,7 +80,10 @@ export function Home({ setOpenSidebar, setTransactionDropdown, setReportsDropdow
         setLibraryDropdown(prev => !prev);
         sectionElement = document.querySelector(`[data-section="${section}"]`);
         if (sectionElement) {
-          sectionElement.classList.add('ring-2', 'ring-blue-600', 'ring-opacity-75', 'transition-all', 'duration-400', 'ease-in-out', 'rounded-xl', 'relative', 'z-50');
+          // Remove any existing ring classes
+          sectionElement.classList.remove('ring-2', 'ring-blue-600', 'ring-purple-600', 'ring-green-600', 'ring-orange-600', 'ring-red-600', 'ring-opacity-75', 'ring-opacity-0');
+          // Add blue highlight
+          sectionElement.classList.add('ring-2', 'ring-blue-600', 'ring-opacity-75', 'transition-all', 'duration-400', 'ease-in-out', 'rounded-xl', 'relative', 'z-[9999]');
           // Scroll into view smoothly if element is not visible
           sectionElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
           setTimeout(() => {
@@ -85,7 +96,7 @@ export function Home({ setOpenSidebar, setTransactionDropdown, setReportsDropdow
                 sectionElement.classList.remove('ring-opacity-75');
                 sectionElement.classList.add('ring-opacity-0', 'transition-all', 'duration-1000', 'ease-in-out');
                 setTimeout(() => {
-                  sectionElement.classList.remove('ring-2', 'ring-blue-600', 'ring-opacity-0', 'transition-all', 'duration-1000', 'ease-in-out', 'rounded-xl', 'relative', 'z-50');
+                  sectionElement.classList.remove('ring-2', 'ring-blue-600', 'ring-opacity-0', 'transition-all', 'duration-1000', 'ease-in-out', 'rounded-xl', 'relative', 'z-[9999]');
                 }, 1000);
               }, 400);
             }, 400);
@@ -96,7 +107,10 @@ export function Home({ setOpenSidebar, setTransactionDropdown, setReportsDropdow
         setUtilitiesDropdown(prev => !prev);
         sectionElement = document.querySelector(`[data-section="${section}"]`);
         if (sectionElement) {
-          sectionElement.classList.add('ring-2', 'ring-blue-600', 'ring-opacity-75', 'transition-all', 'duration-400', 'ease-in-out', 'rounded-xl', 'relative', 'z-50');
+          // Remove any existing ring classes
+          sectionElement.classList.remove('ring-2', 'ring-blue-600', 'ring-purple-600', 'ring-green-600', 'ring-orange-600', 'ring-red-600', 'ring-opacity-75', 'ring-opacity-0');
+          // Add blue highlight
+          sectionElement.classList.add('ring-2', 'ring-blue-600', 'ring-opacity-75', 'transition-all', 'duration-400', 'ease-in-out', 'rounded-xl', 'relative', 'z-[9999]');
           // Scroll into view smoothly if element is not visible
           sectionElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
           setTimeout(() => {
@@ -109,7 +123,7 @@ export function Home({ setOpenSidebar, setTransactionDropdown, setReportsDropdow
                 sectionElement.classList.remove('ring-opacity-75');
                 sectionElement.classList.add('ring-opacity-0', 'transition-all', 'duration-1000', 'ease-in-out');
                 setTimeout(() => {
-                  sectionElement.classList.remove('ring-2', 'ring-blue-600', 'ring-opacity-0', 'transition-all', 'duration-1000', 'ease-in-out', 'rounded-xl', 'relative', 'z-50');
+                  sectionElement.classList.remove('ring-2', 'ring-blue-600', 'ring-opacity-0', 'transition-all', 'duration-1000', 'ease-in-out', 'rounded-xl', 'relative', 'z-[9999]');
                 }, 1000);
               }, 400);
             }, 400);
@@ -119,7 +133,10 @@ export function Home({ setOpenSidebar, setTransactionDropdown, setReportsDropdow
       case 'system':
         sectionElement = document.querySelector(`[data-section="${section}"]`);
         if (sectionElement) {
-          sectionElement.classList.add('ring-2', 'ring-red-600', 'ring-opacity-75', 'transition-all', 'duration-400', 'ease-in-out', 'rounded-xl', 'relative', 'z-50');
+          // Remove any existing ring classes
+          sectionElement.classList.remove('ring-2', 'ring-blue-600', 'ring-purple-600', 'ring-green-600', 'ring-orange-600', 'ring-red-600', 'ring-opacity-75', 'ring-opacity-0');
+          // Add blue highlight
+          sectionElement.classList.add('ring-2', 'ring-blue-600', 'ring-opacity-75', 'transition-all', 'duration-400', 'ease-in-out', 'rounded-xl', 'relative', 'z-[9999]');
           // Scroll into view smoothly if element is not visible
           sectionElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
           setTimeout(() => {
@@ -132,7 +149,7 @@ export function Home({ setOpenSidebar, setTransactionDropdown, setReportsDropdow
                 sectionElement.classList.remove('ring-opacity-75');
                 sectionElement.classList.add('ring-opacity-0', 'transition-all', 'duration-1000', 'ease-in-out');
                 setTimeout(() => {
-                  sectionElement.classList.remove('ring-2', 'ring-red-600', 'ring-opacity-0', 'transition-all', 'duration-1000', 'ease-in-out', 'rounded-xl', 'relative', 'z-50');
+                  sectionElement.classList.remove('ring-2', 'ring-blue-600', 'ring-opacity-0', 'transition-all', 'duration-1000', 'ease-in-out', 'rounded-xl', 'relative', 'z-[9999]');
                 }, 1000);
               }, 400);
             }, 400);
@@ -149,86 +166,15 @@ export function Home({ setOpenSidebar, setTransactionDropdown, setReportsDropdow
     // Navigate to home to ensure we're on the right page
     if (section !== 'system') {
       navigate('/home');
+    } else {
+      // For system-config, navigate and scroll to the system section
+      navigate('/system-config', { replace: true });
+      const systemSection = document.querySelector('[data-section="system"]');
+      if (systemSection) {
+        systemSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
   };
-
-  const shortcutCards = [
-    {
-      id: "transactions",
-      title: "Transactions",
-      icon: <Receipt className="w-10 h-10 text-blue-600 dark:text-blue-400" />,
-      color: "blue",
-      description: "Manage all financial transactions including cash receipts, disbursements, and sales on account. Record and track every financial movement in your business.",
-      features: [
-        "Record cash receipts and disbursements",
-        "Manage sales on account",
-        "Track customer payments",
-        "Monitor vendor payments",
-        "View transaction history"
-      ],
-      section: "transactions"
-    },
-    {
-      id: "reports",
-      title: "Reports",
-      icon: <FileText className="w-10 h-10 text-purple-600 dark:text-purple-400" />,
-      color: "purple",
-      description: "Access comprehensive financial reports including journals, ledgers, and trial balances. Generate detailed financial statements and analysis for better decision-making.",
-      features: [
-        "View general and special journals",
-        "Access general and subsidiary ledgers",
-        "Generate trial balances",
-        "Create financial worksheets",
-        "Export reports in various formats"
-      ],
-      section: "reports"
-    },
-    {
-      id: "library",
-      title: "Library",
-      icon: <BookOpen className="w-10 h-10 text-green-600 dark:text-green-400" />,
-      color: "green",
-      description: "Maintain your master data including chart of accounts, locations, customers, and suppliers. Keep your business information organized and up-to-date.",
-      features: [
-        "Manage chart of accounts",
-        "Configure business locations",
-        "Maintain customer database",
-        "Update supplier information",
-        "Track business relationships"
-      ],
-      section: "library"
-    },
-    {
-      id: "utilities",
-      title: "Utilities",
-      icon: <Settings className="w-10 h-10 text-orange-600 dark:text-orange-400" />,
-      color: "orange",
-      description: "Access system utilities for backup, restore, and maintenance. Ensure your data is safe and your system runs smoothly.",
-      features: [
-        "Backup system data",
-        "Restore from backups",
-        "View system logs",
-        "Monitor system health",
-        "Manage system settings"
-      ],
-      section: "utilities"
-    },
-    {
-      id: "system",
-      title: "System",
-      icon: <Shield className="w-10 h-10 text-red-600 dark:text-red-400" />,
-      color: "red",
-      description: "Configure system settings, manage users, roles, and permissions. Control access and maintain system security.",
-      features: [
-        "Manage user accounts",
-        "Configure user roles",
-        "Set access permissions",
-        "Monitor user activity",
-        "Maintain system security"
-      ],
-      section: "system"
-    },
-  ];
 
   return (
     <div className="min-h-[92vh] bg-gradient-to-br from-gray-100 to-white dark:from-gray-900 dark:to-gray-800 px-2 font-poppins">
@@ -253,7 +199,7 @@ export function Home({ setOpenSidebar, setTransactionDropdown, setReportsDropdow
 
         {/* Shortcut Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
-          {shortcutCards.map((card) => (
+          {filteredCards.map((card) => (
             <div
               key={card.id}
               className="group aspect-square backdrop-blur-lg bg-white/80 dark:bg-white/5 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-[1.02] relative max-w-[320px] mx-auto"
@@ -300,8 +246,28 @@ export function Home({ setOpenSidebar, setTransactionDropdown, setReportsDropdow
                     </div>
                     <div className="flex-1 overflow-y-auto">
                       <div className="space-y-4">
-                        <div className="space-y-2">
-                          {card.features.map((feature, index) => (
+                        {card.features.map((feature, index) => (
+                          feature.type === "header" ? (
+                            <h4 key={index} className="text-sm font-bold text-gray-600 dark:text-gray-300 mb-2">{feature.description}</h4>
+                          ) : feature.path ? (
+                            <button
+                              key={index}
+                              onClick={() => {
+                                setOpenSidebar(true);
+                                navigate(feature.path);
+                              }}
+                              className={`flex items-center gap-3 px-3 py-2 text-xs text-gray-600 dark:text-gray-300 rounded-lg transition-all duration-300 hover:bg-gray-50 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-${card.color}-500 focus:ring-offset-2 ${
+                                card.id === "transactions" ? "hover:text-blue-600 dark:hover:text-blue-400" :
+                                card.id === "reports" ? "hover:text-purple-600 dark:hover:text-purple-400" :
+                                card.id === "library" ? "hover:text-green-600 dark:hover:text-green-400" :
+                                card.id === "utilities" ? "hover:text-orange-600 dark:hover:text-orange-400" :
+                                card.id === "system" ? "hover:text-red-600 dark:hover:text-red-400" : ""
+                              }`}
+                            >
+                              <span className="w-1.5 h-1.5 rounded-full bg-gray-400 dark:bg-gray-500"></span>
+                              {feature.description}
+                            </button>
+                          ) : (
                             <div
                               key={index}
                               className={`flex items-center gap-3 px-3 py-2 text-xs text-gray-600 dark:text-gray-300 rounded-lg transition-all duration-300 hover:bg-gray-50 dark:hover:bg-gray-800 ${
@@ -313,23 +279,23 @@ export function Home({ setOpenSidebar, setTransactionDropdown, setReportsDropdow
                               }`}
                             >
                               <span className="w-1.5 h-1.5 rounded-full bg-gray-400 dark:bg-gray-500"></span>
-                              {feature}
+                              {feature.description}
                             </div>
-                          ))}
-                        </div>
-                        <button
-                          onClick={() => handleNavigation(card.section)}
-                          className={`block w-full mt-6 text-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-300 ${
-                            card.id === "transactions" ? "bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/30" :
-                            card.id === "reports" ? "bg-purple-50 text-purple-600 hover:bg-purple-100 dark:bg-purple-900/20 dark:text-purple-400 dark:hover:bg-purple-900/30" :
-                            card.id === "library" ? "bg-green-50 text-green-600 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400 dark:hover:bg-green-900/30" :
-                            card.id === "utilities" ? "bg-orange-50 text-orange-600 hover:bg-orange-100 dark:bg-orange-900/20 dark:text-orange-400 dark:hover:bg-orange-900/30" :
-                            card.id === "system" ? "bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30" : ""
-                          }`}
-                        >
-                          Go to {card.title}
-                        </button>
+                          )
+                        ))}
                       </div>
+                      <button
+                        onClick={() => handleNavigation(card.section)}
+                        className={`block w-full mt-6 text-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-300 ${
+                          card.id === "transactions" ? "bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/30" :
+                          card.id === "reports" ? "bg-purple-50 text-purple-600 hover:bg-purple-100 dark:bg-purple-900/20 dark:text-purple-400 dark:hover:bg-purple-900/30" :
+                          card.id === "library" ? "bg-green-50 text-green-600 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400 dark:hover:bg-green-900/30" :
+                          card.id === "utilities" ? "bg-orange-50 text-orange-600 hover:bg-orange-100 dark:bg-orange-900/20 dark:text-orange-400 dark:hover:bg-orange-900/30" :
+                          card.id === "system" ? "bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30" : ""
+                        }`}
+                      >
+                        Go to {card.title}
+                      </button>
                     </div>
                   </div>
                 )}

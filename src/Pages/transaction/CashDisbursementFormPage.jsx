@@ -308,16 +308,14 @@ export function CashDisbursementFormPage() {
   return (
     <>
       {/* Title Card */}
-      <div className="w-full border rounded-lg bg-white mb-4">
-        <div className="p-4">
-          <h2 className="text-xl font-bold text-gray-900">
-            Cash Disbursement Journal
-          </h2>
-        </div>
+      <div className="w-full p-4 border rounded-lg bg-white mb-4 shadow">
+        <h2 className="text-xl font-bold text-gray-900">
+          Cash Disbursement Journal
+        </h2>
       </div>
 
       <form onSubmit={handleSubmit}>
-        <div className="mb-4 rounded bg-white dark:bg-gray-800 p-4 shadow">
+        <div className="mb-4 border rounded-lg bg-white dark:bg-gray-800 p-4 shadow">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
             <div>
               <Label htmlFor="date">Date</Label>
@@ -535,7 +533,7 @@ export function CashDisbursementFormPage() {
         </div>
 
         <div className="flex justify-end">
-          <div className="p-4 mb-4 bg-green-100 border rounded-lg">
+          <div className="p-4 mb-4 bg-green-100 border rounded-lg shadow">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
               <div>
                 <Label htmlFor="totalDebit">Total Debit</Label>
@@ -566,7 +564,7 @@ export function CashDisbursementFormPage() {
           </div>
         </div>
 
-        <div className="border rounded-lg">
+        <div className="border rounded-lg shadow">
           <div className="bg-blue-50 p-4 flex justify-between items-center">
             <div className="flex items-center gap-2">
               <h3 className="text-lg font-semibold text-blue-700">

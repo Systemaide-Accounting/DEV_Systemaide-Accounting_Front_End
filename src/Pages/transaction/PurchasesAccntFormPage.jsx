@@ -241,314 +241,313 @@ export function PurchasesAccntFormPage() {
 
   return (
     <>
-      {/* Header */}
-      <h2 className="text-xl font-semibold mb-4">Purchases Journal</h2>
-      {/* <div className="border-2 border-gray-200 rounded-lg dark:border-gray-700"> */}
-        {/* <h2 className="text-xl font-semibold">Purchases Journal</h2> */}
+      {/* Title Card */}
+      <div className="w-full p-4 border rounded-lg bg-white mb-4 shadow">
+        <h2 className="text-xl font-bold text-gray-900">Purchases Journal</h2>
+      </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4 rounded bg-white dark:bg-gray-800 p-4 shadow">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div>
-                <Label htmlFor="date">Date</Label>
-                <TextInput
-                  id="date"
-                  name="date"
-                  type="date"
-                  onChange={handleChange}
-                  value={formData?.date}
-                  required
-                />
-              </div>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-4 border rounded-lg bg-white dark:bg-gray-800 p-4 shadow">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div>
+              <Label htmlFor="date">Date</Label>
+              <TextInput
+                id="date"
+                name="date"
+                type="date"
+                onChange={handleChange}
+                value={formData?.date}
+                required
+              />
+            </div>
 
-              <div>
-                <Label htmlFor="month">Month</Label>
-                <TextInput
-                  id="month"
-                  name="month"
-                  type="text"
-                  onChange={handleChange}
-                  value={formData?.month}
-                  readOnly={transactionData?.month ? false : true}
-                  required
-                />
-              </div>
+            <div>
+              <Label htmlFor="month">Month</Label>
+              <TextInput
+                id="month"
+                name="month"
+                type="text"
+                onChange={handleChange}
+                value={formData?.month}
+                readOnly={transactionData?.month ? false : true}
+                required
+              />
+            </div>
 
-              <div>
-                <Label htmlFor="year">Year</Label>
-                <TextInput
-                  id="year"
-                  name="year"
-                  type="text"
-                  onChange={handleChange}
-                  value={formData?.year}
-                  readOnly={transactionData?.year ? false : true}
-                  required
-                />
-              </div>
+            <div>
+              <Label htmlFor="year">Year</Label>
+              <TextInput
+                id="year"
+                name="year"
+                type="text"
+                onChange={handleChange}
+                value={formData?.year}
+                readOnly={transactionData?.year ? false : true}
+                required
+              />
+            </div>
 
-              <div>
-                <Label htmlFor="location">Location</Label>
-                <Select
-                  id="location"
-                  name="location"
-                  onFocus={handleSelectFocus}
-                  onChange={handleChange}
-                  value={formData?.location}
-                  // defaultValue={formData?.location}
-                  required
+            <div>
+              <Label htmlFor="location">Location</Label>
+              <Select
+                id="location"
+                name="location"
+                onFocus={handleSelectFocus}
+                onChange={handleChange}
+                value={formData?.location}
+                // defaultValue={formData?.location}
+                required
+              >
+                <option
+                  className="uppercase"
+                  value=""
+                  disabled={isFirstOptionDisabled}
                 >
-                  <option
-                    className="uppercase"
-                    value=""
-                    disabled={isFirstOptionDisabled}
-                  >
-                    Select location
+                  Select location
+                </option>
+                {locationsSelectOptions.map((location, index) => (
+                  <option key={index + 1} value={location?._id}>
+                    {location?.name.toUpperCase()}
                   </option>
-                  {locationsSelectOptions.map((location, index) => (
-                    <option key={index + 1} value={location?._id}>
-                      {location?.name.toUpperCase()}
-                    </option>
-                  ))}
-                </Select>
-              </div>
+                ))}
+              </Select>
+            </div>
 
-              <div>
-                <Label htmlFor="pvNo">PV No.</Label>
-                <TextInput
-                  id="pvNo"
-                  type="text"
-                  name="pvNo"
-                  value={formData?.pvNo}
-                  onChange={handleChange}
-                  placeholder="PV No."
-                  required
-                />
-              </div>
+            <div>
+              <Label htmlFor="pvNo">PV No.</Label>
+              <TextInput
+                id="pvNo"
+                type="text"
+                name="pvNo"
+                value={formData?.pvNo}
+                onChange={handleChange}
+                placeholder="PV No."
+                required
+              />
+            </div>
 
-              <div>
-                <Label htmlFor="cvNo">Invoice No.</Label>
-                <TextInput
-                  id="invoiceNo"
-                  type="text"
-                  name="invoiceNo"
-                  value={formData?.invoiceNo}
-                  onChange={handleChange}
-                  placeholder="Invoice No."
-                  required
-                />
-              </div>
+            <div>
+              <Label htmlFor="cvNo">Invoice No.</Label>
+              <TextInput
+                id="invoiceNo"
+                type="text"
+                name="invoiceNo"
+                value={formData?.invoiceNo}
+                onChange={handleChange}
+                placeholder="Invoice No."
+                required
+              />
+            </div>
 
-              <div>
-                <Label htmlFor="supplierName">Supplier's Name</Label>
-                <Select
-                  id="supplierName"
-                  name="supplierName"
-                  onFocus={handleSelectFocus}
-                  onChange={handleChange}
-                  value={formData?.supplierName}
-                  required
+            <div>
+              <Label htmlFor="supplierName">Supplier's Name</Label>
+              <Select
+                id="supplierName"
+                name="supplierName"
+                onFocus={handleSelectFocus}
+                onChange={handleChange}
+                value={formData?.supplierName}
+                required
+              >
+                <option
+                  className="uppercase"
+                  value=""
+                  disabled={isFirstOptionDisabled}
                 >
-                  <option
-                    className="uppercase"
-                    value=""
-                    disabled={isFirstOptionDisabled}
-                  >
-                    Select supplier
+                  Select supplier
+                </option>
+                {agentsSelectOptions.map((agent, index) => (
+                  <option key={index + 1} value={agent?._id}>
+                    {agent?.registeredName.toUpperCase()}
                   </option>
-                  {agentsSelectOptions.map((agent, index) => (
-                    <option key={index + 1} value={agent?._id}>
-                      {agent?.registeredName.toUpperCase()}
-                    </option>
-                  ))}
-                </Select>
-              </div>
+                ))}
+              </Select>
+            </div>
 
-              <div>
-                <Label htmlFor="address">Address</Label>
-                <TextInput
-                  id="address"
-                  type="text"
-                  name="address"
-                  onChange={handleChange}
-                  value={formData?.address}
-                  placeholder="Address"
-                  required
-                />
-              </div>
+            <div>
+              <Label htmlFor="address">Address</Label>
+              <TextInput
+                id="address"
+                type="text"
+                name="address"
+                onChange={handleChange}
+                value={formData?.address}
+                placeholder="Address"
+                required
+              />
+            </div>
 
-              <div>
-                <Label htmlFor="tin">TIN</Label>
-                <TextInput
-                  id="tin"
-                  type="text"
-                  name="tin"
-                  onChange={handleChange}
-                  value={formData?.tin}
-                  placeholder="TIN"
-                  required
-                />
-              </div>
+            <div>
+              <Label htmlFor="tin">TIN</Label>
+              <TextInput
+                id="tin"
+                type="text"
+                name="tin"
+                onChange={handleChange}
+                value={formData?.tin}
+                placeholder="TIN"
+                required
+              />
+            </div>
 
-              <div>
-                <Label htmlFor="particular">Particular</Label>
-                <TextInput
-                  id="particular"
-                  type="text"
-                  name="particular"
-                  onChange={handleChange}
-                  value={formData?.particular}
-                  placeholder="Particular"
-                  required
-                />
-              </div>
+            <div>
+              <Label htmlFor="particular">Particular</Label>
+              <TextInput
+                id="particular"
+                type="text"
+                name="particular"
+                onChange={handleChange}
+                value={formData?.particular}
+                placeholder="Particular"
+                required
+              />
             </div>
           </div>
+        </div>
 
-          <div className="border rounded-md">
-            <div className="bg-blue-50 p-4 flex justify-between items-center">
-              <div className="flex items-center gap-2">
-                <h3 className="text-lg font-semibold text-blue-700">
-                  Transaction Lines
-                </h3>
-                <Badge color="info">
-                  {lines.length > 1
-                    ? `${lines.length} items`
-                    : `${lines.length} item`}
-                </Badge>
-              </div>
-              <Button
-                color="light"
-                onClick={toggleLinesCollapse}
-                className="flex items-center gap-1"
-              >
-                {isLinesCollapsed ? (
-                  <>
-                    <ChevronDown size={16} />
-                  </>
-                ) : (
-                  <>
-                    <ChevronUp size={16} />
-                  </>
-                )}
-              </Button>
+        <div className="border rounded-lg shadow">
+          <div className="bg-blue-50 p-4 flex justify-between items-center">
+            <div className="flex items-center gap-2">
+              <h3 className="text-lg font-semibold text-blue-700">
+                Transaction Lines
+              </h3>
+              <Badge color="info">
+                {lines.length > 1
+                  ? `${lines.length} items`
+                  : `${lines.length} item`}
+              </Badge>
             </div>
+            <Button
+              color="light"
+              onClick={toggleLinesCollapse}
+              className="flex items-center gap-1"
+            >
+              {isLinesCollapsed ? (
+                <>
+                  <ChevronDown size={16} />
+                </>
+              ) : (
+                <>
+                  <ChevronUp size={16} />
+                </>
+              )}
+            </Button>
+          </div>
 
-            {!isLinesCollapsed && (
-              <div className="overflow-x-auto">
-                <Table>
-                  <Table.Head>
-                    <Table.HeadCell className=" bg-blue-300 whitespace-nowrap overflow-hidden truncate">
-                      Purchase Type
-                    </Table.HeadCell>
-                    <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
-                      Purchase (Debit)
-                    </Table.HeadCell>
-                    <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
-                      Input (Debit)
-                    </Table.HeadCell>
-                    <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
-                      Withholding Tax
-                    </Table.HeadCell>
-                    <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
-                      ATC
-                    </Table.HeadCell>
-                    <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
-                      Nature
-                    </Table.HeadCell>
-                    <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
-                      Action
-                    </Table.HeadCell>
-                  </Table.Head>
-                  <Table.Body>
-                    {lines.map((line) => (
-                      <Table.Row key={line.id}>
-                        <Table.Cell className="p-2">
-                          <TextInput
-                            type="text"
-                            id="purchaseType"
-                            name="purchaseType"
-                            data-line-id={line.id}
-                            onChange={handleChange}
-                            placeholder="Purchase Type"
-                            value={line.purchaseType}
-                          />
-                        </Table.Cell>
-                        <Table.Cell className="p-2">
-                          <TextInput
-                            type="text"
-                            id="purchaseDebit"
-                            name="purchaseDebit"
-                            data-line-id={line.id}
-                            onChange={handleChange}
-                            placeholder="Purchase (Debit)"
-                            value={line.purchaseDebit}
-                          />
-                        </Table.Cell>
-                        <Table.Cell className="p-2">
-                          <TextInput
-                            type="text"
-                            id="inputDebit"
-                            name="inputDebit"
-                            data-line-id={line.id}
-                            onChange={handleChange}
-                            placeholder="Input (Debit)"
-                            value={line.inputDebit}
-                          />
-                        </Table.Cell>
-                        <Table.Cell className="p-2">
-                          <TextInput
-                            type="text"
-                            id="withholdingTax"
-                            name="withholdingTax"
-                            data-line-id={line.id}
-                            onChange={handleChange}
-                            placeholder="Withholding Tax"
-                            value={line.withholdingTax}
-                          />
-                        </Table.Cell>
-                        <Table.Cell className="p-2">
-                          <TextInput
-                            type="text"
-                            id="atc"
-                            name="atc"
-                            data-line-id={line.id}
-                            onChange={handleChange}
-                            placeholder="ATC"
-                            value={line.atc}
-                          />
-                        </Table.Cell>
-                        <Table.Cell className="p-2">
-                          <TextInput
-                            type="text"
-                            id="nature"
-                            name="nature"
-                            data-line-id={line.id}
-                            onChange={handleChange}
-                            placeholder="Nature"
-                            value={line.nature}
-                          />
-                        </Table.Cell>
-                        <Table.Cell>
-                          <Button
-                            color="failure"
-                            onClick={() => deleteLine(line?.id)}
-                          >
-                            <Trash size={16} />
-                          </Button>
-                        </Table.Cell>
-                      </Table.Row>
-                    ))}
-                  </Table.Body>
-                </Table>
-              </div>
-            )}
-
-            <div className="p-4 bg-blue-50 ">
-              <Button color="blue" className="w-full" onClick={addLine}>
-                <Plus size={16} className="mr-2" /> Add Line
-              </Button>
+          {!isLinesCollapsed && (
+            <div className="overflow-x-auto">
+              <Table>
+                <Table.Head>
+                  <Table.HeadCell className=" bg-blue-300 whitespace-nowrap overflow-hidden truncate">
+                    Purchase Type
+                  </Table.HeadCell>
+                  <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
+                    Purchase (Debit)
+                  </Table.HeadCell>
+                  <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
+                    Input (Debit)
+                  </Table.HeadCell>
+                  <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
+                    Withholding Tax
+                  </Table.HeadCell>
+                  <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
+                    ATC
+                  </Table.HeadCell>
+                  <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
+                    Nature
+                  </Table.HeadCell>
+                  <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
+                    Action
+                  </Table.HeadCell>
+                </Table.Head>
+                <Table.Body>
+                  {lines.map((line) => (
+                    <Table.Row key={line.id}>
+                      <Table.Cell className="p-2">
+                        <TextInput
+                          type="text"
+                          id="purchaseType"
+                          name="purchaseType"
+                          data-line-id={line.id}
+                          onChange={handleChange}
+                          placeholder="Purchase Type"
+                          value={line.purchaseType}
+                        />
+                      </Table.Cell>
+                      <Table.Cell className="p-2">
+                        <TextInput
+                          type="text"
+                          id="purchaseDebit"
+                          name="purchaseDebit"
+                          data-line-id={line.id}
+                          onChange={handleChange}
+                          placeholder="Purchase (Debit)"
+                          value={line.purchaseDebit}
+                        />
+                      </Table.Cell>
+                      <Table.Cell className="p-2">
+                        <TextInput
+                          type="text"
+                          id="inputDebit"
+                          name="inputDebit"
+                          data-line-id={line.id}
+                          onChange={handleChange}
+                          placeholder="Input (Debit)"
+                          value={line.inputDebit}
+                        />
+                      </Table.Cell>
+                      <Table.Cell className="p-2">
+                        <TextInput
+                          type="text"
+                          id="withholdingTax"
+                          name="withholdingTax"
+                          data-line-id={line.id}
+                          onChange={handleChange}
+                          placeholder="Withholding Tax"
+                          value={line.withholdingTax}
+                        />
+                      </Table.Cell>
+                      <Table.Cell className="p-2">
+                        <TextInput
+                          type="text"
+                          id="atc"
+                          name="atc"
+                          data-line-id={line.id}
+                          onChange={handleChange}
+                          placeholder="ATC"
+                          value={line.atc}
+                        />
+                      </Table.Cell>
+                      <Table.Cell className="p-2">
+                        <TextInput
+                          type="text"
+                          id="nature"
+                          name="nature"
+                          data-line-id={line.id}
+                          onChange={handleChange}
+                          placeholder="Nature"
+                          value={line.nature}
+                        />
+                      </Table.Cell>
+                      <Table.Cell>
+                        <Button
+                          color="failure"
+                          onClick={() => deleteLine(line?.id)}
+                        >
+                          <Trash size={16} />
+                        </Button>
+                      </Table.Cell>
+                    </Table.Row>
+                  ))}
+                </Table.Body>
+              </Table>
             </div>
+          )}
+
+          <div className="p-4 bg-blue-50 ">
+            <Button color="blue" className="w-full" onClick={addLine}>
+              <Plus size={16} className="mr-2" /> Add Line
+            </Button>
           </div>
 
           <div className="p-4 flex justify-end gap-3">
@@ -559,8 +558,17 @@ export function PurchasesAccntFormPage() {
               Save Purchases
             </Button>
           </div>
-        </form>
-      {/* </div> */}
+        </div>
+
+        {/* <div className="p-4 flex justify-end gap-3">
+          <Button color="red" onClick={handleCancel}>
+            Cancel
+          </Button>
+          <Button color="success" type="submit">
+            Save Purchases
+          </Button>
+        </div> */}
+      </form>
     </>
   );
 }

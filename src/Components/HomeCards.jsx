@@ -23,15 +23,15 @@ export function HomeCards() {
           path: "/transaction/cashreceipts"
         },
         {
-          description: "Manage credit sales",
+          description: "Manage sales",
           path: "/transaction/salesonaccount"
         },
         {
-          description: "Manage credit purchases",
+          description: "Manage purchases",
           path: "/transaction/purchasesonaccount"
         },
         {
-          description: "View transaction history",
+          description: "Record journal entries",
           path: "/transaction/generaljournal"
         }
       ],

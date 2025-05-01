@@ -132,7 +132,7 @@ export function Navbar({ openSidebar, setOpenSidebar, sidebarRef }) {
                 {/* First name next to avatar */}
                 {user?.firstName && (
                   <span className="hidden sm:inline text-gray-900 font-medium text-sm">
-                    {user.firstName.slice(0, 3)}{user.lastName?.[0] ?? ''}
+                    {/* {user.firstName.slice(0, 3)}{user.lastName?.[0] ?? ''} */}
                   </span>
                 )}
                 <svg 

@@ -1,4 +1,4 @@
-import { Button, Select, Table, TextInput } from "flowbite-react";
+import { Button, Select, Table, TextInput, Tooltip } from "flowbite-react";
 import { Edit, Plus, Search, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -237,9 +237,11 @@ export function PurchasesAccntDataTable() {
                     <Table.Cell className="capitalize">
                       {transaction?.address}
                     </Table.Cell>
-                    <Table.Cell className="capitalize">
-                      {transaction?.particular}
-                    </Table.Cell>
+                    <Tooltip content={transaction?.particular} placement="top">
+                      <Table.Cell className="normal-case text-ellipsis overflow-hidden whitespace-nowrap max-w-[200px]">
+                        {transaction?.particular}
+                      </Table.Cell>
+                    </Tooltip>
                     <Table.Cell>
                       <div className="flex items-center gap-2">
                         <Button

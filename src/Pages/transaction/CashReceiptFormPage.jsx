@@ -244,7 +244,7 @@ export function CashReceiptFormPage() {
       </div>
 
       <form onSubmit={handleSubmit}>
-        <div className="mb-4 rounded bg-white dark:bg-gray-800 p-4 shadow">
+        <div className="mb-4 border rounded-lg bg-white dark:bg-gray-800 p-4 shadow">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <div>
               <Label htmlFor="date">Date</Label>
@@ -415,8 +415,8 @@ export function CashReceiptFormPage() {
           </div>
         </div>
 
-        <div className="border rounded-md">
-          <div className="bg-blue-50 p-4 flex justify-between items-center">
+        <div className="border rounded-lg shadow">
+          <div className="border rounded-lg bg-blue-50 p-4 flex justify-between items-center">
             <div className="flex items-center gap-2">
               <h3 className="text-lg font-semibold text-blue-700">
                 Transaction Lines

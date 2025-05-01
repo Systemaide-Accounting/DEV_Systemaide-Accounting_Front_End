@@ -255,9 +255,14 @@ export function CashDisbursementDataTable() {
                     <Table.Cell className="capitalize">
                       {transaction?.location?.name}
                     </Table.Cell>
-                    <Table.Cell className="normal-case truncate">
+                    {/* <Table.Cell className="normal-case">
                       {transaction?.particular}
-                    </Table.Cell>
+                    </Table.Cell> */}
+                    <Tooltip content={transaction?.particular} placement="top">
+                      <Table.Cell className="normal-case text-ellipsis overflow-hidden whitespace-nowrap max-w-[200px]">
+                        {transaction?.particular}
+                      </Table.Cell>
+                    </Tooltip>
                     <Table.Cell>
                       <div className="flex items-center gap-2">
                         <Tooltip content="Edit Transaction" placement="top">

@@ -1,4 +1,4 @@
-import { Button, Label, TextInput, Select, Table, Badge, Textarea } from "flowbite-react";
+import { Button, Label, TextInput, Select, Table, Badge, Textarea, Tooltip } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { ChevronDown, ChevronUp, Plus, Trash } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -13,6 +13,7 @@ import {
 import swal2 from "sweetalert2";
 import { formatInputDate } from "../../Components/reusable-functions/formatInputDate";
 import { safeJsonParse } from "../../Components/reusable-functions/safeJsonParse";
+import { AgentModalForm } from "../../Components/agents-library-components/AgentModalForm";
 
 export function CashDisbursementFormPage() {
   const navigate = useNavigate();
@@ -22,6 +23,8 @@ export function CashDisbursementFormPage() {
   const [accountsSelectOptions, setAccountsSelectOptions] = useState([]);
   const [isFirstOptionDisabled, setIsFirstOptionDisabled] = useState(false);
   const [transactionData, setTransactionData] = useState(null);
+  const [agentData, setAgentData] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
   const [formData, setFormData] = useState({
     date: "",
     // month: new Date().toLocaleString("default", { month: "long" }),
@@ -59,6 +62,11 @@ export function CashDisbursementFormPage() {
     },
   ]);
   const [isLinesCollapsed, setIsLinesCollapsed] = useState(false);
+
+  const handleAddAgentModalForm = () => {
+    setAgentData(null);
+    setOpenModal(true);
+  };
 
   const fetchAllLocations = async () => {
     try {
@@ -276,6 +284,10 @@ export function CashDisbursementFormPage() {
   }, []);
 
   useEffect(() => {
+    fetchAllAgents();
+  }, [openModal]);
+
+  useEffect(() => {
     if (transactionData) {
       setFormData({
         date: formatInputDate(transactionData?.date),
@@ -411,7 +423,40 @@ export function CashDisbursementFormPage() {
           <div className="mt-9 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <div>
               <Label htmlFor="payeeName">Payee's Name</Label>
-              <Select
+              <div className="flex justify-between items-center">
+                <Select
+                  className="w-full mr-2"
+                  id="payeeName"
+                  name="payeeName"
+                  onFocus={handleSelectFocus}
+                  onChange={handleChange}
+                  value={formData?.payeeName}
+                  required
+                >
+                  <option
+                    className="uppercase"
+                    value=""
+                    disabled={isFirstOptionDisabled}
+                  >
+                    Select Payee
+                  </option>
+                  {agentsSelectOptions.map((agent, index) => (
+                    <option key={index + 1} value={agent?._id}>
+                      {agent?.registeredName.toUpperCase()}
+                    </option>
+                  ))}
+                </Select>
+                <Tooltip content="Add New Agent" placement="top">
+                  <Button
+                    color="blue"
+                    onClick={() => handleAddAgentModalForm()}
+                    title="Add New Agent"
+                  >
+                    <Plus size={16} />
+                  </Button>
+                </Tooltip>
+              </div>
+              {/* <Select
                 id="payeeName"
                 name="payeeName"
                 onFocus={handleSelectFocus}
@@ -432,6 +477,15 @@ export function CashDisbursementFormPage() {
                   </option>
                 ))}
               </Select>
+              <Tooltip content="Add New Payee" placement="top">
+                <Button
+                  color="blue"
+                  // onClick={() => navigate("/maintenance/agents/form")}
+                  title="Add New Payee"
+                >
+                  <Plus size={16} />
+                </Button>
+              </Tooltip> */}
             </div>
 
             <div>
@@ -826,6 +880,11 @@ export function CashDisbursementFormPage() {
           </Button>
         </div> */}
       </form>
+      <AgentModalForm
+        agentData={agentData}
+        openModal={openModal}
+        setOpenModal={setOpenModal}
+      />
     </>
   );
 }

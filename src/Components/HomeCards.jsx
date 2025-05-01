@@ -82,7 +82,7 @@ export function HomeCards() {
         },
         {
           description: "View current period change reports",
-          path: "/reports/currnetchange"
+          path: "/reports/currentchange"
         },
         {
           description: "View year-to-date reports",

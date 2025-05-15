@@ -1,4 +1,4 @@
-import { Button, Select, Table, TextInput } from "flowbite-react";
+import { Button, Select, Table, TextInput, Tooltip } from "flowbite-react";
 import { Edit, Plus, Search, Trash } from "lucide-react";
 import { SortButton } from "../data-table-components/SortButton";
 import { SimplePagination } from "../data-table-components/SimplePagination";
@@ -158,112 +158,114 @@ export function CashDisbursementDataTable() {
 
   return (
     <>
-      {/* Outer container with white background */}
-      <div className="bg-white p-4">
-        <h1 className="text-2xl font-semibold mb-4">Cash Disbursement Transactions</h1>
-        {/* Data Table with dashed border and card style */}
-        <div className="rounded bg-white dark:bg-gray-800 p-4 shadow-sm border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
+      <div className="bg-white p-4 dark:bg-gray-800 shadow-sm rounded-lg dark:border-gray-700">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
           <h2 className="text-xl font-semibold">Summary</h2>
-            <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
-              <div className="relative w-full sm:w-64">
-                <TextInput
-                  icon={Search}
-                  placeholder="Search transactions..."
-                  value={transactionSearch}
-                  onChange={(e) => {
-                    setTransactionSearch(e.target.value);
-                    setTransactionPage(1);
-                  }}
-                />
-              </div>
-              <Button
-                color="blue"
-                className="w-full sm:w-auto"
-                onClick={navigateToForm}
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                Add
-              </Button>
+          <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
+            <div className="relative w-full sm:w-64">
+              <TextInput
+                icon={Search}
+                placeholder="Search transactions..."
+                value={transactionSearch}
+                onChange={(e) => {
+                  setTransactionSearch(e.target.value);
+                  setTransactionPage(1);
+                }}
+              />
             </div>
+            <Button
+              color="blue"
+              className="w-full sm:w-auto"
+              onClick={navigateToForm}
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Add
+            </Button>
           </div>
+        </div>
 
-          <div className="table-scroll-x" style={{ minHeight: "200px" }}>
-            <Table hoverable striped>
-              <Table.Head>
-                <Table.HeadCell className="w-[60px]">No.</Table.HeadCell>
-                <Table.HeadCell>
-                  <SortButton
-                    column="date"
-                    currentSort={transactionSort}
-                    onSort={handleTransactionSort}
+        <div className="table-scroll-x" style={{ minHeight: "200px" }}>
+          <Table hoverable striped>
+            <Table.Head>
+              <Table.HeadCell className="w-[60px]">No.</Table.HeadCell>
+              <Table.HeadCell>
+                <SortButton
+                  column="date"
+                  currentSort={transactionSort}
+                  onSort={handleTransactionSort}
+                >
+                  Date
+                </SortButton>
+              </Table.HeadCell>
+              <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
+                <SortButton
+                  column="registeredName"
+                  currentSort={transactionSort}
+                  onSort={handleTransactionSort}
+                >
+                  Payee's Name
+                </SortButton>
+              </Table.HeadCell>
+              <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
+                CV No.
+              </Table.HeadCell>
+              <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
+                Check No.
+              </Table.HeadCell>
+              <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
+                <SortButton
+                  column="cashAccount"
+                  currentSort={transactionSort}
+                  onSort={handleTransactionSort}
+                >
+                  Cash Account
+                </SortButton>
+              </Table.HeadCell>
+              <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
+                Location
+              </Table.HeadCell>
+              <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
+                Particular
+              </Table.HeadCell>
+              <Table.HeadCell className="w-[100px]">Actions</Table.HeadCell>
+            </Table.Head>
+            <Table.Body className="divide-y">
+              {paginatedTransactions.length > 0 ? (
+                paginatedTransactions.map((transaction, index) => (
+                  <Table.Row
+                    key={index + 1}
+                    className="bg-white dark:border-gray-700 dark:bg-gray-800"
                   >
-                    Date
-                  </SortButton>
-                </Table.HeadCell>
-                <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
-                  <SortButton
-                    column="registeredName"
-                    currentSort={transactionSort}
-                    onSort={handleTransactionSort}
-                  >
-                    Payee's Name
-                  </SortButton>
-                </Table.HeadCell>
-                <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
-                  CV No.
-                </Table.HeadCell>
-                <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
-                  Check No.
-                </Table.HeadCell>
-                <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
-                  <SortButton
-                    column="cashAccount"
-                    currentSort={transactionSort}
-                    onSort={handleTransactionSort}
-                  >
-                    Cash Account
-                  </SortButton>
-                </Table.HeadCell>
-                <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
-                  Location
-                </Table.HeadCell>
-                <Table.HeadCell className="whitespace-nowrap overflow-hidden truncate">
-                  Particular
-                </Table.HeadCell>
-                <Table.HeadCell className="w-[100px]">Actions</Table.HeadCell>
-              </Table.Head>
-              <Table.Body className="divide-y">
-                {paginatedTransactions.length > 0 ? (
-                  paginatedTransactions.map((transaction, index) => (
-                    <Table.Row
-                      key={index + 1}
-                      className="bg-white dark:border-gray-700 dark:bg-gray-800"
-                    >
-                      <Table.Cell>
-                        {(transactionPage - 1) * transactionsPerPage + index + 1}
-                      </Table.Cell>
-                      <Table.Cell className="capitalize">
-                        <HandleDateFormat date={transaction?.date} />
-                      </Table.Cell>
-                      <Table.Cell className="capitalize">
-                        {transaction?.payeeName?.registeredName}
-                      </Table.Cell>
-                      <Table.Cell className="capitalize">
-                        {transaction?.cvNo}
-                      </Table.Cell>
-                      <Table.Cell>{transaction?.checkNo}</Table.Cell>
-                      <Table.Cell className="capitalize">
-                        {transaction?.cashAccount?.accountName}
-                      </Table.Cell>
-                      <Table.Cell className="capitalize">
-                        {transaction?.location?.name}
-                      </Table.Cell>
-                      <Table.Cell className="capitalize">
+                    <Table.Cell>
+                      {(transactionPage - 1) * transactionsPerPage + index + 1}
+                    </Table.Cell>
+                    <Table.Cell className="capitalize">
+                      <HandleDateFormat date={transaction?.date} />
+                    </Table.Cell>
+                    <Table.Cell className="capitalize">
+                      {transaction?.payeeName?.registeredName}
+                    </Table.Cell>
+                    <Table.Cell className="capitalize">
+                      {transaction?.cvNo}
+                    </Table.Cell>
+                    <Table.Cell>{transaction?.checkNo}</Table.Cell>
+                    <Table.Cell className="capitalize">
+                      {transaction?.cashAccount?.accountName}
+                    </Table.Cell>
+                    <Table.Cell className="capitalize">
+                      {transaction?.location?.name}
+                    </Table.Cell>
+                    {/* <Table.Cell className="normal-case">
+                      {transaction?.particular}
+                    </Table.Cell> */}
+                    <Tooltip content={transaction?.particular} placement="top">
+                      <Table.Cell className="normal-case text-ellipsis overflow-hidden whitespace-nowrap max-w-[200px]">
                         {transaction?.particular}
                       </Table.Cell>
-                      <Table.Cell>
-                        <div className="flex items-center gap-2">
+                    </Tooltip>
+                    <Table.Cell>
+                      <div className="flex items-center gap-2">
+                        <Tooltip content="Edit Transaction" placement="top">
                           <Button
                             size="xs"
                             color="light"
@@ -273,6 +275,8 @@ export function CashDisbursementDataTable() {
                           >
                             <Edit className="h-4 w-4" />
                           </Button>
+                        </Tooltip>
+                        <Tooltip content="Delete Transaction" placement="top">
                           <Button
                             size="xs"
                             color="failure"
@@ -280,58 +284,58 @@ export function CashDisbursementDataTable() {
                           >
                             <Trash className="h-4 w-4" />
                           </Button>
-                        </div>
-                      </Table.Cell>
-                    </Table.Row>
-                  ))
-                ) : (
-                  <Table.Row>
-                    <Table.Cell colSpan={9} className="text-center py-4">
-                      No transactions found
+                        </Tooltip>
+                      </div>
                     </Table.Cell>
                   </Table.Row>
-                )}
-              </Table.Body>
-            </Table>
-          </div>
+                ))
+              ) : (
+                <Table.Row>
+                  <Table.Cell colSpan={9} className="text-center py-4">
+                    No transactions found
+                  </Table.Cell>
+                </Table.Row>
+              )}
+            </Table.Body>
+          </Table>
+        </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-between mt-4 gap-4">
-            <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-center sm:justify-start">
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
-                  Rows per page:
-                </span>
-                <Select
-                  className="w-16"
-                  value={transactionsPerPage}
-                  onChange={handleTransactionRowSizeChange}
-                >
-                  {rowSizeOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </Select>
-              </div>
+        <div className="flex flex-col sm:flex-row items-center justify-between mt-4 gap-4">
+          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-center sm:justify-start">
+            <div className="flex items-center gap-2">
               <span className="text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
-                {paginatedTransactions.length > 0
-                  ? (transactionPage - 1) * transactionsPerPage + 1
-                  : 0}
-                -
-                {Math.min(
-                  transactionPage * transactionsPerPage,
-                  filteredTransactions.length
-                )}{" "}
-                of {filteredTransactions.length}
+                Rows per page:
               </span>
+              <Select
+                className="w-16"
+                value={transactionsPerPage}
+                onChange={handleTransactionRowSizeChange}
+              >
+                {rowSizeOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </Select>
             </div>
-            <div className="flex items-center mt-2 sm:mt-0">
-              <SimplePagination
-                currentPage={transactionPage}
-                totalPages={totalTransactionPages}
-                onPageChange={setTransactionPage}
-              />
-            </div>
+            <span className="text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
+              {paginatedTransactions.length > 0
+                ? (transactionPage - 1) * transactionsPerPage + 1
+                : 0}
+              -
+              {Math.min(
+                transactionPage * transactionsPerPage,
+                filteredTransactions.length
+              )}{" "}
+              of {filteredTransactions.length}
+            </span>
+          </div>
+          <div className="flex items-center mt-2 sm:mt-0">
+            <SimplePagination
+              currentPage={transactionPage}
+              totalPages={totalTransactionPages}
+              onPageChange={setTransactionPage}
+            />
           </div>
         </div>
       </div>

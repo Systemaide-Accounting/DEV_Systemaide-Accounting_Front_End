@@ -4,18 +4,20 @@ export function CashDisbursement() {
   
   return (
     <>
-      {/* Header */}
-      {/* <h2 className="text-xl font-semibold">Cash Disbursement</h2> */}
-      <div className="border-2 border-gray-200 rounded-lg dark:border-gray-700">
-        {/* <div className=" p-5 border-b">
-          <div className="flex items-center gap-2">
-            <h2 className="text-xl font-semibold">Cash Disbursement</h2>
-          </div>
-        </div> */}
+      {/* Title Card */}
+      <div className="w-full p-4 border rounded-lg bg-white mb-4 shadow">
+        <h2 className="text-xl font-bold text-gray-900">
+          Cash Disbursement Transactions
+        </h2>
+      </div>
 
+      {/* Content Card */}
+      <div className="border rounded-lg dark:border-gray-700 shadow">
         {/* Cash Disbursement Table */}
         <CashDisbursementDataTable />
       </div>
+
+      {/* Content Card below if possible */}
     </>
   );
 }

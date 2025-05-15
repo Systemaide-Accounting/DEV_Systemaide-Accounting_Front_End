@@ -93,10 +93,10 @@ export function SalesJournal() {
   return (
     <>
       {/* Title Card */}
-      <div className="w-full border rounded-lg bg-white mb-4">
-        <div className="p-4">
-          <h2 className="text-xl font-bold text-gray-900">Sales Journal Report</h2>
-        </div>
+      <div className="w-full p-4 border rounded-lg bg-white mb-4 shadow">
+        <h2 className="text-xl font-bold text-gray-900">
+          Sales Journal Report
+        </h2>
       </div>
 
       {/* Content Card */}

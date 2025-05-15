@@ -3,6 +3,7 @@ import { createAgent, updateAgent } from "../../services/systemaideService";
 import { useEffect, useState } from "react";
 import { HandleFullNameFormat } from "../reusable-functions/NameFormatter";
 import { safeJsonParse } from "../reusable-functions/safeJsonParse"; // Assuming you have this function in a separate file
+import swal2 from "sweetalert2";
 
 export function AgentModalForm({ openModal, setOpenModal, agentData }) {
   
@@ -57,10 +58,11 @@ export function AgentModalForm({ openModal, setOpenModal, agentData }) {
     };
     
     try {
+      let response = null;
      if (agentData) {
-      await updateAgent(agentData?._id, JSON.stringify(modifiedFormData));
+      response = await updateAgent(agentData?._id, JSON.stringify(modifiedFormData));
      } else {
-      await createAgent(JSON.stringify(modifiedFormData));
+      response = await createAgent(JSON.stringify(modifiedFormData));
       setFormData({
         agentCode: "",
         taxClassification: "",
@@ -83,6 +85,19 @@ export function AgentModalForm({ openModal, setOpenModal, agentData }) {
       });
      }
       setOpenModal(false); 
+      if (response?.success) {
+        await swal2.fire({
+          icon: "success",
+          title: "Success",
+          text: agentData ? "Agent updated successfully!" : "Agent created successfully!",
+        });
+      } else {
+        await swal2.fire({
+          icon: "error",
+          title: "Error",
+          text: agentData ? "Failed to update agent!" : "Failed to create agent!",
+        });
+      }
     } catch (error) {
       console.error("Error creating Agent:", error);
     }

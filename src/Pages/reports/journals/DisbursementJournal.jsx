@@ -103,15 +103,14 @@ export function DisbursementJournal() {
 	return (
     <>
       {/* Title Card */}
-      <div className="w-full border rounded-lg bg-white mb-4">
-        <div className="p-4">
-          <h2 className="text-xl font-bold text-gray-900">Cash Disbursement Journal Report</h2>
-        </div>
+      <div className="w-full p-4 border rounded-lg bg-white mb-4 shadow">
+        <h2 className="text-xl font-bold text-gray-900">
+          Cash Disbursement Journal Report
+        </h2>
       </div>
 
       {/* Content Card */}
       <div className="w-full border rounded-lg bg-white p-4">
-
         <div className="flex flex-col gap-6">
           {/* Date Range Selection */}
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
@@ -156,11 +155,7 @@ export function DisbursementJournal() {
             </div>
 
             <form onSubmit={generateReport}>
-              <Button
-                color="blue"
-                type="submit"
-                className="mt-2 sm:mt-0"
-              >
+              <Button color="blue" type="submit" className="mt-2 sm:mt-0">
                 Generate Report
               </Button>
             </form>
@@ -210,9 +205,13 @@ export function DisbursementJournal() {
                           <Table.Cell>
                             <HandleDateFormat date={item?.date} />
                           </Table.Cell>
-                          <Table.Cell>{item?.payeeName?.registeredName}</Table.Cell>
+                          <Table.Cell>
+                            {item?.payeeName?.registeredName}
+                          </Table.Cell>
                           <Table.Cell>{item?.particular}</Table.Cell>
-                          <Table.Cell>{item?.cashAccount?.accountName}</Table.Cell>
+                          <Table.Cell>
+                            {item?.cashAccount?.accountName}
+                          </Table.Cell>
                           {/* <Table.Cell className="text-right">
                             ${item.amount.toFixed(2)}
                           </Table.Cell> */}
@@ -240,7 +239,6 @@ export function DisbursementJournal() {
           )}
         </div>
       </div>
- 
-  </>
+    </>
   );
 }

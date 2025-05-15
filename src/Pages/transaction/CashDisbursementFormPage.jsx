@@ -1,4 +1,4 @@
-import { Button, Label, TextInput, Select, Table, Badge } from "flowbite-react";
+import { Button, Label, TextInput, Select, Table, Badge, Textarea, Tooltip } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { ChevronDown, ChevronUp, Plus, Trash } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -13,6 +13,7 @@ import {
 import swal2 from "sweetalert2";
 import { formatInputDate } from "../../Components/reusable-functions/formatInputDate";
 import { safeJsonParse } from "../../Components/reusable-functions/safeJsonParse";
+import { AgentModalForm } from "../../Components/agents-library-components/AgentModalForm";
 
 export function CashDisbursementFormPage() {
   const navigate = useNavigate();
@@ -22,10 +23,12 @@ export function CashDisbursementFormPage() {
   const [accountsSelectOptions, setAccountsSelectOptions] = useState([]);
   const [isFirstOptionDisabled, setIsFirstOptionDisabled] = useState(false);
   const [transactionData, setTransactionData] = useState(null);
+  const [agentData, setAgentData] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
   const [formData, setFormData] = useState({
     date: "",
-    month: new Date().toLocaleString("default", { month: "long" }),
-    year: new Date().getFullYear(),
+    // month: new Date().toLocaleString("default", { month: "long" }),
+    // year: new Date().getFullYear(),
     location: "",
     cvNo: "",
     checkNo: "",
@@ -34,6 +37,9 @@ export function CashDisbursementFormPage() {
     tin: "",
     cashAccount: "",
     particular: "",
+    cashCredit: "",
+    totalDebit: 0,
+    totalCredit: 0,
     // transactions: [], // Initialize transactions as an empty array
     transactionLines: "",
   });
@@ -42,16 +48,25 @@ export function CashDisbursementFormPage() {
       id: Date.now(),
       invoiceNo: "",
       purchaseType: "",
-      vatComputation: "",
-      inventoryAccount: "",
-      grossAmount: "",
-      withholdingTax: "",
+      purchaseDebit: "",
+      inputDebit: "",
       ap: "",
+      withholdingTax: "",
+      atc: "",
       expenseAccountTitle: "",
-      taxSource: "",
+      vatType: "",
+      expenseDebit: "",
+      sundryAccount: "",
+      debit: "",
+      credit: "",
     },
   ]);
   const [isLinesCollapsed, setIsLinesCollapsed] = useState(false);
+
+  const handleAddAgentModalForm = () => {
+    setAgentData(null);
+    setOpenModal(true);
+  };
 
   const fetchAllLocations = async () => {
     try {
@@ -92,6 +107,32 @@ export function CashDisbursementFormPage() {
         ...prev,
         [name]: value,
       }));
+
+      // If the payeeName field changes, update address and TIN based on selected agent
+      if (name === "payeeName") {
+        const selectedAgent = agentsSelectOptions.find(
+          (agent) => agent?._id === value
+        );
+        if (selectedAgent) {
+          // Update address and TIN fields
+          setFormData((prev) => ({
+            ...prev,
+            address: selectedAgent?.agentAddress
+              ? (() => {
+                  const parsedAddress = safeJsonParse(
+                    selectedAgent?.agentAddress
+                  );
+                  if (parsedAddress?.brgy || parsedAddress?.city) {
+                    return (parsedAddress?.brgy || "") + ", " + (parsedAddress?.city || "");
+                  } else {
+                    return selectedAgent?.agentAddress;
+                  }
+                })()
+              : "",
+            tin: selectedAgent?.tin || "",
+          }));
+        }
+      }
     } else {
       // Handle changes for the transaction lines
       const lineId = parseInt(dataset.lineId);
@@ -123,13 +164,17 @@ export function CashDisbursementFormPage() {
       id: Date.now(),
       invoiceNo: "",
       purchaseType: "",
-      vatComputation: "",
-      inventoryAccount: "",
-      grossAmount: "",
-      withholdingTax: "",
+      purchaseDebit: "",
+      inputDebit: "",
       ap: "",
+      withholdingTax: "",
+      atc: "",
       expenseAccountTitle: "",
-      taxSource: "",
+      vatType: "",
+      expenseDebit: "",
+      sundryAccount: "",
+      debit: "",
+      credit: "",
     };
     setLines([...lines, newLine]);
   };
@@ -239,11 +284,15 @@ export function CashDisbursementFormPage() {
   }, []);
 
   useEffect(() => {
+    fetchAllAgents();
+  }, [openModal]);
+
+  useEffect(() => {
     if (transactionData) {
       setFormData({
         date: formatInputDate(transactionData?.date),
-        month: transactionData?.month,
-        year: transactionData?.year,
+        // month: transactionData?.month,
+        // year: transactionData?.year,
         location: transactionData?.location?._id,
         cvNo: transactionData?.cvNo,
         checkNo: transactionData?.checkNo,
@@ -253,6 +302,9 @@ export function CashDisbursementFormPage() {
         tin: transactionData?.tin,
         cashAccount: transactionData?.cashAccount?._id,
         particular: transactionData?.particular,
+        cashCredit: transactionData?.cashCredit,
+        totalDebit: transactionData?.totalDebit,
+        totalCredit: transactionData?.totalCredit,
         transactionLines: transactionData?.transactionLines || [],
       });
       // Set the lines state with the transactions from transactionData
@@ -267,107 +319,113 @@ export function CashDisbursementFormPage() {
 
   return (
     <>
-      {/* Header */}
-      <h2 className="text-xl font-semibold mb-4">Cash Disbursement Journal</h2>
-      {/* <div className=" border-2 border-gray-200 rounded-lg dark:border-gray-700"> */}
-        {/* <h2 className="text-xl font-semibold">Cash Disbursement Journal</h2> */}
+      {/* Title Card */}
+      <div className="w-full p-4 border rounded-lg bg-white mb-4 shadow">
+        <h2 className="text-xl font-bold text-gray-900">
+          Cash Disbursement Journal
+        </h2>
+      </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4 rounded bg-white dark:bg-gray-800 p-4 shadow">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div>
-                <Label htmlFor="date">Date</Label>
-                <TextInput
-                  id="date"
-                  name="date"
-                  type="date"
-                  onChange={handleChange}
-                  value={formData?.date}
-                  required
-                />
-              </div>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-4 border rounded-lg bg-white dark:bg-gray-800 p-4 shadow">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+            <div>
+              <Label htmlFor="date">Date</Label>
+              <TextInput
+                id="date"
+                name="date"
+                type="date"
+                onChange={handleChange}
+                value={formData?.date || new Date().toISOString().split("T")[0]}
+                required
+              />
+            </div>
 
-              <div>
-                <Label htmlFor="month">Month</Label>
-                <TextInput
-                  id="month"
-                  name="month"
-                  type="text"
-                  onChange={handleChange}
-                  value={formData?.month}
-                  readOnly={transactionData?.month ? false : true}
-                  required
-                />
-              </div>
+            {/* <div>
+              <Label htmlFor="month">Month</Label>
+              <TextInput
+                id="month"
+                name="month"
+                type="text"
+                onChange={handleChange}
+                value={formData?.month}
+                readOnly={transactionData?.month ? false : true}
+                required
+              />
+            </div> */}
 
-              <div>
-                <Label htmlFor="year">Year</Label>
-                <TextInput
-                  id="year"
-                  name="year"
-                  type="text"
-                  onChange={handleChange}
-                  value={formData?.year}
-                  readOnly={transactionData?.year ? false : true}
-                  required
-                />
-              </div>
+            {/* <div>
+              <Label htmlFor="year">Year</Label>
+              <TextInput
+                id="year"
+                name="year"
+                type="text"
+                onChange={handleChange}
+                value={formData?.year}
+                readOnly={transactionData?.year ? false : true}
+                required
+              />
+            </div> */}
 
-              <div>
-                <Label htmlFor="location">Location</Label>
-                <Select
-                  id="location"
-                  name="location"
-                  onFocus={handleSelectFocus}
-                  onChange={handleChange}
-                  value={formData?.location}
-                  // defaultValue={formData?.location}
-                  required
+            <div>
+              <Label htmlFor="location">Location</Label>
+              <Select
+                id="location"
+                name="location"
+                onFocus={handleSelectFocus}
+                onChange={handleChange}
+                value={formData?.location}
+                // defaultValue={formData?.location}
+                required
+              >
+                <option
+                  className="uppercase"
+                  value=""
+                  disabled={isFirstOptionDisabled}
                 >
-                  <option
-                    className="uppercase"
-                    value=""
-                    disabled={isFirstOptionDisabled}
-                  >
-                    Select location
+                  Select location
+                </option>
+                {locationsSelectOptions.map((location, index) => (
+                  <option key={index + 1} value={location?._id}>
+                    {location?.name.toUpperCase()}
                   </option>
-                  {locationsSelectOptions.map((location, index) => (
-                    <option key={index + 1} value={location?._id}>
-                      {location?.name.toUpperCase()}
-                    </option>
-                  ))}
-                </Select>
-              </div>
+                ))}
+              </Select>
+            </div>
 
-              <div>
-                <Label htmlFor="cvNo">CV No.</Label>
-                <TextInput
-                  id="cvNo"
-                  type="text"
-                  name="cvNo"
-                  value={formData?.cvNo}
-                  onChange={handleChange}
-                  placeholder="CV No."
-                  required
-                />
-              </div>
+            <div>
+              <Label htmlFor="cvNo">CV No.</Label>
+              <TextInput
+                id="cvNo"
+                type="text"
+                name="cvNo"
+                value={formData?.cvNo}
+                onChange={handleChange}
+                placeholder="CV No."
+                required
+              />
+            </div>
 
-              <div>
-                <Label htmlFor="checkNo">Check No.</Label>
-                <TextInput
-                  id="checkNo"
-                  type="text"
-                  name="checkNo"
-                  value={formData?.checkNo}
-                  onChange={handleChange}
-                  placeholder="Check No."
-                  required
-                />
-              </div>
+            <div>
+              <Label htmlFor="checkNo">Check No.</Label>
+              <TextInput
+                id="checkNo"
+                type="text"
+                name="checkNo"
+                value={formData?.checkNo}
+                onChange={handleChange}
+                placeholder="Check No."
+                required
+              />
+            </div>
+          </div>
 
-              <div>
-                <Label htmlFor="payeeName">Payee's Name</Label>
+          <div className="mt-9 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div>
+              <Label htmlFor="payeeName">Payee's Name</Label>
+              <div className="flex justify-between items-center">
                 <Select
+                  className="w-full mr-2"
                   id="payeeName"
                   name="payeeName"
                   onFocus={handleSelectFocus}
@@ -380,7 +438,7 @@ export function CashDisbursementFormPage() {
                     value=""
                     disabled={isFirstOptionDisabled}
                   >
-                    Select agent
+                    Select Payee
                   </option>
                   {agentsSelectOptions.map((agent, index) => (
                     <option key={index + 1} value={agent?._id}>
@@ -388,260 +446,419 @@ export function CashDisbursementFormPage() {
                     </option>
                   ))}
                 </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="address">Address</Label>
-                <TextInput
-                  id="address"
-                  type="text"
-                  name="address"
-                  onChange={handleChange}
-                  value={formData?.address}
-                  placeholder="Address"
-                  required
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="tin">TIN</Label>
-                <TextInput
-                  id="tin"
-                  type="text"
-                  name="tin"
-                  onChange={handleChange}
-                  value={formData?.tin}
-                  placeholder="TIN"
-                  required
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="cashAccount">Cash Account</Label>
-                <Select
-                  id="cashAccount"
-                  name="cashAccount"
-                  onFocus={handleSelectFocus}
-                  onChange={handleChange}
-                  value={formData?.cashAccount}
-                  required
-                >
-                  <option
-                    className="uppercase"
-                    value=""
-                    disabled={isFirstOptionDisabled}
+                <Tooltip content="Add New Agent" placement="top">
+                  <Button
+                    color="blue"
+                    onClick={() => handleAddAgentModalForm()}
+                    title="Add New Agent"
                   >
-                    Select account
+                    <Plus size={16} />
+                  </Button>
+                </Tooltip>
+              </div>
+              {/* <Select
+                id="payeeName"
+                name="payeeName"
+                onFocus={handleSelectFocus}
+                onChange={handleChange}
+                value={formData?.payeeName}
+                required
+              >
+                <option
+                  className="uppercase"
+                  value=""
+                  disabled={isFirstOptionDisabled}
+                >
+                  Select Payee
+                </option>
+                {agentsSelectOptions.map((agent, index) => (
+                  <option key={index + 1} value={agent?._id}>
+                    {agent?.registeredName.toUpperCase()}
                   </option>
-                  {accountsSelectOptions.map((account, index) => (
-                    <option key={index + 1} value={account?._id}>
-                      {account?.accountName?.toUpperCase()}
-                    </option>
-                  ))}
-                </Select>
+                ))}
+              </Select>
+              <Tooltip content="Add New Payee" placement="top">
+                <Button
+                  color="blue"
+                  // onClick={() => navigate("/maintenance/agents/form")}
+                  title="Add New Payee"
+                >
+                  <Plus size={16} />
+                </Button>
+              </Tooltip> */}
+            </div>
+
+            <div>
+              <Label htmlFor="address">Address</Label>
+              <TextInput
+                id="address"
+                type="text"
+                name="address"
+                onChange={handleChange}
+                value={formData?.address}
+                placeholder="Address"
+                readOnly
+                required
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="tin">TIN</Label>
+              <TextInput
+                id="tin"
+                type="text"
+                name="tin"
+                onChange={handleChange}
+                value={formData?.tin}
+                placeholder="TIN"
+                readOnly
+                required
+              />
+            </div>
+          </div>
+
+          {/* horizontal line */}
+          <div className="border-t border-gray-300 my-6"></div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div>
+              <Label htmlFor="cashAccount">Cash Account</Label>
+              <Select
+                id="cashAccount"
+                name="cashAccount"
+                onFocus={handleSelectFocus}
+                onChange={handleChange}
+                value={formData?.cashAccount}
+                required
+              >
+                <option
+                  className="uppercase"
+                  value=""
+                  disabled={isFirstOptionDisabled}
+                >
+                  Select account
+                </option>
+                {accountsSelectOptions.map((account, index) => (
+                  <option key={index + 1} value={account?._id}>
+                    {account?.accountName?.toUpperCase()}
+                  </option>
+                ))}
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="cashCredit">Cash (Credit)</Label>
+              <TextInput
+                id="cashCredit"
+                type="number"
+                name="cashCredit"
+                onChange={handleChange}
+                value={formData?.cashCredit}
+                placeholder="Cash Credit"
+                // required
+              />
+            </div>
+          </div>
+
+          <div className="mt-6 grid grid-cols-1 gap-6">
+            <div>
+              <Label htmlFor="particular">Particular</Label>
+              {/* <TextInput
+                id="particular"
+                type="text"
+                name="particular"
+                onChange={handleChange}
+                value={formData?.particular}
+                placeholder="Particular"
+                required
+              /> */}
+              <Textarea
+                id="particular"
+                name="particular"
+                onChange={handleChange}
+                value={formData?.particular}
+                placeholder="Particular"
+                required
+                rows={2}
+                // className="resize-none"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="flex justify-end">
+          <div className="p-4 mb-4 bg-green-100 border rounded-lg shadow">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+              <div>
+                <Label htmlFor="totalDebit">Total Debit</Label>
+                <TextInput
+                  id="totalDebit"
+                  name="totalDebit"
+                  type="number"
+                  onChange={handleChange}
+                  min={0}
+                  value={formData?.totalDebit || "0.0"}
+                  required
+                />
               </div>
 
               <div>
-                <Label htmlFor="particular">Particular</Label>
+                <Label htmlFor="totalCredit">Total Credit</Label>
                 <TextInput
-                  id="particular"
-                  type="text"
-                  name="particular"
+                  id="totalCredit"
+                  name="totalCredit"
+                  type="number"
                   onChange={handleChange}
-                  value={formData?.particular}
-                  placeholder="Particular"
+                  min={0}
+                  value={formData?.totalCredit || "0.0"}
                   required
                 />
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="border rounded-md">
-            <div className="bg-blue-50 p-4 flex justify-between items-center">
-              <div className="flex items-center gap-2">
-                <h3 className="text-lg font-semibold text-blue-700">
-                  Transaction Lines
-                </h3>
-                <Badge color="info">
-                  {lines.length > 1
-                    ? `${lines.length} items`
-                    : `${lines.length} item`}
-                </Badge>
-              </div>
-              <Button
-                color="light"
-                onClick={toggleLinesCollapse}
-                className="flex items-center gap-1"
-              >
-                {isLinesCollapsed ? (
-                  <>
-                    <ChevronDown size={16} />
-                  </>
-                ) : (
-                  <>
-                    <ChevronUp size={16} />
-                  </>
-                )}
-              </Button>
+        <div className="border rounded-lg shadow">
+          <div className="bg-blue-50 p-4 flex justify-between items-center">
+            <div className="flex items-center gap-2">
+              <h3 className="text-lg font-semibold text-blue-700">
+                Transaction Lines
+              </h3>
+              <Badge color="info">
+                {lines.length > 1
+                  ? `${lines.length} items`
+                  : `${lines.length} item`}
+              </Badge>
             </div>
+            <Button
+              color="light"
+              onClick={toggleLinesCollapse}
+              className="flex items-center gap-1"
+            >
+              {isLinesCollapsed ? (
+                <>
+                  <ChevronDown size={16} />
+                </>
+              ) : (
+                <>
+                  <ChevronUp size={16} />
+                </>
+              )}
+            </Button>
+          </div>
 
-            {!isLinesCollapsed && (
-              <div className="overflow-x-auto">
-                <Table>
-                  <Table.Head>
-                    <Table.HeadCell className=" bg-blue-300 whitespace-nowrap overflow-hidden truncate">
-                      Invoice No.
-                    </Table.HeadCell>
-                    <Table.HeadCell className=" bg-blue-300 whitespace-nowrap overflow-hidden truncate">
-                      Purchase Type
-                    </Table.HeadCell>
-                    <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
-                      VAT Computation
-                    </Table.HeadCell>
-                    <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
-                      Inventory Account
-                    </Table.HeadCell>
-                    <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
-                      Gross Amount
-                    </Table.HeadCell>
-                    <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
-                      Withholding Tax
-                    </Table.HeadCell>
-                    <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
-                      A/P
-                    </Table.HeadCell>
-                    <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
-                      Expense Account Title
-                    </Table.HeadCell>
-                    <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
-                      Tax Source
-                    </Table.HeadCell>
-                    <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
-                      Action
-                    </Table.HeadCell>
-                  </Table.Head>
-                  <Table.Body>
-                    {lines.map((line) => (
-                      <Table.Row key={line.id}>
-                        <Table.Cell className="p-2">
-                          <TextInput
-                            type="text"
-                            id="invoiceNo"
-                            name="invoiceNo"
-                            data-line-id={line.id}
-                            onChange={handleChange}
-                            placeholder="Invoice No."
-                            value={line.invoiceNo}
-                          />
-                        </Table.Cell>
-                        <Table.Cell className="p-2">
-                          <TextInput
-                            type="text"
-                            id="purchaseType"
-                            name="purchaseType"
-                            data-line-id={line.id}
-                            onChange={handleChange}
-                            placeholder="Purchase Type"
-                            value={line.purchaseType}
-                          />
-                        </Table.Cell>
-                        <Table.Cell className="p-2">
-                          <TextInput
-                            type="text"
-                            id="vatComputation"
-                            name="vatComputation"
-                            data-line-id={line.id}
-                            onChange={handleChange}
-                            placeholder="VAT Computation"
-                            value={line.vatComputation}
-                          />
-                        </Table.Cell>
-                        <Table.Cell className="p-2">
-                          <TextInput
-                            type="text"
-                            id="inventoryAccount"
-                            name="inventoryAccount"
-                            data-line-id={line.id}
-                            onChange={handleChange}
-                            placeholder="Inventory Account"
-                            value={line.inventoryAccount}
-                          />
-                        </Table.Cell>
-                        <Table.Cell className="p-2">
-                          <TextInput
-                            type="text"
-                            id="grossAmount"
-                            name="grossAmount"
-                            data-line-id={line.id}
-                            onChange={handleChange}
-                            placeholder="Gross Amount"
-                            value={line.grossAmount}
-                          />
-                        </Table.Cell>
-                        <Table.Cell className="p-2">
-                          <TextInput
-                            type="text"
-                            id="withholdingTax"
-                            name="withholdingTax"
-                            data-line-id={line.id}
-                            onChange={handleChange}
-                            placeholder="Withholding Tax"
-                            value={line.withholdingTax}
-                          />
-                        </Table.Cell>
-                        <Table.Cell className="p-2">
-                          <TextInput
-                            type="text"
-                            id="ap"
-                            name="ap"
-                            data-line-id={line.id}
-                            onChange={handleChange}
-                            placeholder="A/P"
-                            value={line.ap}
-                          />
-                        </Table.Cell>
-                        <Table.Cell className="p-2">
-                          <TextInput
-                            type="text"
-                            id="expenseAccountTitle"
-                            name="expenseAccountTitle"
-                            data-line-id={line.id}
-                            onChange={handleChange}
-                            placeholder="Expense Account Title"
-                            value={line.expenseAccountTitle}
-                          />
-                        </Table.Cell>
-                        <Table.Cell className="p-2">
-                          <TextInput
-                            type="text"
-                            id="taxSource"
-                            name="taxSource"
-                            data-line-id={line.id}
-                            onChange={handleChange}
-                            placeholder="Tax Source"
-                            value={line.taxSource}
-                          />
-                        </Table.Cell>
-                        <Table.Cell>
-                          <Button
-                            color="failure"
-                            onClick={() => deleteLine(line?.id)}
-                          >
-                            <Trash size={16} />
-                          </Button>
-                        </Table.Cell>
-                      </Table.Row>
-                    ))}
-                  </Table.Body>
-                </Table>
-              </div>
-            )}
-
-            <div className="p-4 bg-blue-50 ">
-              <Button color="blue" className="w-full" onClick={addLine}>
-                <Plus size={16} className="mr-2" /> Add Line
-              </Button>
+          {!isLinesCollapsed && (
+            <div className="overflow-x-auto">
+              <Table>
+                <Table.Head>
+                  <Table.HeadCell className=" bg-blue-300 whitespace-nowrap overflow-hidden truncate">
+                    Invoice No.
+                  </Table.HeadCell>
+                  <Table.HeadCell className=" bg-blue-300 whitespace-nowrap overflow-hidden truncate">
+                    Purchase Type
+                  </Table.HeadCell>
+                  <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
+                    Purchase (Debit)
+                  </Table.HeadCell>
+                  <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
+                    Input (Debit)
+                  </Table.HeadCell>
+                  <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
+                    A/P (Debit)
+                  </Table.HeadCell>
+                  <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
+                    Withholding Tax (Credit)
+                  </Table.HeadCell>
+                  <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
+                    ATC
+                  </Table.HeadCell>
+                  <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
+                    Expense Account Title
+                  </Table.HeadCell>
+                  <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
+                    Vat Type
+                  </Table.HeadCell>
+                  <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
+                    Expense (Debit)
+                  </Table.HeadCell>
+                  <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
+                    Sundry Account Title
+                  </Table.HeadCell>
+                  <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
+                    Debit
+                  </Table.HeadCell>
+                  <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
+                    Credit
+                  </Table.HeadCell>
+                  <Table.HeadCell className="bg-blue-300 whitespace-nowrap overflow-hidden truncate">
+                    Action
+                  </Table.HeadCell>
+                </Table.Head>
+                <Table.Body>
+                  {lines.map((line) => (
+                    <Table.Row key={line?.id}>
+                      <Table.Cell className="p-2">
+                        <TextInput
+                          type="text"
+                          id="invoiceNo"
+                          name="invoiceNo"
+                          data-line-id={line?.id}
+                          onChange={handleChange}
+                          placeholder="Invoice No."
+                          value={line?.invoiceNo}
+                        />
+                      </Table.Cell>
+                      <Table.Cell className="p-2">
+                        <TextInput
+                          type="text"
+                          id="purchaseType"
+                          name="purchaseType"
+                          data-line-id={line?.id}
+                          onChange={handleChange}
+                          placeholder="Purchase Type"
+                          value={line?.purchaseType}
+                        />
+                      </Table.Cell>
+                      <Table.Cell className="p-2">
+                        <TextInput
+                          type="text"
+                          id="purchaseDebit"
+                          name="purchaseDebit"
+                          data-line-id={line?.id}
+                          onChange={handleChange}
+                          placeholder="Purchase (Debit)"
+                          value={line?.purchaseDebit}
+                        />
+                      </Table.Cell>
+                      <Table.Cell className="p-2">
+                        <TextInput
+                          type="text"
+                          id="inputDebit"
+                          name="inputDebit"
+                          data-line-id={line?.id}
+                          onChange={handleChange}
+                          placeholder="Input (Debit)"
+                          value={line?.inputDebit}
+                        />
+                      </Table.Cell>
+                      <Table.Cell className="p-2">
+                        <TextInput
+                          type="text"
+                          id="ap"
+                          name="ap"
+                          data-line-id={line?.id}
+                          onChange={handleChange}
+                          placeholder="A/P"
+                          value={line?.ap}
+                        />
+                      </Table.Cell>
+                      <Table.Cell className="p-2">
+                        <TextInput
+                          type="text"
+                          id="withholdingTax"
+                          name="withholdingTax"
+                          data-line-id={line?.id}
+                          onChange={handleChange}
+                          placeholder="Withholding Tax (Credit)"
+                          value={line?.withholdingTax}
+                        />
+                      </Table.Cell>
+                      <Table.Cell className="p-2">
+                        <TextInput
+                          type="text"
+                          id="atc"
+                          name="atc"
+                          data-line-id={line?.id}
+                          onChange={handleChange}
+                          placeholder="ATC"
+                          value={line?.atc}
+                        />
+                      </Table.Cell>
+                      <Table.Cell className="p-2">
+                        <TextInput
+                          type="text"
+                          id="expenseAccountTitle"
+                          name="expenseAccountTitle"
+                          data-line-id={line?.id}
+                          onChange={handleChange}
+                          placeholder="Expense Account Title"
+                          value={line?.expenseAccountTitle}
+                        />
+                      </Table.Cell>
+                      <Table.Cell className="p-2">
+                        <TextInput
+                          type="text"
+                          id="vatType"
+                          name="vatType"
+                          data-line-id={line?.id}
+                          onChange={handleChange}
+                          placeholder="Vat Type"
+                          value={line?.vatType}
+                        />
+                      </Table.Cell>
+                      <Table.Cell className="p-2">
+                        <TextInput
+                          type="text"
+                          id="expenseDebit"
+                          name="expenseDebit"
+                          data-line-id={line?.id}
+                          onChange={handleChange}
+                          placeholder="Expense (Debit)"
+                          value={line?.expenseDebit}
+                        />
+                      </Table.Cell>
+                      <Table.Cell className="p-2">
+                        <TextInput
+                          type="text"
+                          id="sundryAccount"
+                          name="sundryAccount"
+                          data-line-id={line?.id}
+                          onChange={handleChange}
+                          placeholder="Sundry Account Title"
+                          value={line?.sundryAccount}
+                        />
+                      </Table.Cell>
+                      <Table.Cell className="p-2">
+                        <TextInput
+                          type="text"
+                          id="debit"
+                          name="debit"
+                          data-line-id={line?.id}
+                          onChange={handleChange}
+                          placeholder="Debit"
+                          value={line?.debit}
+                        />
+                      </Table.Cell>
+                      <Table.Cell className="p-2">
+                        <TextInput
+                          type="text"
+                          id="credit"
+                          name="credit"
+                          data-line-id={line?.id}
+                          onChange={handleChange}
+                          placeholder="Credit"
+                          value={line?.credit}
+                        />
+                      </Table.Cell>
+                      <Table.Cell>
+                        <Button
+                          color="failure"
+                          onClick={() => deleteLine(line?.id)}
+                        >
+                          <Trash size={16} />
+                        </Button>
+                      </Table.Cell>
+                    </Table.Row>
+                  ))}
+                </Table.Body>
+              </Table>
             </div>
+          )}
+
+          <div className="p-4 bg-blue-50 ">
+            <Button color="blue" className="w-full" onClick={addLine}>
+              <Plus size={16} className="mr-2" /> Add Line
+            </Button>
           </div>
 
           <div className="p-4 flex justify-end gap-3">
@@ -652,8 +869,22 @@ export function CashDisbursementFormPage() {
               Save Disbursement
             </Button>
           </div>
-        </form>
-      {/* </div> */}
+        </div>
+
+        {/* <div className="p-4 flex justify-end gap-3">
+          <Button color="red" onClick={handleCancel}>
+            Cancel
+          </Button>
+          <Button color="success" type="submit">
+            Save Disbursement
+          </Button>
+        </div> */}
+      </form>
+      <AgentModalForm
+        agentData={agentData}
+        openModal={openModal}
+        setOpenModal={setOpenModal}
+      />
     </>
   );
 }

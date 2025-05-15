@@ -3,11 +3,12 @@ import { GeneralJournalDataTable } from "../../Components/general-journal-compon
 export function GeneralJournal() {
   return (
     <>
-      {/* Header */}
-      {/* <h2 className="text-xl font-semibold">General Journal</h2> */}
-      <div className="border-2 border-gray-200 rounded-lg dark:border-gray-700">
-        {/* <h2 className="text-xl font-semibold">General Journal</h2> */}
+      {/* Title Card */}
+      <div className="w-full p-4 border rounded-lg bg-white mb-4 shadow">
+        <h2 className="text-xl font-bold text-gray-900">General Journal</h2>
+      </div>
 
+      <div className="border rounded-lg dark:border-gray-700">
         {/* General Journal Table */}
         <GeneralJournalDataTable />
       </div>

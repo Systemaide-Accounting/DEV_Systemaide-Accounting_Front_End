@@ -46,6 +46,7 @@ function App() {
   }, []);
 
   // comment something
+  // another comment to test
 
   return (
     <>

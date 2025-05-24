@@ -32,7 +32,7 @@ jobs:
           
           # Check if this appears to be a PR merge commit
           if [[ ! $COMMIT_MSG =~ ^Merge\ pull\ request ]]; then
-            echo "WARNING: Direct push to main branch detected!"
+            echo "::warning::Direct push to main branch detected!"
             echo "Changes have already been applied, but this violates branch policy."
             echo "Future direct pushes should be prevented using branch protection rules."
             

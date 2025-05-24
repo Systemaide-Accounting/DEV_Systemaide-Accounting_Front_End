@@ -244,8 +244,19 @@ export function UsersDataTable() {
                     <Table.Cell>{userItem?.name}</Table.Cell>
                     <Table.Cell>{userItem?.email}</Table.Cell>
                     <Table.Cell className="text-green-400">
-                      {/* <span>{user.status}</span> */}
-                      {userItem?.status}
+                      {userItem?.status === "active" ? (
+                        <span className="uppercase font-bold bg-green-100 text-green-800 text-sm me-2 px-2.5 py-0.5 rounded-md dark:bg-green-900 dark:text-green-300">
+                          {userItem?.status}
+                        </span>
+                      ) : userItem?.status === "inactive" ? (
+                        <span className="uppercase bg-red-100 text-red-800 text-sm font-bold me-2 px-2.5 py-0.5 rounded-md dark:bg-red-900 dark:text-red-300">
+                          {userItem?.status}
+                        </span>
+                      ) : userItem?.status === "blocked" ? (
+                        <span className="uppercase bg-gray-100 text-gray-800 text-sm font-bold me-2 px-2.5 py-0.5 rounded-md dark:bg-gray-700 dark:text-gray-300">
+                          {userItem?.status}
+                        </span>
+                      ) : null}
                     </Table.Cell>
                     {/* <Table.Cell>{user.lastLogin}</Table.Cell> */}
                     <Table.Cell>

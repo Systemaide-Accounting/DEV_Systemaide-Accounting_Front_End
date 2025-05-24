@@ -1,17 +1,17 @@
 import { Button, Select, Table, TextInput, Tooltip } from "flowbite-react";
-import { Edit, Plus, Search, Trash } from "lucide-react";
+import { Edit, Plus, RotateCcw, Search, Trash } from "lucide-react";
 import { SortButton } from "../data-table-components/SortButton";
 import { SimplePagination } from "../data-table-components/SimplePagination";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { deleteCashDisbursementTransaction, getAllCashDisbursementTransactions } from "../../services/systemaideService";
+import { deleteCashDisbursementTransaction, getAllCashDisbursementTransactions, getAllDeletedCashDisbursementTransactions, restoreCashDisbursementTransaction } from "../../services/systemaideService";
 import { HandleDateFormat } from "../reusable-functions/DateFormatter";
 import { HandleFullNameFormat } from "../reusable-functions/NameFormatter";
 import { safeJsonParse } from "../reusable-functions/safeJsonParse";
 import swal2 from "sweetalert2";
 import { rowSizeOptionsJSON } from "../data-table-components/rowSizeOptionsJSON";
 
-export function CashDisbursementDataTable() {
+export function CashDisbursementDataTable({ type }) {
   const navigate = useNavigate();
   const [transactionsData, setTransactionsData] = useState([]);
   const [transactionSearch, setTransactionSearch] = useState("");
@@ -25,7 +25,10 @@ export function CashDisbursementDataTable() {
 
   const fetchAllTransactions = async () => {
     try {
-      const response = await getAllCashDisbursementTransactions();
+      const response =
+        type === "deleted"
+          ? await getAllDeletedCashDisbursementTransactions()
+          : await getAllCashDisbursementTransactions();
       if (response?.success) {
         setTransactionsData(response?.data);
       } else {
@@ -86,11 +89,54 @@ export function CashDisbursementDataTable() {
               });
             }
           } catch (error) {
-            console.error("Error deleting transaction:", error);
             await swal2.fire({
               icon: "error",
               title: "Error!",
               text: "An error occurred while deleting the transaction.",
+            });
+          }
+        }
+      });
+  };
+
+  // Handle restore action
+  const handleRestoreTransaction = async (transactionId) => {
+    await swal2
+      .fire({
+        title: "Are you sure?",
+        text: "You want to restore this transaction?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, restore it!",
+        cancelButtonText: "No, cancel!",
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+      })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const response = await restoreCashDisbursementTransaction(
+              transactionId
+            );
+            if (response?.success) {
+              await fetchAllTransactions();
+              await swal2.fire(
+                "Restored!",
+                "Your transaction has been restored.",
+                "success"
+              );
+            } else {
+              await swal2.fire({
+                icon: "error",
+                title: "Error!",
+                text: "Transaction could not be restored.",
+              });
+            }
+          } catch (error) {
+            await swal2.fire({
+              icon: "error",
+              title: "Error!",
+              text: "An error occurred while restoring the transaction.",
             });
           }
         }
@@ -160,7 +206,7 @@ export function CashDisbursementDataTable() {
     <>
       <div className="bg-white p-4 dark:bg-gray-800 shadow-sm rounded-lg dark:border-gray-700">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
-          <h2 className="text-xl font-semibold">Summary</h2>
+          <h2 className="text-xl font-semibold">{type === "deleted" ? "Cash Disbursements" : "Summary"}</h2>
           <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
             <div className="relative w-full sm:w-64">
               <TextInput
@@ -173,14 +219,19 @@ export function CashDisbursementDataTable() {
                 }}
               />
             </div>
-            <Button
-              color="blue"
-              className="w-full sm:w-auto"
-              onClick={navigateToForm}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add
-            </Button>
+            {
+              /* Only show Add button if not in deleted transactions view */
+              type !== "deleted" && (
+                <Button
+                  color="blue"
+                  className="w-full sm:w-auto"
+                  onClick={navigateToForm}
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add
+                </Button>
+              )
+            }
           </div>
         </div>
 
@@ -265,26 +316,48 @@ export function CashDisbursementDataTable() {
                     </Tooltip>
                     <Table.Cell>
                       <div className="flex items-center gap-2">
-                        <Tooltip content="Edit Transaction" placement="top">
-                          <Button
-                            size="xs"
-                            color="light"
-                            onClick={() =>
-                              handleEditTransaction(transaction?._id)
-                            }
+                        {type === "deleted" ? (
+                          <Tooltip
+                            content="Restore Transaction"
+                            placement="top"
                           >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                        </Tooltip>
-                        <Tooltip content="Delete Transaction" placement="top">
-                          <Button
-                            size="xs"
-                            color="failure"
-                            onClick={() => handleDelete(transaction?._id)}
-                          >
-                            <Trash className="h-4 w-4" />
-                          </Button>
-                        </Tooltip>
+                            <Button
+                              size="xs"
+                              color="light"
+                              onClick={() =>
+                                handleRestoreTransaction(transaction?._id)
+                              }
+                            >
+                              <RotateCcw className="h-4 w-4" />
+                            </Button>
+                          </Tooltip>
+                        ) : (
+                          <>
+                            <Tooltip content="Edit Transaction" placement="top">
+                              <Button
+                                size="xs"
+                                color="light"
+                                onClick={() =>
+                                  handleEditTransaction(transaction?._id)
+                                }
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                            </Tooltip>
+                            <Tooltip
+                              content="Delete Transaction"
+                              placement="top"
+                            >
+                              <Button
+                                size="xs"
+                                color="failure"
+                                onClick={() => handleDelete(transaction?._id)}
+                              >
+                                <Trash className="h-4 w-4" />
+                              </Button>
+                            </Tooltip>
+                          </>
+                        )}
                       </div>
                     </Table.Cell>
                   </Table.Row>

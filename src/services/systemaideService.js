@@ -18,6 +18,16 @@ const authenticateSystemaideApiService = async (token) => {
   return apiService;
 };
 
+export const authSignOut = async () => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.post("/auth/signout");
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const getAllUsers = async () => {
   try {    
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
@@ -529,7 +539,31 @@ export const updateCashDisbursementTransaction = async (id, data) => {
 export const deleteCashDisbursementTransaction = async (id) => {
   try {
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
-    const response = await authenticatedApiService.delete(`/cash-disbursement/delete/${id}`);
+    const response = await authenticatedApiService.delete(`/cash-disbursement/${id}`);
+    console.log(response?.data);
+
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const getAllDeletedCashDisbursementTransactions = async () => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.get("/cash-disbursement/deleted");
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const restoreCashDisbursementTransaction = async (id) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.patch(`/cash-disbursement/restore/${id}`);
     return response?.data;
   } catch (error) {
     console.log(error);

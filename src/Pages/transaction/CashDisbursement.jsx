@@ -16,8 +16,6 @@ export function CashDisbursement() {
         {/* Cash Disbursement Table */}
         <CashDisbursementDataTable />
       </div>
-
-      {/* Content Card below if possible */}
     </>
   );
 }

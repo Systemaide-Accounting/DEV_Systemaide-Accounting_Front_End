@@ -6,18 +6,28 @@ import { PermissionsDataTable } from "../Components/system-config-components/Per
 export function SystemConfiguration() {
   return (
     <>
-      <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
-        <h1 className="text-2xl font-bold mb-2">System Configuration</h1>
+      {/* Title Card */}
+      <div className="w-full p-4 border rounded-lg bg-white mb-4 shadow">
+        <h2 className="text-xl font-bold text-gray-900">
+          System Configuration
+        </h2>
+      </div>
 
+      {/* Content Card */}
+      <div className="mb-4 border rounded-lg dark:border-gray-700 shadow">
         {/* Users Table */}
         <UsersDataTable />
+      </div>
 
-        {/* 2 Columns */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-4">
-          {/* Roles Table */}
+      {/* 2 Columns */}
+      <div className="flex flex-col xl:flex-row gap-4 mb-4">
+        {/* Roles Table */}
+        <div className="flex-1 min-w-0">
           <RolesDataTable />
+        </div>
 
-          {/* Permissions Table */}
+        {/* Permissions Table */}
+        <div className="flex-1 min-w-0">
           <PermissionsDataTable />
         </div>
       </div>

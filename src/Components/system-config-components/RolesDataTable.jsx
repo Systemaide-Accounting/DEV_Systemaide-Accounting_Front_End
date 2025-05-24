@@ -2,7 +2,7 @@ import { SimplePagination } from "../data-table-components/SimplePagination";
 import { SortButton } from "../data-table-components/SortButton";
 import rolesDataJSON from "../../sample-data/rolesData.json";
 import { useEffect, useState } from "react";
-import { Button, Select, Table, TextInput } from "flowbite-react";
+import { Button, Select, Table, TextInput, Tooltip } from "flowbite-react";
 import { Search, Plus, Edit, Trash } from "lucide-react";
 import { deleteRole, getAllRoles, getRoleById } from "../../services/systemaideService";
 import { RoleModalForm } from "./RoleModalForm";
@@ -153,7 +153,7 @@ export function RolesDataTable() {
 
   return (
     <>
-      <div className="rounded bg-white dark:bg-gray-800 p-4 shadow">
+      <div className="border rounded-lg bg-white dark:bg-gray-700 p-4 shadow">
         <div className="flex flex-col justify-between items-start mb-4 gap-4">
           <h2 className="text-xl font-semibold">Roles</h2>
           <div className="flex flex-col sm:flex-row items-center gap-2 w-full">
@@ -208,7 +208,7 @@ export function RolesDataTable() {
                     <Table.Cell className="font-medium">
                       {role?.name}
                     </Table.Cell>
-                    <Table.Cell>
+                    <Table.Cell className="normal-case text-ellipsis overflow-hidden whitespace-nowrap max-w-[200px]">
                       {role?.permissions
                         ?.map((permission) => permission?.name)
                         .join(", ")}

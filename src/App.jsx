@@ -46,6 +46,7 @@ function App() {
   }, []);
 
   // comment something
+  // another comment to test
 
   return (
     <>
@@ -55,11 +56,26 @@ function App() {
             <Route path="/" element={<LoginSignUp />} />
 
             {/* All Printable Pages */}
-            <Route path="/reports/print-disbursement-journal" element={<PrintDisbursementJournal />} />
-            <Route path="/reports/print-receipts-journal" element={<PrintReceiptsJournal />} />
-            <Route path="/reports/print-sales-journal" element={<PrintSalesJournal />} />
-            <Route path="/reports/print-purchases-journal" element={<PrintPurchasesJournal />} />
-            <Route path="/reports/print-general-journal" element={<PrintGeneralJournal />} />
+            <Route
+              path="/reports/print-disbursement-journal"
+              element={<PrintDisbursementJournal />}
+            />
+            <Route
+              path="/reports/print-receipts-journal"
+              element={<PrintReceiptsJournal />}
+            />
+            <Route
+              path="/reports/print-sales-journal"
+              element={<PrintSalesJournal />}
+            />
+            <Route
+              path="/reports/print-purchases-journal"
+              element={<PrintPurchasesJournal />}
+            />
+            <Route
+              path="/reports/print-general-journal"
+              element={<PrintGeneralJournal />}
+            />
 
             <Route element={<PrivateRoute />}>
               <Route path="/home" element={<Home />} />

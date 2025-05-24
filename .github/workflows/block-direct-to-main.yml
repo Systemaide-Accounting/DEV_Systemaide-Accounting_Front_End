@@ -31,7 +31,7 @@ jobs:
           COMMIT_MSG="${{ github.event.head_commit.message }}"
           
           # Check if this appears to be a PR merge commit
-          if [[ ! $COMMIT_MSG =~ ^Merge\ pull\ request ]]; then
+          if [[ ! $COMMIT_MSG =~ ^Merge\ pull\ request\ #[0-9]+.* ]]; then
             echo "::warning::Direct push to main branch detected!"
             echo "Changes have already been applied, but this violates branch policy."
             echo "Future direct pushes should be prevented using branch protection rules."

@@ -618,13 +618,35 @@ export const updateCashReceiptTransaction = async (id, data) => {
 export const deleteCashReceiptTransaction = async (id) => {
   try {
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
-    const response = await authenticatedApiService.delete(`/cash-receipts/delete/${id}`);
+    const response = await authenticatedApiService.delete(`/cash-receipts/${id}`);
     return response?.data;
   } catch (error) {
     console.log(error);
     // return error?.response?.data;
   }
 }
+
+export const getAllDeletedCashReceiptTransactions = async () => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.get("/cash-receipts/deleted");
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const restoreCashReceiptTransaction = async (id) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.patch(`/cash-receipts/restore/${id}`);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
 
 export const getAllSalesAccountTransactions = async () => {
   try {
@@ -673,7 +695,29 @@ export const updateSalesAccountTransaction = async (id, data) => {
 export const deleteSalesAccountTransaction = async (id) => {
   try {
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
-    const response = await authenticatedApiService.delete(`/sales-on-account/delete/${id}`);
+    const response = await authenticatedApiService.delete(`/sales-on-account/${id}`);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const getAllDeletedSalesAccountTransactions = async () => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.get("/sales-on-account/deleted");
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const restoreSalesAccountTransaction = async (id) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.patch(`/sales-on-account/restore/${id}`);
     return response?.data;
   } catch (error) {
     console.log(error);

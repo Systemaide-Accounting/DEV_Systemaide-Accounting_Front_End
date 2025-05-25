@@ -197,6 +197,10 @@ export function HomeCards() {
         {
           description: "Manage security",
           path: "/system-config"
+        },
+        {
+          description: "Manage archived data",
+          path: "/archive"
         }
       ],
       section: "system"

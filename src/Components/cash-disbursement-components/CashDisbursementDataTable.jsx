@@ -206,7 +206,9 @@ export function CashDisbursementDataTable({ type }) {
     <>
       <div className="bg-white p-4 dark:bg-gray-800 shadow-sm rounded-lg dark:border-gray-700">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
-          <h2 className="text-xl font-semibold">{type === "deleted" ? "Cash Disbursements" : "Summary"}</h2>
+          <h2 className="text-xl font-semibold">
+            {type === "deleted" ? "Cash Disbursements" : "Summary"}
+          </h2>
           <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
             <div className="relative w-full sm:w-64">
               <TextInput
@@ -228,7 +230,7 @@ export function CashDisbursementDataTable({ type }) {
                   onClick={navigateToForm}
                 >
                   <Plus className="mr-2 h-4 w-4" />
-                  Add
+                  New Entry
                 </Button>
               )
             }

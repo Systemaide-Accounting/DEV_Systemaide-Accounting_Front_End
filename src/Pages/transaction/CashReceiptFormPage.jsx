@@ -209,6 +209,7 @@ export function CashReceiptFormPage() {
   }, [params?.id]);
 
   useEffect(() => {
+    console.log("Transaction Data:", transactionData);
       if (transactionData) {
         setFormData({
           date: formatInputDate(transactionData?.date),

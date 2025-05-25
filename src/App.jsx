@@ -55,8 +55,8 @@ function App() {
     checkAuthentication();
   }, []);
 
-  // comment something
-  // another comment to test
+  console.log("user", user);
+  
 
   return (
     <>

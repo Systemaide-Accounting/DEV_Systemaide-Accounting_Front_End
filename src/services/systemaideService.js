@@ -294,6 +294,28 @@ export const deleteAccount = async (id) => {
   }
 };
 
+export const getAllDeletedAccounts = async () => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.get("/chart-of-account/deleted");
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const restoreAccount = async (id) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.patch(`/chart-of-account/restore/${id}`);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
 export const getAllLocations = async () => {
   try {
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
@@ -349,6 +371,28 @@ export const deleteLocation = async (id) => {
   }
 };
 
+export const getAllDeletedLocations = async () => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.get("/location/deleted");
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const restoreLocation = async (id) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.patch(`/location/restore/${id}`);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
 export const getAllBranches = async () => {
   try {
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
@@ -397,6 +441,28 @@ export const deleteBranch = async (id) => {
   try {
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
     const response = await authenticatedApiService.delete(`/branch/${id}`);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const getAllDeletedBranches = async () => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.get("/branch/deleted");
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const restoreBranch = async (id) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.patch(`/branch/restore/${id}`);
     return response?.data;
   } catch (error) {
     console.log(error);
@@ -485,6 +551,28 @@ export const deleteAgent = async (id) => {
   try {
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
     const response = await authenticatedApiService.delete(`/agent/${id}`);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const getAllDeletedAgents = async () => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.get("/agent/deleted");
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const restoreAgent = async (id) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.patch(`/agent/restore/${id}`);
     return response?.data;
   } catch (error) {
     console.log(error);

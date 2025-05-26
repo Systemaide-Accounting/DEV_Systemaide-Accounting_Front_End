@@ -6,6 +6,8 @@ import { CashReceiptDataTable } from "../Components/cash-receipt-components/Cash
 import { SalesAccntDataTable } from "../Components/sales-accnt-components/SalesAccntDataTable";
 import { PurchasesAccntDataTable } from "../Components/purchases-accnt-components/PurchasesAccntDataTable";
 import { GeneralJournalDataTable } from "../Components/general-journal-components/GeneralJournalDataTable";
+import { AgentsDataTable } from "../Components/agents-library-components/AgentsDataTable";
+import { DeletedAccnts } from "../Components/chart-of-accnt-components/DeletedAccnts";
 
 export function Archive() {
 
@@ -61,6 +63,23 @@ export function Archive() {
             <GeneralJournalDataTable type={"deleted"} />
           </div>
         )}
+
+        {/* Title Card */}
+        <div className="w-full p-4 border rounded-lg bg-white mb-4 shadow">
+          <h2 className="text-xl font-bold text-gray-900">Library Archive</h2>
+        </div>
+
+        {/* Content Card */}
+        <div className="mb-4 border rounded-lg dark:border-gray-700 shadow">
+          {/* Deleted Agents Table */}
+          <AgentsDataTable type={"deleted"} />
+        </div>
+
+        {/* Content Card */}
+        <div className="mb-4 border rounded-lg dark:border-gray-700 shadow">
+          {/* Deleted Accounts Table */}
+          <DeletedAccnts />
+        </div>
 
         {/* Title Card */}
         <div className="w-full p-4 border rounded-lg bg-white mb-4 shadow">

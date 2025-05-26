@@ -1,15 +1,15 @@
-import { Button, Select, Table, TextInput } from "flowbite-react";
-import { Edit, Plus, Search, Trash } from "lucide-react";
+import { Button, Select, Table, TextInput, Tooltip } from "flowbite-react";
+import { Edit, Plus, RotateCcw, Search, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SortButton } from "../data-table-components/SortButton";
 import { SimplePagination } from "../data-table-components/SimplePagination";
-import { deleteGeneralJournalTransaction, getAllGeneralJournalTransactions } from "../../services/systemaideService";
+import { deleteGeneralJournalTransaction, getAllDeletedGeneralJournalTransactions, getAllGeneralJournalTransactions, restoreGeneralJournalTransaction } from "../../services/systemaideService";
 import { rowSizeOptionsJSON } from "../data-table-components/rowSizeOptionsJSON";
 import { HandleDateFormat } from "../reusable-functions/DateFormatter";
 import swal2 from "sweetalert2";
 
-export function GeneralJournalDataTable() {
+export function GeneralJournalDataTable({ type }) {
   const navigate = useNavigate();
   const [transactionsData, setTransactionsData] = useState([]);
   const [transactionSearch, setTransactionSearch] = useState("");
@@ -23,7 +23,7 @@ export function GeneralJournalDataTable() {
 
   const fetchAllTransactions = async () => {
     try {
-      const response = await getAllGeneralJournalTransactions();
+      const response = type === "deleted" ? await getAllDeletedGeneralJournalTransactions() : await getAllGeneralJournalTransactions();
       if (response?.success) {
         setTransactionsData(response?.data);
       } else {
@@ -90,6 +90,51 @@ export function GeneralJournalDataTable() {
       });
   };
 
+  // Handle restore action
+    const handleRestoreTransaction = async (transactionId) => {
+      await swal2
+        .fire({
+          title: "Are you sure?",
+          text: "You want to restore this transaction?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes, restore it!",
+          cancelButtonText: "No, cancel!",
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+        })
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              const response = await restoreGeneralJournalTransaction(
+                transactionId
+              );
+              if (response?.success) {
+                await fetchAllTransactions();
+                await swal2.fire(
+                  "Restored!",
+                  "Your transaction has been restored.",
+                  "success"
+                );
+              } else {
+                await swal2.fire({
+                  icon: "error",
+                  title: "Error!",
+                  text: "Transaction could not be restored.",
+                });
+              }
+            } catch (error) {
+              await swal2.fire({
+                icon: "error",
+                title: "Error!",
+                text: "An error occurred while restoring the transaction.",
+              });
+            }
+          }
+        });
+    };
+  
+
   const handleTransactionSort = (column) => {
     setTransactionSort({
       column,
@@ -152,7 +197,9 @@ export function GeneralJournalDataTable() {
     <>
       <div className="bg-white dark:bg-gray-800 p-4 shadow rounded-lg dark:border-gray-700">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
-          <h2 className="text-xl font-semibold">Summary</h2>
+          <h2 className="text-xl font-semibold">
+            {type === "deleted" ? "General Journals" : "Summary"}
+          </h2>
           <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
             <div className="relative w-full sm:w-64">
               <TextInput
@@ -165,14 +212,19 @@ export function GeneralJournalDataTable() {
                 }}
               />
             </div>
-            <Button
-              color="blue"
-              className="w-full sm:w-auto"
-              onClick={navigateToForm}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add
-            </Button>
+            {
+              /* Only show Add button if not in deleted transactions view */
+              type !== "deleted" && (
+                <Button
+                  color="blue"
+                  className="w-full sm:w-auto"
+                  onClick={navigateToForm}
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  New Entry
+                </Button>
+              )
+            }
           </div>
         </div>
 
@@ -218,22 +270,48 @@ export function GeneralJournalDataTable() {
                     </Table.Cell>
                     <Table.Cell>
                       <div className="flex items-center gap-2">
-                        <Button
-                          size="xs"
-                          color="light"
-                          onClick={() =>
-                            handleEditTransaction(transaction?._id)
-                          }
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          size="xs"
-                          color="failure"
-                          onClick={() => handleDelete(transaction?._id)}
-                        >
-                          <Trash className="h-4 w-4" />
-                        </Button>
+                        {type === "deleted" ? (
+                          <Tooltip
+                            content="Restore Transaction"
+                            placement="top"
+                          >
+                            <Button
+                              size="xs"
+                              color="light"
+                              onClick={() =>
+                                handleRestoreTransaction(transaction?._id)
+                              }
+                            >
+                              <RotateCcw className="h-4 w-4" />
+                            </Button>
+                          </Tooltip>
+                        ) : (
+                          <>
+                            <Tooltip content="Edit Transaction" placement="top">
+                              <Button
+                                size="xs"
+                                color="light"
+                                onClick={() =>
+                                  handleEditTransaction(transaction?._id)
+                                }
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                            </Tooltip>
+                            <Tooltip
+                              content="Delete Transaction"
+                              placement="top"
+                            >
+                              <Button
+                                size="xs"
+                                color="failure"
+                                onClick={() => handleDelete(transaction?._id)}
+                              >
+                                <Trash className="h-4 w-4" />
+                              </Button>
+                            </Tooltip>
+                          </>
+                        )}
                       </div>
                     </Table.Cell>
                   </Table.Row>

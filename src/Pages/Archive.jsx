@@ -8,6 +8,8 @@ import { PurchasesAccntDataTable } from "../Components/purchases-accnt-component
 import { GeneralJournalDataTable } from "../Components/general-journal-components/GeneralJournalDataTable";
 import { AgentsDataTable } from "../Components/agents-library-components/AgentsDataTable";
 import { DeletedAccnts } from "../Components/chart-of-accnt-components/DeletedAccnts";
+import { LocationsDataTable } from "../Components/setup-location-components/LocationsDataTable";
+import { BranchesDataTable } from "../Components/setup-location-components/BranchesDataTable";
 
 export function Archive() {
 
@@ -81,6 +83,18 @@ export function Archive() {
           <DeletedAccnts />
         </div>
 
+        {/* Content Card */}
+        <div className="mb-4 border rounded-lg dark:border-gray-700 shadow">
+          {/* Locations Table */}
+          <LocationsDataTable type={"deleted"} />
+        </div>
+
+        {/* Content Card */}
+        <div className="mb-4 border rounded-lg dark:border-gray-700 shadow">
+          {/* Branches Table */}
+          <BranchesDataTable type={"deleted"} />
+        </div>
+      
         {/* Title Card */}
         <div className="w-full p-4 border rounded-lg bg-white mb-4 shadow">
           <h2 className="text-xl font-bold text-gray-900">

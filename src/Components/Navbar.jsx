@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import { HandleSimpleNameFormat } from "./reusable-functions/NameFormatter";
 import swal2 from "sweetalert2";
-
+import { authSignOut } from "../services/systemaideService";
 export function Navbar({ openSidebar, setOpenSidebar, sidebarRef }) {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
@@ -61,6 +61,7 @@ export function Navbar({ openSidebar, setOpenSidebar, sidebarRef }) {
       }
     });
     if (response.isConfirmed) {
+      await authSignOut();
       localStorage.clear();
       window.location.href = import.meta.env.VITE_SYSTEMAIDE_LOGIN;
     }

@@ -12,7 +12,7 @@ export function SalesOnAccount() {
       {/* Content Card */}
       <div className="border rounded-lg dark:border-gray-700">
         {/* Sales On Account Table */}
-        <SalesAccntDataTable />
+        <SalesAccntDataTable type={""} />
       </div>
     </>
   );

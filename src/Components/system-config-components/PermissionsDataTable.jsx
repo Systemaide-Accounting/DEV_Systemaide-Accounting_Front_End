@@ -153,7 +153,7 @@ export function PermissionsDataTable() {
 
   return (
     <>
-      <div className="rounded bg-white dark:bg-gray-800 p-4 shadow">
+      <div className="border rounded-lg bg-white dark:bg-gray-700 p-4 shadow">
         <div className="flex flex-col justify-between items-start mb-4 gap-4">
           <h2 className="text-xl font-semibold">Permissions</h2>
           <div className="flex flex-col sm:flex-row items-center gap-2 w-full">

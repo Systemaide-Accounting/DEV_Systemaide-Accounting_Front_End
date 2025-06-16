@@ -12,7 +12,7 @@ export function CashReceipts() {
 
       <div className="border rounded-lg dark:border-gray-700 shadow">
         {/* Cash Receipts Table */}
-        <CashReceiptDataTable />
+        <CashReceiptDataTable type={""} />
       </div>
     </>
   );

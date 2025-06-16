@@ -126,6 +126,40 @@ export function Dashboard({ children }) {
                       </div>
                     </Link>
                   </div>
+                  {/* Archive Section */}
+                  <div className="px-3" data-section="system">
+                    <Link to="/archive">
+                      <div
+                        className={`group flex items-center gap-2 w-full px-4 py-2 rounded-lg transition duration-200 ${
+                          isActiveLink("/archive")
+                            ? "bg-blue-50 text-blue-700"
+                            : "text-gray-700 hover:bg-gray-50"
+                        }`}
+                      >
+                        <svg
+                          className={`w-5 h-5 transition-colors duration-200 ${
+                            isActiveLink("/archive")
+                              ? "text-blue-700"
+                              : "text-gray-500 group-hover:text-gray-700"
+                          }`}
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
+                          />
+                        </svg>
+                        <span className="text-lg tracking-tighter">
+                          Archive
+                        </span>
+                      </div>
+                    </Link>
+                  </div>
                 </>
               )}
             </div>

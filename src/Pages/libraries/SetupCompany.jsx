@@ -241,17 +241,21 @@ export function SetupCompany() {
   
   return (
     <>
-      {/* Header */}
-      <h1 className="text-xl font-semibold mb-4">Setup Company</h1>
-      {/* <div className="border-2 border-gray-200 rounded-lg dark:border-gray-700"> */}
-        {/* <h1 className="text-2xl font-bold mb-2">Setup Company</h1> */}
+      {/* Title Card */}
+      <div className="w-full p-4 border rounded-lg bg-white mb-4 shadow">
+        <h2 className="text-xl font-bold text-gray-900">Setup Company</h2>
+      </div>
 
-        {/* SETUP COMPANY FORM */}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-          {/* Basic Information Section */}
-          <Accordion collapseAll={false}>
+      {/* SETUP COMPANY FORM */}
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+        {/* Basic Information Section */}
+        <div className="border rounded-lg dark:border-gray-700 shadow">
+          <Accordion
+            className="border rounded-lg bg-white dark:border-gray-700"
+            collapseAll={false}
+          >
             <Accordion.Panel>
-              <Accordion.Title className="bg-gray-50 dark:bg-gray-800">
+              <Accordion.Title className="bg-white dark:bg-gray-800">
                 <div className="flex items-center gap-2">
                   <FileText className="h-5 w-5" />
                   <span>Basic Information</span>
@@ -341,11 +345,16 @@ export function SetupCompany() {
               </Accordion.Content>
             </Accordion.Panel>
           </Accordion>
+        </div>
 
-          {/* Taxpayer Information Section */}
-          <Accordion collapseAll={false}>
+        {/* Taxpayer Information Section */}
+        <div className="border rounded-lg dark:border-gray-700 shadow">
+          <Accordion
+            className="border rounded-lg bg-white dark:border-gray-700"
+            collapseAll={false}
+          >
             <Accordion.Panel>
-              <Accordion.Title className="bg-gray-50 dark:bg-gray-800">
+              <Accordion.Title className=" bg-white dark:bg-gray-800">
                 <div className="flex items-center gap-2">
                   <User className="h-5 w-5" />
                   <span>Taxpayer Information</span>
@@ -429,11 +438,16 @@ export function SetupCompany() {
               </Accordion.Content>
             </Accordion.Panel>
           </Accordion>
+        </div>
 
-          {/* Address & Contact Section */}
-          <Accordion collapseAll={false}>
+        {/* Address & Contact Section */}
+        <div className="border rounded-lg dark:border-gray-700 shadow">
+          <Accordion
+            className="border rounded-lg bg-white dark:border-gray-700"
+            collapseAll={false}
+          >
             <Accordion.Panel>
-              <Accordion.Title className="bg-gray-50 dark:bg-gray-800">
+              <Accordion.Title className="bg-white dark:bg-gray-800">
                 <div className="flex items-center gap-2">
                   <MapPin className="h-5 w-5" />
                   <span>Address & Contact Information</span>
@@ -538,11 +552,16 @@ export function SetupCompany() {
               </Accordion.Content>
             </Accordion.Panel>
           </Accordion>
+        </div>
 
-          {/* Registration Details Section */}
-          <Accordion collapseAll={false}>
+        {/* Registration Details Section */}
+        <div className="border rounded-lg dark:border-gray-700 shadow">
+          <Accordion
+            className="border rounded-lg bg-white dark:border-gray-700"
+            collapseAll={false}
+          >
             <Accordion.Panel>
-              <Accordion.Title className="bg-gray-50 dark:bg-gray-800">
+              <Accordion.Title className="bg-white dark:bg-gray-800">
                 <div className="flex items-center gap-2">
                   <Calendar className="h-5 w-5" />
                   <span>Registration Details</span>
@@ -708,35 +727,36 @@ export function SetupCompany() {
               </Accordion.Content>
             </Accordion.Panel>
           </Accordion>
+        </div>
 
-          {/* Submit Button */}
-          <div className="mt-4">
-            <Button
-              type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base py-3 rounded-lg transition-colors duration-200 disabled:bg-blue-300 disabled:cursor-not-allowed"
-              disabled={formStatus !== "idle"}
-            >
-              {formStatus === "idle" && (
-                <>
-                  <Save className="mr-2 h-5 w-5" />
-                  Save Company Info
-                </>
-              )}
-              {formStatus === "submitting" && (
-                <>
-                  <div className="mr-3 h-4 w-4 animate-spin rounded-full border-2 border-white border-r-transparent" />
-                  Saving...
-                </>
-              )}
-              {formStatus === "success" && (
-                <>
-                  <CheckCircle className="mr-2 h-5 w-5" />
-                  Saved Successfully
-                </>
-              )}
-            </Button>
-          </div>
-        </form>
+        {/* Submit Button */}
+        <div className="mt-4">
+          <Button
+            type="submit"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base py-3 rounded-lg transition-colors duration-200 disabled:bg-blue-300 disabled:cursor-not-allowed"
+            disabled={formStatus !== "idle"}
+          >
+            {formStatus === "idle" && (
+              <>
+                <Save className="mr-2 h-5 w-5" />
+                Save Company Info
+              </>
+            )}
+            {formStatus === "submitting" && (
+              <>
+                <div className="mr-3 h-4 w-4 animate-spin rounded-full border-2 border-white border-r-transparent" />
+                Saving...
+              </>
+            )}
+            {formStatus === "success" && (
+              <>
+                <CheckCircle className="mr-2 h-5 w-5" />
+                Saved Successfully
+              </>
+            )}
+          </Button>
+        </div>
+      </form>
       {/* </div> */}
     </>
   );

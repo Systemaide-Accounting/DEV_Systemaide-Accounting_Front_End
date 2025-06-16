@@ -2,9 +2,9 @@ import { SimplePagination } from "../data-table-components/SimplePagination";
 import { SortButton } from "../data-table-components/SortButton";
 // import usersDataJSON from "../../sample-data/usersData.json";
 import { useContext, useEffect, useState } from "react";
-import { Button, Select, Table, TextInput } from "flowbite-react";
-import { Search, Plus, Edit, Trash } from "lucide-react";
-import { getAllUsers, deleteUser, getUserById } from "../../services/systemaideService";
+import { Button, Select, Table, TextInput, Tooltip } from "flowbite-react";
+import { Search, Plus, Edit, Trash, RotateCcw } from "lucide-react";
+import { getAllUsers, deleteUser, getUserById, getAllBlockedUsers, unblockUser } from "../../services/systemaideService";
 import swal2 from "sweetalert2";
 import { UserModalForm } from "./UserModalForm";
 import AuthContext from "../../context/AuthContext";
@@ -16,8 +16,7 @@ const rowSizeOptionsJSON = JSON.stringify([
   { value: 50, label: "50" },
 ]);
 
-export function UsersDataTable() {
-  
+export function UsersDataTable({ type }) {
   const { user } = useContext(AuthContext);
   const [usersData, setUsersData] = useState([]);
   const [userSearch, setUserSearch] = useState("");
@@ -33,7 +32,7 @@ export function UsersDataTable() {
 
   const fetchAllUsers = async () => {
     try {
-      const response = await getAllUsers();
+      const response = type === "deleted" ? await getAllBlockedUsers() : await getAllUsers();
       if (!response?.success) console.log(response?.message);
       // const usersDataJSON = response?.data;
       setUsersData(response?.data);
@@ -78,33 +77,66 @@ export function UsersDataTable() {
   };
 
   const handleDelete = async (id) => {
-    await swal2.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "No, cancel!",
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          // const response = await deleteUser(id);
-          const response = await deleteUser(id);
-          if(response?.success) {
-            await fetchAllUsers();
-            await swal2.fire("Deleted!", "User has been deleted.", "success");
-          } else {
+    await swal2
+      .fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "No, cancel!",
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+      })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            // const response = await deleteUser(id);
+            const response = await deleteUser(id);
+            if (response?.success) {
+              await fetchAllUsers();
+              await swal2.fire("Deleted!", "User has been deleted.", "success");
+            } else {
+              await swal2.fire("Error!", "User could not be deleted.", "error");
+            }
+          } catch (error) {
+            // console.error("Error deleting User:", error);
             await swal2.fire("Error!", "User could not be deleted.", "error");
           }
-        } catch (error) {
-          // console.error("Error deleting User:", error);
-          await swal2.fire("Error!", "User could not be deleted.", "error");
         }
-      }
-    });
+      });
     // In a real app, this would show a confirmation dialog
+  };
+
+  // handle unblock user
+  const handleUnblockUser = async (userId) => {
+    await swal2
+      .fire({
+        title: "Are you sure?",
+        text: "You are about to unblock this user!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, unblock it!",
+        cancelButtonText: "No, cancel!",
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+      })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const response = await unblockUser(userId);
+            console.log("Unblock User Response:", response?.data);
+            if (response?.success) {
+              await fetchAllUsers();
+              await swal2.fire("Unblocked!", "User has been unblocked.", "success");
+            } else {
+              await swal2.fire("Error!", "User could not be unblocked.", "error");
+            }
+          } catch (error) {
+            await swal2.fire("Error!", "User could not be unblocked.", "error");
+          }
+        }
+      });
   };
 
   const handleAddUserModalForm = () => {
@@ -120,7 +152,7 @@ export function UsersDataTable() {
         setOpenModal(true);
       } else {
         console.log(response?.message);
-      } 
+      }
     } catch (error) {
       console.error("Error fetching User:", error);
     }
@@ -158,11 +190,11 @@ export function UsersDataTable() {
     (userPage - 1) * usersPerPage,
     userPage * usersPerPage
   );
-  
+
   return (
     <>
       {/* Data Table */}
-      <div className="mb-4 rounded bg-white dark:bg-gray-800 p-4 shadow">
+      <div className="bg-white p-4 dark:bg-gray-800 shadow-sm rounded-lg dark:border-gray-700">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
           <h2 className="text-xl font-semibold">Users</h2>
           <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
@@ -177,14 +209,16 @@ export function UsersDataTable() {
                 }}
               />
             </div>
-            <Button
-              color="blue"
-              className="w-full sm:w-auto"
-              onClick={() => handleAddUserModalForm()}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add
-            </Button>
+            {type !== "deleted" && (
+              <Button
+                color="blue"
+                className="w-full sm:w-auto"
+                onClick={() => handleAddUserModalForm()}
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Add
+              </Button>
+            )}
           </div>
         </div>
 
@@ -244,28 +278,58 @@ export function UsersDataTable() {
                     <Table.Cell>{userItem?.name}</Table.Cell>
                     <Table.Cell>{userItem?.email}</Table.Cell>
                     <Table.Cell className="text-green-400">
-                      {/* <span>{user.status}</span> */}
-                      {userItem?.status}
+                      {userItem?.status === "active" ? (
+                        <span className="uppercase font-bold bg-green-100 text-green-800 text-sm me-2 px-2.5 py-0.5 rounded-md dark:bg-green-900 dark:text-green-300">
+                          {userItem?.status}
+                        </span>
+                      ) : userItem?.status === "inactive" ? (
+                        <span className="uppercase bg-red-100 text-red-800 text-sm font-bold me-2 px-2.5 py-0.5 rounded-md dark:bg-red-900 dark:text-red-300">
+                          {userItem?.status}
+                        </span>
+                      ) : userItem?.status === "blocked" ? (
+                        <span className="uppercase bg-gray-100 text-gray-800 text-sm font-bold me-2 px-2.5 py-0.5 rounded-md dark:bg-gray-700 dark:text-gray-300">
+                          {userItem?.status}
+                        </span>
+                      ) : null}
                     </Table.Cell>
                     {/* <Table.Cell>{user.lastLogin}</Table.Cell> */}
                     <Table.Cell>
                       <div className="flex items-center gap-2">
-                        <Button
-                          size="xs"
-                          color="light"
-                          onClick={() => handleEditUserModalForm(userItem?._id)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-
-                        {user?._id !== userItem?._id && (
-                          <Button
-                            size="xs"
-                            color="failure"
-                            onClick={() => handleDelete(userItem?._id)}
-                          >
-                            <Trash className="h-4 w-4" />
-                          </Button>
+                        {type === "deleted" ? (
+                          <Tooltip content="Unblock User" placement="top">
+                            <Button
+                              size="xs"
+                              color="light"
+                              onClick={() => handleUnblockUser(userItem?._id)}
+                            >
+                              <RotateCcw className="h-4 w-4" />
+                            </Button>
+                          </Tooltip>
+                        ) : (
+                          <>
+                            <Tooltip content="Edit User" placement="top">
+                              <Button
+                                size="xs"
+                                color="light"
+                                onClick={() =>
+                                  handleEditUserModalForm(userItem?._id)
+                                }
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                            </Tooltip>
+                            {user?._id !== userItem?._id && (
+                              <Tooltip content="Block User" placement="top">
+                                <Button
+                                  size="xs"
+                                  color="failure"
+                                  onClick={() => handleDelete(userItem?._id)}
+                                >
+                                  <Trash className="h-4 w-4" />
+                                </Button>
+                              </Tooltip>
+                            )}
+                          </>
                         )}
                       </div>
                     </Table.Cell>

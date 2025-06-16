@@ -1,8 +1,8 @@
-import { Button, Select, Table, TextInput } from "flowbite-react";
-import { Edit, Plus, Search, Trash } from "lucide-react";
+import { Button, Select, Table, TextInput, Tooltip } from "flowbite-react";
+import { Edit, Plus, RotateCcw, Search, Trash } from "lucide-react";
 import { SortButton } from "../data-table-components/SortButton";
 import { useEffect, useState } from "react";
-import { deleteAgent, getAgentById, getAllAgents } from "../../services/systemaideService";
+import { deleteAgent, getAgentById, getAllAgents, getAllDeletedAgents, restoreAgent } from "../../services/systemaideService";
 import swal2 from "sweetalert2";
 import { SimplePagination } from "../data-table-components/SimplePagination";
 import { AgentModalForm } from "./AgentModalForm";
@@ -17,7 +17,7 @@ const rowSizeOptionsJSON = JSON.stringify([
   { value: 50, label: "50" },
 ]);
 
-export function AgentsDataTable() {
+export function AgentsDataTable({ type }) {
   const [agentsData, setAgentsData] = useState([]);
   const [agentSearch, setAgentSearch] = useState("");
   const [agentPage, setAgentPage] = useState(1);
@@ -32,7 +32,7 @@ export function AgentsDataTable() {
 
   const fetchAllAgents = async () => {
     try {
-      const response = await getAllAgents();
+      const response = type === "deleted" ? await getAllDeletedAgents() : await getAllAgents();
       if (response?.success) {
         setAgentsData(response?.data);
       } else {
@@ -114,6 +114,48 @@ export function AgentsDataTable() {
       });
   };
 
+  // Handle restore action
+    const handleRestoreAgent = async (agentId) => {
+      await swal2
+        .fire({
+          title: "Are you sure?",
+          text: "You want to restore this agent?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes, restore it!",
+          cancelButtonText: "No, cancel!",
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+        })
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              const response = await restoreAgent(agentId);
+              if (response?.success) {
+                await fetchAllAgents();
+                await swal2.fire(
+                  "Restored!",
+                  "Agent has been restored.",
+                  "success"
+                );
+              } else {
+                await swal2.fire({
+                  icon: "error",
+                  title: "Error!",
+                  text: "Agent could not be restored.",
+                });
+              }
+            } catch (error) {
+              await swal2.fire({
+                icon: "error",
+                title: "Error!",
+                text: "An error occurred while restoring the agent.",
+              });
+            }
+          }
+        });
+    };
+
   const handleAddAgentModalForm = () => {
     setAgentData(null);
     setOpenModal(true);
@@ -164,9 +206,11 @@ export function AgentsDataTable() {
   return (
     <>
       {/* Data Table */}
-      <div className="mb-4 rounded bg-white dark:bg-gray-800 p-4 shadow">
+      <div className="bg-white p-4 dark:bg-gray-800 shadow-sm rounded-lg dark:border-gray-700">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
-          <h2 className="text-xl font-semibold">Agents</h2>
+          <h2 className="text-xl font-semibold">
+            {type === "deleted" ? "Agents" : "Summary"}
+          </h2>
           <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
             <div className="relative w-full sm:w-64">
               <TextInput
@@ -179,14 +223,16 @@ export function AgentsDataTable() {
                 }}
               />
             </div>
-            <Button
-              color="blue"
-              className="w-full sm:w-auto"
-              onClick={() => handleAddAgentModalForm()}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add
-            </Button>
+            {type !== "deleted" && (
+              <Button
+                color="blue"
+                className="w-full sm:w-auto"
+                onClick={() => handleAddAgentModalForm()}
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Add
+              </Button>
+            )}
           </div>
         </div>
 
@@ -267,7 +313,9 @@ export function AgentsDataTable() {
                         : "Name not available"}
                     </Table.Cell>
                     <Table.Cell>{agent?.tradeName}</Table.Cell>
-                    <Table.Cell className="capitalize">{agent?.registeredName}</Table.Cell>
+                    <Table.Cell className="capitalize">
+                      {agent?.registeredName}
+                    </Table.Cell>
                     <Table.Cell>{agent?.tin}</Table.Cell>
                     <Table.Cell className="capitalize">
                       {agent?.agentAddress
@@ -305,20 +353,46 @@ export function AgentsDataTable() {
                     </Table.Cell>
                     <Table.Cell>
                       <div className="flex items-center gap-2">
-                        <Button
-                          size="xs"
-                          color="light"
-                          onClick={() => handleEditAgentModalForm(agent?._id)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          size="xs"
-                          color="failure"
-                          onClick={() => handleDelete(agent?._id)}
-                        >
-                          <Trash className="h-4 w-4" />
-                        </Button>
+                        {type === "deleted" ? (
+                          <Tooltip
+                            content="Restore Agent"
+                            placement="top"
+                          >
+                            <Button
+                              size="xs"
+                              color="light"
+                              onClick={() => handleRestoreAgent(agent?._id)}
+                            >
+                              <RotateCcw className="h-4 w-4" />
+                            </Button>
+                          </Tooltip>
+                        ) : (
+                          <>
+                            <Tooltip content="Edit Agent" placement="top">
+                              <Button
+                                size="xs"
+                                color="light"
+                                onClick={() =>
+                                  handleEditAgentModalForm(agent?._id)
+                                }
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                            </Tooltip>
+                            <Tooltip
+                              content="Delete Agent"
+                              placement="top"
+                            >
+                              <Button
+                                size="xs"
+                                color="failure"
+                                onClick={() => handleDelete(agent?._id)}
+                              >
+                                <Trash className="h-4 w-4" />
+                              </Button>
+                            </Tooltip>
+                          </>
+                        )}
                       </div>
                     </Table.Cell>
                   </Table.Row>

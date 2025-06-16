@@ -18,6 +18,16 @@ const authenticateSystemaideApiService = async (token) => {
   return apiService;
 };
 
+export const authSignOut = async () => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.post("/auth/signout");
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const getAllUsers = async () => {
   try {    
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
@@ -74,6 +84,28 @@ export const deleteUser = async (id) => {
   }
 };
 
+export const getAllBlockedUsers = async () => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.get("/users/blocked");
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const unblockUser = async (id) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.patch(`/users/restore/${id}`);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
 export const getAllRoles = async () => {
   try {
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
@@ -121,7 +153,7 @@ export const updateRole = async (id, data) => {
 export const deleteRole = async (id) => {
   try {
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
-    const response = await authenticatedApiService.delete(`/roles/delete/${id}`);
+    const response = await authenticatedApiService.delete(`/roles/${id}`);
     return response?.data;
   } catch (error) {
     console.log(error);
@@ -176,7 +208,7 @@ export const updatePermission = async (id, data) => {
 export const deletePermission = async (id) => {
   try {
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
-    const response = await authenticatedApiService.delete(`/permissions/delete/${id}`);
+    const response = await authenticatedApiService.delete(`/permissions/${id}`);
     return response?.data;
   } catch (error) {
     console.log(error);
@@ -276,7 +308,29 @@ export const updateAccount = async (id, data) => {
 export const deleteAccount = async (id) => {
   try {
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
-    const response = await authenticatedApiService.delete(`/chart-of-account/delete/${id}`);
+    const response = await authenticatedApiService.delete(`/chart-of-account/${id}`);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const getAllDeletedAccounts = async () => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.get("/chart-of-account/deleted");
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const restoreAccount = async (id) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.patch(`/chart-of-account/restore/${id}`);
     return response?.data;
   } catch (error) {
     console.log(error);
@@ -331,7 +385,29 @@ export const updateLocation = async (id, data) => {
 export const deleteLocation = async (id) => {
   try {
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
-    const response = await authenticatedApiService.delete(`/location/delete/${id}`);
+    const response = await authenticatedApiService.delete(`/location/${id}`);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const getAllDeletedLocations = async () => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.get("/location/deleted");
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const restoreLocation = async (id) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.patch(`/location/restore/${id}`);
     return response?.data;
   } catch (error) {
     console.log(error);
@@ -386,7 +462,29 @@ export const updateBranch = async (id, data) => {
 export const deleteBranch = async (id) => {
   try {
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
-    const response = await authenticatedApiService.delete(`/branch/delete/${id}`);
+    const response = await authenticatedApiService.delete(`/branch/${id}`);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const getAllDeletedBranches = async () => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.get("/branch/deleted");
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const restoreBranch = async (id) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.patch(`/branch/restore/${id}`);
     return response?.data;
   } catch (error) {
     console.log(error);
@@ -474,7 +572,29 @@ export const updateAgent = async (id, data) => {
 export const deleteAgent = async (id) => {
   try {
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
-    const response = await authenticatedApiService.delete(`/agent/delete/${id}`);
+    const response = await authenticatedApiService.delete(`/agent/${id}`);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const getAllDeletedAgents = async () => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.get("/agent/deleted");
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const restoreAgent = async (id) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.patch(`/agent/restore/${id}`);
     return response?.data;
   } catch (error) {
     console.log(error);
@@ -529,7 +649,31 @@ export const updateCashDisbursementTransaction = async (id, data) => {
 export const deleteCashDisbursementTransaction = async (id) => {
   try {
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
-    const response = await authenticatedApiService.delete(`/cash-disbursement/delete/${id}`);
+    const response = await authenticatedApiService.delete(`/cash-disbursement/${id}`);
+    console.log(response?.data);
+
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const getAllDeletedCashDisbursementTransactions = async () => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.get("/cash-disbursement/deleted");
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const restoreCashDisbursementTransaction = async (id) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.patch(`/cash-disbursement/restore/${id}`);
     return response?.data;
   } catch (error) {
     console.log(error);
@@ -584,13 +728,35 @@ export const updateCashReceiptTransaction = async (id, data) => {
 export const deleteCashReceiptTransaction = async (id) => {
   try {
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
-    const response = await authenticatedApiService.delete(`/cash-receipts/delete/${id}`);
+    const response = await authenticatedApiService.delete(`/cash-receipts/${id}`);
     return response?.data;
   } catch (error) {
     console.log(error);
     // return error?.response?.data;
   }
 }
+
+export const getAllDeletedCashReceiptTransactions = async () => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.get("/cash-receipts/deleted");
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const restoreCashReceiptTransaction = async (id) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.patch(`/cash-receipts/restore/${id}`);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
 
 export const getAllSalesAccountTransactions = async () => {
   try {
@@ -639,7 +805,29 @@ export const updateSalesAccountTransaction = async (id, data) => {
 export const deleteSalesAccountTransaction = async (id) => {
   try {
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
-    const response = await authenticatedApiService.delete(`/sales-on-account/delete/${id}`);
+    const response = await authenticatedApiService.delete(`/sales-on-account/${id}`);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const getAllDeletedSalesAccountTransactions = async () => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.get("/sales-on-account/deleted");
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const restoreSalesAccountTransaction = async (id) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.patch(`/sales-on-account/restore/${id}`);
     return response?.data;
   } catch (error) {
     console.log(error);
@@ -694,13 +882,35 @@ export const updateGeneralJournalTransaction = async (id, data) => {
 export const deleteGeneralJournalTransaction = async (id) => {
   try {
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
-    const response = await authenticatedApiService.delete(`/general-journal/delete/${id}`);
+    const response = await authenticatedApiService.delete(`/general-journal/${id}`);
     return response?.data;
   } catch (error) {
     console.log(error);
     // return error?.response?.data;
   }
 };
+
+export const getAllDeletedGeneralJournalTransactions = async () => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.get("/general-journal/deleted");
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const restoreGeneralJournalTransaction = async (id) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.patch(`/general-journal/restore/${id}`);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+}
 
 export const getAllPurchasesAccountTransactions = async () => {
   try {
@@ -749,13 +959,35 @@ export const updatePurchasesAccountTransaction = async (id, data) => {
 export const deletePurchasesAccountTransaction = async (id) => {
   try {
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
-    const response = await authenticatedApiService.delete(`/purchase-on-account/delete/${id}`);
+    const response = await authenticatedApiService.delete(`/purchase-on-account/${id}`);
     return response?.data;
   } catch (error) {
     console.log(error);
     // return error?.response?.data;
   }
 }
+
+export const getAllDeletedPurchasesAccountTransactions = async () => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.get("/purchase-on-account/deleted");
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const restorePurchasesAccountTransaction = async (id) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.patch(`/purchase-on-account/restore/${id}`);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
 
 export const getDisbursementJournalReport = async (data) => {
   try {

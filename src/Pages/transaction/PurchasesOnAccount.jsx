@@ -13,7 +13,7 @@ export function PurchasesOnAccount() {
       {/* Content Card */}
       <div className="border rounded-lg dark:border-gray-700">
         {/* Purchases On Account Table */}
-        <PurchasesAccntDataTable />
+        <PurchasesAccntDataTable type={""} />
       </div>
     </>
   );

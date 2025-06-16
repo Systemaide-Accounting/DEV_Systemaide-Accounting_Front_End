@@ -1,8 +1,8 @@
-import { Button, Select, Table, TextInput } from "flowbite-react";
-import { Edit, Plus, Search, Trash } from "lucide-react";
+import { Button, Select, Table, TextInput, Tooltip } from "flowbite-react";
+import { Edit, Plus, RotateCcw, Search, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { SortButton } from "../data-table-components/SortButton";
-import { deleteBranch, getAllBranches, getBranchById } from "../../services/systemaideService";
+import { deleteBranch, getAllBranches, getAllDeletedBranches, getBranchById, restoreBranch } from "../../services/systemaideService";
 import swal2 from "sweetalert2";
 import { SimplePagination } from "../data-table-components/SimplePagination";
 import { BranchModalForm } from "./BranchModalForm";
@@ -14,7 +14,7 @@ const rowSizeOptionsJSON = JSON.stringify([
   { value: 50, label: "50" },
 ]);
 
-export function BranchesDataTable() {
+export function BranchesDataTable({ type }) {
   const [branchesData, setBranchesData] = useState([]);
   const [branchSearch, setBranchSearch] = useState("");
   const [branchPage, setBranchPage] = useState(1);
@@ -29,7 +29,7 @@ export function BranchesDataTable() {
 
   const fetchAllBranches = async () => {
     try {
-      const response = await getAllBranches();
+      const response = type === "deleted" ? await getAllDeletedBranches() : await getAllBranches();
       if (response?.success) {
         setBranchesData(response?.data);
       } else {
@@ -60,93 +60,144 @@ export function BranchesDataTable() {
           ? "desc"
           : "asc",
     });
-  }   
+  };
 
   // Handle row size change
-    const handleBranchRowSizeChange = (e) => {
-      const newSize = Number.parseInt(e.target.value);
-      setBranchesPerPage(newSize);
-      setBranchPage(1); // Reset to first page when changing row size
-    };
+  const handleBranchRowSizeChange = (e) => {
+    const newSize = Number.parseInt(e.target.value);
+    setBranchesPerPage(newSize);
+    setBranchPage(1); // Reset to first page when changing row size
+  };
 
-    const handleDelete = async (id) => {
-        await swal2.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Yes, delete it!",
-            cancelButtonText: "No, cancel!",
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-        }).then(async (result) => {
-            if (result.isConfirmed) {
-                try {
-                    const response = await deleteBranch(id);
-                    if (response?.success) {
-                        await swal2.fire("Deleted!", "Branch has been deleted.", "success");
-                        fetchAllBranches();
-                    } else {
-                        await swal2.fire("Error", "Branch could not be deleted", "error");
-                    }
-                } catch (error) {
-                    console.error("Error deleting branch: ", error);
-                    await swal2.fire("Error", "An error occurred while deleting the branch.", "error");
-                }
+  const handleDelete = async (id) => {
+    await swal2
+      .fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "No, cancel!",
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+      })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const response = await deleteBranch(id);
+            if (response?.success) {
+              await swal2.fire(
+                "Deleted!",
+                "Branch has been deleted.",
+                "success"
+              );
+              fetchAllBranches();
+            } else {
+              await swal2.fire("Error", "Branch could not be deleted", "error");
             }
-        });
-    };
-   
-    const handleAddBranchModalForm = () => {
-        setBranchData(null);
-        setOpenModal(true);
-    };
-
-    const handleEditBranchModalForm = async (id) => {
-      try {
-        const response = await getBranchById(id);
-        if(response?.success) {
-          setBranchData(response?.data);
-          setOpenModal(true);
-        } else {
-          console.log(response?.message);
-        }
-      } catch (error) {
-        console.error("Error fetching branch: ", error);
-      }
-    };
-
-    // filtered and sorted branches
-    const filteredBranches = branchesData
-      .filter(
-        (branch) =>
-        (branch?.name?.toLowerCase() || "").includes(branchSearch.toLowerCase())
-      )
-      .sort((a, b) => {
-        const aValue = a[branchSort.column] || ""; // Default to empty string if missing
-        const bValue = b[branchSort.column] || "";
-
-        if (branchSort.direction === "asc") {
-          return aValue > bValue ? 1 : -1;
-        } else {
-          return aValue < bValue ? 1 : -1;
+          } catch (error) {
+            console.error("Error deleting branch: ", error);
+            await swal2.fire(
+              "Error",
+              "An error occurred while deleting the branch.",
+              "error"
+            );
+          }
         }
       });
+  };
 
-      // Pagination for branches
-      const totalBranchPages = Math.max(
-        1,
-        Math.ceil(filteredBranches.length / branchesPerPage)
-      );
-      const paginatedBranches = filteredBranches.slice(
-        (branchPage - 1) * branchesPerPage,
-        branchPage * branchesPerPage
-      );
+  const handleAddBranchModalForm = () => {
+    setBranchData(null);
+    setOpenModal(true);
+  };
+
+  const handleEditBranchModalForm = async (id) => {
+    try {
+      const response = await getBranchById(id);
+      if (response?.success) {
+        setBranchData(response?.data);
+        setOpenModal(true);
+      } else {
+        console.log(response?.message);
+      }
+    } catch (error) {
+      console.error("Error fetching branch: ", error);
+    }
+  };
+
+  // Handle restore action
+      const handleRestoreBranch = async (branchId) => {
+        await swal2
+          .fire({
+            title: "Are you sure?",
+            text: "You want to restore this branch?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, restore it!",
+            cancelButtonText: "No, cancel!",
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+          })
+          .then(async (result) => {
+            if (result.isConfirmed) {
+              try {
+                const response = await restoreBranch(branchId);
+                if (response?.success) {
+                  await getAllBranches();
+                  await swal2.fire(
+                    "Restored!",
+                    "Branch has been restored.",
+                    "success"
+                  );
+                } else {
+                  await swal2.fire({
+                    icon: "error",
+                    title: "Error!",
+                    text: "Branch could not be restored.",
+                  });
+                }
+              } catch (error) {
+                await swal2.fire({
+                  icon: "error",
+                  title: "Error!",
+                  text: "An error occurred while restoring the branch.",
+                });
+              }
+            }
+          });
+      };
+
+  // filtered and sorted branches
+  const filteredBranches = branchesData
+    .filter((branch) =>
+      (branch?.name?.toLowerCase() || "").includes(branchSearch.toLowerCase())
+    )
+    .sort((a, b) => {
+      const aValue = a[branchSort.column] || ""; // Default to empty string if missing
+      const bValue = b[branchSort.column] || "";
+
+      if (branchSort.direction === "asc") {
+        return aValue > bValue ? 1 : -1;
+      } else {
+        return aValue < bValue ? 1 : -1;
+      }
+    });
+
+  // Pagination for branches
+  const totalBranchPages = Math.max(
+    1,
+    Math.ceil(filteredBranches.length / branchesPerPage)
+  );
+  const paginatedBranches = filteredBranches.slice(
+    (branchPage - 1) * branchesPerPage,
+    branchPage * branchesPerPage
+  );
 
   return (
     <>
       {/* Data Table */}
-      <div className="rounded bg-white dark:bg-gray-800 p-4 shadow">
+      <div className="bg-white p-4 dark:bg-gray-800 shadow-sm rounded-lg dark:border-gray-700">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
           <h2 className="text-xl font-semibold">Branches</h2>
           <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
@@ -161,14 +212,16 @@ export function BranchesDataTable() {
                 }}
               />
             </div>
-            <Button
-              color="blue"
-              className="w-full sm:w-auto"
-              onClick={() => handleAddBranchModalForm()}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add
-            </Button>
+            {type !== "deleted" && (
+              <Button
+                color="blue"
+                className="w-full sm:w-auto"
+                onClick={() => handleAddBranchModalForm()}
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Add
+              </Button>
+            )}
           </div>
         </div>
 
@@ -214,22 +267,36 @@ export function BranchesDataTable() {
                     <Table.Cell>{branch?.machineId}</Table.Cell>
                     <Table.Cell>
                       <div className="flex items-center gap-2">
-                        <Button
-                          size="xs"
-                          color="light"
-                          onClick={() =>
-                            handleEditBranchModalForm(branch?._id)
-                          }
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          size="xs"
-                          color="failure"
-                          onClick={() => handleDelete(branch?._id)}
-                        >
-                          <Trash className="h-4 w-4" />
-                        </Button>
+                        {type === "deleted" ? (
+                          <Tooltip content="Restore Branch" placement="top">
+                            <Button
+                              size="xs"
+                              color="light"
+                              onClick={() => handleRestoreBranch(branch?._id)}
+                            >
+                              <RotateCcw className="h-4 w-4" />
+                            </Button>
+                          </Tooltip>
+                        ) : (
+                          <>
+                            <Button
+                              size="xs"
+                              color="light"
+                              onClick={() =>
+                                handleEditBranchModalForm(branch?._id)
+                              }
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              size="xs"
+                              color="failure"
+                              onClick={() => handleDelete(branch?._id)}
+                            >
+                              <Trash className="h-4 w-4" />
+                            </Button>
+                          </>
+                        )}
                       </div>
                     </Table.Cell>
                   </Table.Row>
@@ -267,11 +334,7 @@ export function BranchesDataTable() {
               {paginatedBranches.length > 0
                 ? (branchPage - 1) * branchesPerPage + 1
                 : 0}
-              -
-              {Math.min(
-                branchPage * branchesPerPage,
-                filteredBranches.length
-              )}{" "}
+              -{Math.min(branchPage * branchesPerPage, filteredBranches.length)}{" "}
               of {filteredBranches.length}
             </span>
           </div>
@@ -286,7 +349,7 @@ export function BranchesDataTable() {
       </div>
 
       {/* Modal for CRUD */}
-      <BranchModalForm 
+      <BranchModalForm
         branchData={branchData}
         openModal={openModal}
         setOpenModal={setOpenModal}

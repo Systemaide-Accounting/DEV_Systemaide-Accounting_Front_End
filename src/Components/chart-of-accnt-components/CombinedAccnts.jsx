@@ -129,7 +129,7 @@ export function CombinedAccnts() {
   
   return (
     <>
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+      <div className="bg-white p-4 dark:bg-gray-800 shadow-sm rounded-lg dark:border-gray-700">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
           <h2 className="text-xl font-semibold">Account Classification</h2>
           <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
@@ -151,7 +151,7 @@ export function CombinedAccnts() {
             </Button>
           </div>
         </div>
-        
+
         {/* old search design */}
         {/* <h2 className="text-xl mb-4">Account Classification</h2>
         <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">

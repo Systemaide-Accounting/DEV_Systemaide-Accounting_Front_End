@@ -1,9 +1,9 @@
-import { Button, Select, Table, TextInput } from "flowbite-react";
-import { Edit, Plus, Search, Trash } from "lucide-react";
+import { Button, Select, Table, TextInput, Tooltip } from "flowbite-react";
+import { Edit, Plus, RotateCcw, Search, Trash } from "lucide-react";
 import { SortButton } from "../data-table-components/SortButton";
 import { SimplePagination } from "../data-table-components/SimplePagination";
 import { useEffect, useState } from "react";
-import { deleteLocation, getAllLocations, getLocationById } from "../../services/systemaideService";
+import { deleteLocation, getAllDeletedLocations, getAllLocations, getLocationById, restoreLocation } from "../../services/systemaideService";
 import { LocationModalForm } from "./LocationModalForm";
 import swal2 from "sweetalert2";
 
@@ -14,7 +14,7 @@ const rowSizeOptionsJSON = JSON.stringify([
   { value: 50, label: "50" },
 ]);
 
-export function LocationsDataTable() {
+export function LocationsDataTable({ type }) {
   const [locationsData, setLocationsData] = useState([]);
   const [locationSearch, setLocationSearch] = useState("");
   const [locationPage, setLocationPage] = useState(1);
@@ -29,7 +29,7 @@ export function LocationsDataTable() {
 
   const fetchAllLocations = async () => {
     try {
-      const response = await getAllLocations();
+      const response = type === "deleted" ? await getAllDeletedLocations() : await getAllLocations();
       if (response?.success) {
         setLocationsData(response?.data);
       } else {
@@ -116,6 +116,50 @@ export function LocationsDataTable() {
     }
   };
 
+  // Handle restore action
+    const handleRestoreLocation = async (locationId) => {
+      await swal2
+        .fire({
+          title: "Are you sure?",
+          text: "You want to restore this location?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes, restore it!",
+          cancelButtonText: "No, cancel!",
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+        })
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              const response = await restoreLocation(
+                locationId
+              );
+              if (response?.success) {
+                await fetchAllLocations();
+                await swal2.fire(
+                  "Restored!",
+                  "Location has been restored.",
+                  "success"
+                );
+              } else {
+                await swal2.fire({
+                  icon: "error",
+                  title: "Error!",
+                  text: "Location could not be restored.",
+                });
+              }
+            } catch (error) {
+              await swal2.fire({
+                icon: "error",
+                title: "Error!",
+                text: "An error occurred while restoring the location.",
+              });
+            }
+          }
+        });
+    };
+
   // filtered and sorted locations
   const filteredLocations = locationsData
     .filter(
@@ -146,7 +190,7 @@ export function LocationsDataTable() {
   return (
     <>
       {/* Data Table */}
-      <div className="mb-4 rounded bg-white dark:bg-gray-800 p-4 shadow">
+      <div className="bg-white p-4 dark:bg-gray-800 shadow-sm rounded-lg dark:border-gray-700">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
           <h2 className="text-xl font-semibold">Locations</h2>
           <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
@@ -161,14 +205,16 @@ export function LocationsDataTable() {
                 }}
               />
             </div>
-            <Button
-              color="blue"
-              className="w-full sm:w-auto"
-              onClick={() => handleAddLocationModalForm()}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add
-            </Button>
+            {type !== "deleted" && (
+              <Button
+                color="blue"
+                className="w-full sm:w-auto"
+                onClick={() => handleAddLocationModalForm()}
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Add
+              </Button>
+            )}
           </div>
         </div>
 
@@ -216,20 +262,41 @@ export function LocationsDataTable() {
                     <Table.Cell>{location?.branch?.name}</Table.Cell>
                     <Table.Cell>
                       <div className="flex items-center gap-2">
-                        <Button
-                          size="xs"
-                          color="light"
-                          onClick={() => handleEditLocationModalForm(location?._id)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          size="xs"
-                          color="failure"
-                            onClick={() => handleDelete(location?._id)}
-                        >
-                          <Trash className="h-4 w-4" />
-                        </Button>
+                        {type === "deleted" ? (
+                          <Tooltip
+                            content="Restore Location"
+                            placement="top"
+                          >
+                            <Button
+                              size="xs"
+                              color="light"
+                              onClick={() =>
+                                handleRestoreLocation(location?._id)
+                              }
+                            >
+                              <RotateCcw className="h-4 w-4" />
+                            </Button>
+                          </Tooltip>
+                        ) : (
+                          <>
+                            <Button
+                              size="xs"
+                              color="light"
+                              onClick={() =>
+                                handleEditLocationModalForm(location?._id)
+                              }
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              size="xs"
+                              color="failure"
+                              onClick={() => handleDelete(location?._id)}
+                            >
+                              <Trash className="h-4 w-4" />
+                            </Button>
+                          </>
+                        )}
                       </div>
                     </Table.Cell>
                   </Table.Row>

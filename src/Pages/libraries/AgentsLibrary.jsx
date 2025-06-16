@@ -3,15 +3,16 @@ import { AgentsDataTable } from "../../Components/agents-library-components/Agen
 export function AgentsLibrary() {
   return (
     <>
-      {/* Header */}
-      <h1 className="text-xl font-semibold mb-4">Agents Library</h1>
-      {/* Agents Library Section */}
-      {/* <div className="border rounded-lg dark:border-gray-700"> */}
-        {/* <h1 className="text-2xl font-bold mb-2">Agents Library</h1> */}
+      {/* Title Card */}
+      <div className="w-full p-4 border rounded-lg bg-white mb-4 shadow">
+        <h2 className="text-xl font-bold text-gray-900">Agents Library</h2>
+      </div>
 
+      {/* Content Card */}
+      <div className="border rounded-lg dark:border-gray-700 shadow">
         {/* Agents Table */}
-        <AgentsDataTable />
-      {/* </div> */}
+        <AgentsDataTable type={""} />
+      </div>
     </>
   );
 }

@@ -11,20 +11,15 @@ export function ChartOfAccount() {
     <ChartOfAccntContext.Provider
       value={{ selectedAccount, setSelectedAccount }}
     >
-      {/* Header */}
-      <h1 className="text-xl font-semibold mb-4">Chart Of Accounts</h1>
-      {/* Chart Of Accounts Section */}
-      <div className="rounded-lg dark:border-gray-700">
-        {/* <h1 className="text-2xl mb-4">Chart Of Accounts</h1> */}
+      {/* Title Card */}
+      <div className="w-full p-4 border rounded-lg bg-white mb-4 shadow">
+        <h2 className="text-xl font-bold text-gray-900">Chart Of Accounts</h2>
+      </div>
 
-        <div className="grid grid-cols-1 gap-4">
-          <CombinedAccnts />
-        </div>
-
-        {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <MainAccnt />
-          {selectedAccount && <SubAccnt />}
-        </div> */}
+      {/* Content Card */}
+      <div className="border rounded-lg dark:border-gray-700 shadow">
+        {/* Chart of Accounts Table */}
+        <CombinedAccnts />
       </div>
     </ChartOfAccntContext.Provider>
   );

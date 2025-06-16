@@ -10,7 +10,7 @@ export function GeneralJournal() {
 
       <div className="border rounded-lg dark:border-gray-700">
         {/* General Journal Table */}
-        <GeneralJournalDataTable />
+        <GeneralJournalDataTable type={""} />
       </div>
     </>
   );

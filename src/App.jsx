@@ -8,7 +8,16 @@ import { checkUserExpiration } from "./hooks/checkUserExpiration";
 import { LoginSignUp } from "./Pages/LoginSignUp";
 import { Home } from "./Pages/Home";
 // AUTHENTICATION SERVICES
-import { userAllowedViewSystemConfig } from "./constants/UserConstants";
+import {
+  userAllowedViewSystemConfig,
+  userAllowedRestoreTransaction,
+  userAllowedRestoreTransactionLog,
+  userAllowedRestoreUser,
+  userAllowedRestoreAgent,
+  userAllowedRestoreAccount,
+  userAllowedRestoreLocation,
+  userAllowedRestoreBranch,
+} from "./constants/UserConstants";
 // IMPORT PRINTABLES
 import { PrintDisbursementJournal } from "./Pages/reports/journals/PrintDisbursementJournal";
 import { PrintReceiptsJournal } from "./Pages/reports/journals/PrintReceiptsJournal";
@@ -31,6 +40,7 @@ import {
 import { libraries } from "./Components/all-routes/libraries";
 import { utilities, backups } from "./Components/all-routes/utilities";
 import { SystemConfiguration } from "./Pages/SystemConfiguration";
+import { Archive } from "./Pages/Archive";
 import { useEffect } from "react";
 
 
@@ -45,6 +55,9 @@ function App() {
     checkAuthentication();
   }, []);
 
+  console.log("user", user);
+  
+
   return (
     <>
       <Router>
@@ -53,11 +66,26 @@ function App() {
             <Route path="/" element={<LoginSignUp />} />
 
             {/* All Printable Pages */}
-            <Route path="/reports/print-disbursement-journal" element={<PrintDisbursementJournal />} />
-            <Route path="/reports/print-receipts-journal" element={<PrintReceiptsJournal />} />
-            <Route path="/reports/print-sales-journal" element={<PrintSalesJournal />} />
-            <Route path="/reports/print-purchases-journal" element={<PrintPurchasesJournal />} />
-            <Route path="/reports/print-general-journal" element={<PrintGeneralJournal />} />
+            <Route
+              path="/reports/print-disbursement-journal"
+              element={<PrintDisbursementJournal />}
+            />
+            <Route
+              path="/reports/print-receipts-journal"
+              element={<PrintReceiptsJournal />}
+            />
+            <Route
+              path="/reports/print-sales-journal"
+              element={<PrintSalesJournal />}
+            />
+            <Route
+              path="/reports/print-purchases-journal"
+              element={<PrintPurchasesJournal />}
+            />
+            <Route
+              path="/reports/print-general-journal"
+              element={<PrintGeneralJournal />}
+            />
 
             <Route element={<PrivateRoute />}>
               <Route path="/home" element={<Home />} />
@@ -193,6 +221,15 @@ function App() {
                   element={<SystemConfiguration />}
                 />
               )}
+              {userAllowedViewSystemConfig(user?.permissions) &&
+              (userAllowedRestoreTransaction(user?.permissions) ||
+                userAllowedRestoreAccount(user?.permissions) ||
+                userAllowedRestoreLocation(user?.permissions) ||
+                userAllowedRestoreBranch(user?.permissions) ||
+                userAllowedRestoreAgent(user?.permissions) ||
+                userAllowedRestoreUser(user?.permissions) ||
+                userAllowedRestoreTransactionLog(user?.permissions)
+              ) && <Route path="/archive" element={<Archive />} />}
             </Route>
           </Routes>
         </AuthContext.Provider>

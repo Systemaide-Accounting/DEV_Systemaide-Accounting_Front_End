@@ -4,17 +4,22 @@ import { LocationsDataTable } from "../../Components/setup-location-components/L
 export function SetupLocation() {
   return (
     <>
-      {/* Header */}
-      <h1 className="text-xl font-semibold mb-4">Setup Location</h1>
-      {/* <div className="border-2 border-gray-200 rounded-lg dark:border-gray-700"> */}
-        {/* <h1 className="text-2xl font-bold mb-2">Setup Location</h1> */}
+      {/* Title Card */}
+      <div className="w-full p-4 border rounded-lg bg-white mb-4 shadow">
+        <h2 className="text-xl font-bold text-gray-900">Setup Location</h2>
+      </div>
 
+      {/* Content Card */}
+      <div className="border mb-4 rounded-lg dark:border-gray-700 shadow">
         {/* Locations Table */}
-        <LocationsDataTable />
+        <LocationsDataTable type={""} />
+      </div>
 
+      {/* Content Card */}
+      <div className="border rounded-lg dark:border-gray-700 shadow">
         {/* Branches Table */}
-        <BranchesDataTable />
-      {/* </div> */}
+        <BranchesDataTable type={""} />
+      </div>
     </>
   );
 }

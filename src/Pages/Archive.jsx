@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { CashDisbursementDataTable } from "../Components/cash-disbursement-components/CashDisbursementDataTable";
-import { userAllowedRestoreAccount, userAllowedRestoreTransaction } from "../constants/UserConstants";
+import { userAllowedRestoreAccount, userAllowedRestoreAgent, userAllowedRestoreBranch, userAllowedRestoreLocation, userAllowedRestoreTransaction, userAllowedRestoreUser } from "../constants/UserConstants";
 import AuthContext from "../context/AuthContext";
 import { CashReceiptDataTable } from "../Components/cash-receipt-components/CashReceiptDataTable";
 import { SalesAccntDataTable } from "../Components/sales-accnt-components/SalesAccntDataTable";
@@ -10,6 +10,7 @@ import { AgentsDataTable } from "../Components/agents-library-components/AgentsD
 import { DeletedAccnts } from "../Components/chart-of-accnt-components/DeletedAccnts";
 import { LocationsDataTable } from "../Components/setup-location-components/LocationsDataTable";
 import { BranchesDataTable } from "../Components/setup-location-components/BranchesDataTable";
+import { UsersDataTable } from "../Components/system-config-components/UsersDataTable";
 
 export function Archive() {
 
@@ -43,7 +44,7 @@ export function Archive() {
         )}
 
         {/* Content Card */}
-        {userAllowedRestoreAccount(user?.permissions) && (
+        {userAllowedRestoreTransaction(user?.permissions) && (
           <div className="mb-4 border rounded-lg dark:border-gray-700 shadow">
             {/* Deleted Sales Accounts Table */}
             <SalesAccntDataTable type={"deleted"} />
@@ -51,7 +52,7 @@ export function Archive() {
         )}
 
         {/* Content Card */}
-        {userAllowedRestoreAccount(user?.permissions) && (
+        {userAllowedRestoreTransaction(user?.permissions) && (
           <div className="mb-4 border rounded-lg dark:border-gray-700 shadow">
             {/* Deleted Purchases Accounts Table */}
             <PurchasesAccntDataTable type={"deleted"} />
@@ -72,35 +73,52 @@ export function Archive() {
         </div>
 
         {/* Content Card */}
-        <div className="mb-4 border rounded-lg dark:border-gray-700 shadow">
-          {/* Deleted Agents Table */}
-          <AgentsDataTable type={"deleted"} />
-        </div>
+        {userAllowedRestoreAgent(user?.permissions) && (
+          <div className="mb-4 border rounded-lg dark:border-gray-700 shadow">
+            {/* Deleted Agents Table */}
+            <AgentsDataTable type={"deleted"} />
+          </div>
+        )}
 
         {/* Content Card */}
-        <div className="mb-4 border rounded-lg dark:border-gray-700 shadow">
-          {/* Deleted Accounts Table */}
-          <DeletedAccnts />
-        </div>
+        {userAllowedRestoreAccount(user?.permissions) && (
+          <div className="mb-4 border rounded-lg dark:border-gray-700 shadow">
+            {/* Deleted Accounts Table */}
+            <DeletedAccnts />
+          </div>
+        )}
 
         {/* Content Card */}
-        <div className="mb-4 border rounded-lg dark:border-gray-700 shadow">
-          {/* Locations Table */}
-          <LocationsDataTable type={"deleted"} />
-        </div>
+        {userAllowedRestoreLocation(user?.permissions) && (
+          <div className="mb-4 border rounded-lg dark:border-gray-700 shadow">
+            {/* Locations Table */}
+            <LocationsDataTable type={"deleted"} />
+          </div>
+        )}
 
         {/* Content Card */}
-        <div className="mb-4 border rounded-lg dark:border-gray-700 shadow">
-          {/* Branches Table */}
-          <BranchesDataTable type={"deleted"} />
-        </div>
-      
-        {/* Title Card */}
-        <div className="w-full p-4 border rounded-lg bg-white mb-4 shadow">
-          <h2 className="text-xl font-bold text-gray-900">
-            System Configuration Archive
-          </h2>
-        </div>
+        {userAllowedRestoreBranch(user?.permissions) && (
+          <div className="mb-4 border rounded-lg dark:border-gray-700 shadow">
+            {/* Branches Table */}
+            <BranchesDataTable type={"deleted"} />
+          </div>
+        )}
+
+
+        {userAllowedRestoreUser(user?.permissions) && (
+          <>
+            <div className="w-full p-4 border rounded-lg bg-white mb-4 shadow">
+              <h2 className="text-xl font-bold text-gray-900">
+                System Configuration Archive
+              </h2>
+            </div>
+
+            <div className="mb-4 border rounded-lg dark:border-gray-700 shadow">
+              {/* Users Table */}
+              <UsersDataTable type={"deleted"} />
+            </div>
+          </>
+        )}
       </>
     );
 };

@@ -16,7 +16,7 @@ export function SystemConfiguration() {
       {/* Content Card */}
       <div className="mb-4 border rounded-lg dark:border-gray-700 shadow">
         {/* Users Table */}
-        <UsersDataTable />
+        <UsersDataTable type={""} />
       </div>
 
       {/* 2 Columns */}

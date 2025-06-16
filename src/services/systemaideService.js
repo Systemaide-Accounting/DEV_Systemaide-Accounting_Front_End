@@ -84,6 +84,28 @@ export const deleteUser = async (id) => {
   }
 };
 
+export const getAllBlockedUsers = async () => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.get("/users/blocked");
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
+export const unblockUser = async (id) => {
+  try {
+    const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
+    const response = await authenticatedApiService.patch(`/users/restore/${id}`);
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+    // return error?.response?.data;
+  }
+};
+
 export const getAllRoles = async () => {
   try {
     const authenticatedApiService = await authenticateSystemaideApiService(accessToken);
